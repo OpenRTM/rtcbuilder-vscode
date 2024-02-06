@@ -65,7 +65,7 @@ The RTCBuilder-vscode software is **dual-licensed**.
 You may use, copy, distribute, and/or modify this software under one of the following two licenses:
 
 1. **Apache License, Version 2.0**  
-   See the file `LICENSE.txt` for the full text.
+   See the file `LICENSE` for the full text.
 
 2. **Individual (Commercial) License**  
    You may obtain a commercial license from AIST and/or its Technology Licensing Organization (TLO)  
