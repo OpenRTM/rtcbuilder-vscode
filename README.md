@@ -20,6 +20,26 @@ VS-Code版RtcBuilderの構成を示します．
 ソースコードを配置したディレクトリで以下を実行してください．  
 ```npm ci```
 
+### vsixパッケージビルド方法
+
+プロジェクトルートにて、以下のスクリプトを実行してください。
+
+```shell
+$ ./build.sh
+```
+ビルド後、dist ディレクトリ内に全てのvsixファイルが格納されます。
+各サブプロジェクトディレクトリ内の build.sh を実行することで、個々のプロジェクト毎にビルドも可能です。
+
+### インストール・起動方法
+
+VS-Codeにインストールする場合は、以下の通り install.sh を実行してください。
+
+```shell
+$ ./install.sh
+```
+
+その後、VS-Codeにて、Ctrl(Cmd)+Shift+P で **Open New RTCBuilder Editor** もしくは **RTCBuilder** とタイプして、RTCBuilderを起動してください。
+
 ### 使用ライブラリ
 - Nunjucks 3.2.4
   - <https://mozilla.github.io/nunjucks/>
