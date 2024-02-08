@@ -4,6 +4,7 @@
   "publisher": "aist",
   "version": "1.0.0",
   "description": "RTCBuilder for VS Code(Python)",
+  "icon": "images/rtcbuilder-python-icon.png",
   "license": "Apache-2.0 OR Commercial",
   "repository": {
     "type": "git",
