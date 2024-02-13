@@ -28,10 +28,6 @@
     , "basic.GENERATE_EXPL": "コードの生成を行います。"
     , "basic.BTN_GENERATE": "コード生成"
     , "basic.BTN_BK_CLEAR": "バックアップファイル クリア"
-<<<<<<< HEAD
-    , "basic.EXPORT_IMPORT_TITLE": "プロファイル情報のインポート・エクスポート"
-    , "basic.EXPORT_IMPORT_EXPL": "プロファイル情報のインポートおよびエクスポートを行います。"
-=======
     , "basic.ISO_EXPORT_TITLE": "ISOプロファイル情報の生成"
     , "basic.ISO_EXPORT_EXPL": "ISO 22166-202 形式プロファイルの生成を行います。"
     , "basic.BTN_ISO_EXPORT": "ISOプロファイル生成"
@@ -39,7 +35,6 @@
     , "basic.IMPORT_EXPL": "プロファイル情報のインポートを行います。"
     , "basic.EXPORT_TITLE": "プロファイル情報のエクスポート"
     , "basic.EXPORT_EXPL": "プロファイル情報のエクスポートを行います。"
->>>>>>> origin/iso22166-202-profile
     , "basic.BTN_IMPORT": "インポート"
     , "basic.BTN_EXPORT": "エクスポート"
     , "basic.BTN_REF": "参照"

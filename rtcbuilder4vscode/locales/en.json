@@ -28,10 +28,6 @@
     , "basic.GENERATE_EXPL": "Generates code."
     , "basic.BTN_GENERATE": "Code Generation"
     , "basic.BTN_BK_CLEAR": "Clear Backup Files"
-<<<<<<< HEAD
-    , "basic.EXPORT_IMPORT_TITLE": "Import/Export Profile information"
-    , "basic.EXPORT_IMPORT_EXPL": "Imports/Exports Profile information."
-=======
     , "basic.ISO_EXPORT_TITLE": "ISO profile Generation"
     , "basic.ISO_EXPORT_EXPL": "Generates a profile in ISO 22166-202 format."
     , "basic.BTN_ISO_EXPORT": "ISO Profile Generation"
@@ -39,7 +35,6 @@
     , "basic.IMPORT_EXPL": "Imports Profile information."
     , "basic.EXPORT_TITLE": "Export Profile information"
     , "basic.EXPORT_EXPL": "Exports Profile information."
->>>>>>> origin/iso22166-202-profile
     , "basic.BTN_IMPORT": "Import"
     , "basic.BTN_EXPORT": "Export"
     , "basic.BTN_REF": "Ref..."
