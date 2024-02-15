@@ -279,8 +279,6 @@ class LanguageParam {
     }
 }
 
-<<<<<<< HEAD
-=======
 class RepositoryParam {
     constructor() {
         this.URL = '';
@@ -302,7 +300,6 @@ class ContainerParam {
     }
 }
 
->>>>>>> origin/iso22166-202-profile
 class RtcParam {
     constructor() {
         this.name = '';
@@ -880,10 +877,7 @@ module.exports = {
   ConfigSetParam,
   TargetEnvironmentParam,
   EnvLibraryParam,
-<<<<<<< HEAD
-=======
   ContainerParam,
   RepositoryParam,
->>>>>>> origin/iso22166-202-profile
   GeneratedResult
 };

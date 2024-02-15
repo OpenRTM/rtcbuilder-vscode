@@ -10,12 +10,8 @@ const {
   DataPortParam,
   ServicePortInterfaceParam, ServicePortParam,
   ConfigSetParam,
-<<<<<<< HEAD
-  TargetEnvironmentParam, EnvLibraryParam
-=======
   TargetEnvironmentParam, EnvLibraryParam,
   ContainerParam, RepositoryParam
->>>>>>> origin/iso22166-202-profile
 } = require("./../model/dataModels");
 
 const {
@@ -91,45 +87,6 @@ function createXML(param) {
   lang.setAttribute("rtc:kind", param.language);
   rtc.setLanguage(lang);
   
-<<<<<<< HEAD
-  const language = param.lang;
-  for(const each of language.targets) {
-    const target = new TargetEnvironment();
-    if(each.cpuOther && 0 < each.cpuOther.length) {
-      target.setAttribute("rtcExt:cpuOther", each.cpuOther);
-    }
-    if(each.other && 0 < each.other.length) {
-      target.setAttribute("rtcExt:other", each.other);
-    }
-    if(each.os && 0 < each.os.length) {
-      target.setAttribute("rtcExt:os", each.os);
-    }
-    if(each.langVersion && 0 < each.langVersion.length) {
-      target.setAttribute("rtcExt:langVersion", each.langVersion);
-    }
-
-    if(each.OSversions && 0 < each.OSversions.length) {
-      target.osVersions.push(each.OSversions);
-    }
-
-    const cpus = each.CPUs;
-    for(const each_cpu of cpus) {
-      target.cpus.push(each_cpu);
-    }
-
-    const libs = each.libraries;
-    for(const each_lib of libs) {
-      const env_lib = new EnvLibrary();
-      env_lib.setAttribute("rtcExt:version", each_lib.version);
-      env_lib.setAttribute("rtcExt:name", each_lib.name);
-      target.addLibrary(env_lib);
-    }
-    if(0 < each.langVersion.length || 0 < libs.length ) {
-      lang.addTarget(target);
-    }
-  }
-
-=======
   for(const each of param.containerSettings) {
     const target = setContainerSettingInfo(each);
     lang.addTarget(target);
@@ -182,7 +139,6 @@ function createXML(param) {
     }
   }
 
->>>>>>> origin/iso22166-202-profile
   for(const each of language.properties) {
     lang.addProperty(each.name, each.value);
   }
@@ -204,8 +160,6 @@ function createXML(param) {
   return xml;
 }
 
-<<<<<<< HEAD
-=======
 function setContainerSettingInfo(source) {
   const env = new TargetEnvironment();
 
@@ -226,7 +180,6 @@ function setContainerSettingInfo(source) {
   return env;
 }
 
->>>>>>> origin/iso22166-202-profile
 function setConfigurationInfo(configs, rtc) {
   for (const config of configs) {
     const conf = new Configuration();
@@ -809,23 +762,6 @@ function parseTargetEnv(rtc_param, sourceObj, langObj) {
   rtc_param.lang.targets.push(env);
 
   let langVer = jsonVal(sourceObj, 'rtcExt:langVersion');
-<<<<<<< HEAD
-  env.langVersion = jsonVal(sourceObj, 'rtcExt:langVersion');
-  env.os = jsonVal(sourceObj, 'rtcExt:os');
-  env.OSversions = jsonVal(sourceObj, 'rtcExt:osVersions');
-  env.other = jsonVal(sourceObj, 'rtcExt:other');
-  env.cpuOther = jsonVal(sourceObj, 'rtcExt:cpuOther');
-
-  const cpusObj = sourceObj['rtcExt:cpus'];
-  env.CPUs.push(cpusObj);
-
-  const libObj = sourceObj['rtcExt:libraries'];
-  for(const each of libObj) {
-    let lib = new EnvLibraryParam();
-    lib.name = jsonVal(each, 'rtcExt:name');
-    lib.version = jsonVal(each, 'rtcExt:version');
-    env.libraries.push(lib);
-=======
   if(langVer.startsWith(CONTAINER_PREFIX)) {
     langVer = langVer.replace(CONTAINER_PREFIX, "");
     let param = new ContainerParam();
@@ -892,7 +828,6 @@ function parseTargetEnv(rtc_param, sourceObj, langObj) {
       lib.version = jsonVal(each, 'rtcExt:version');
       env.libraries.push(lib);
     }
->>>>>>> origin/iso22166-202-profile
   }
 }
 

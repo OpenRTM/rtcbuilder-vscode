@@ -23,11 +23,6 @@ let comparePanel_;
 async function handleMessage(param, mainPanel, context, extensions, message, translations) {
   console.log(message);
   rtc_param_ = param;
-<<<<<<< HEAD
- 
-=======
-
->>>>>>> origin/iso22166-202-profile
   if (message.command === 'getRtcParam') {
       mainPanel.webview.postMessage({
         command: 'sendRtcParam',
@@ -405,24 +400,6 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
           continue;
       }
 
-<<<<<<< HEAD
-  } else if (message.command === 'confirmBkClear') {
-    const project_dir = message.project_dir;
-    const result = await vscode.window.showWarningMessage(
-                            vscode.l10n.t('Are you sure you want to delete all backup files?'),
-                            { modal: true },
-                            'OK');
-    if( result !== 'OK') return;
-
-    const files = listAllFiles(project_dir);
-    for (const each of files) {
-      const name = path.basename(each);
-      if (name.length < 14) {
-          continue;
-      }
-
-=======
->>>>>>> origin/iso22166-202-profile
       const last14 = name.slice(-14);
       if (/^\d{14}$/.test(last14)) {
         await vscode.workspace.fs.delete(vscode.Uri.file(each), { 
@@ -434,8 +411,6 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
     }
     vscode.window.showInformationMessage(vscode.l10n.t("All backup files have been deleted."),{ modal: true });
 
-<<<<<<< HEAD
-=======
   } else if (message.command === 'testProfile') {
     const project_dir = message.project_dir;
 
@@ -469,7 +444,6 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
     // }
     let a = 0;
 
->>>>>>> origin/iso22166-202-profile
   } else if (message.command === 'validateProfile') {
       try {
         const xmlData = message.contents;
@@ -751,9 +725,6 @@ function writeResults(context, project_dir, param) {
     }
   }
   fs.writeFileSync(destPath, generatedProfile, 'utf-8');
-<<<<<<< HEAD
-
-=======
   /////
   const isoProfile = convertRtc2Iso(rtc_param_);
   const isoXml = createIsoXML(isoProfile);
@@ -771,7 +742,6 @@ function writeResults(context, project_dir, param) {
     fs.writeFileSync(destISOPath, isoXml, 'utf-8');
   }
   /////
->>>>>>> origin/iso22166-202-profile
   for(const each of param) {
     if(each.mode.toLowerCase() === 'original'
         || each.mode.toLowerCase() === 'same') continue;
@@ -887,12 +857,6 @@ function fileCompare(filePathA, filePathB) {
 function listAllFiles(target_dir) {
     let result = [];
 
-<<<<<<< HEAD
-function listAllFiles(target_dir) {
-    let result = [];
-
-=======
->>>>>>> origin/iso22166-202-profile
     const files = fs.readdirSync(target_dir, { withFileTypes: true });
     for (const entry of files) {
         const fullPath = path.join(target_dir, entry.name);
@@ -909,8 +873,6 @@ function listAllFiles(target_dir) {
     return result;
 }
 
-<<<<<<< HEAD
-=======
 function convertIso2RtcProfile(sourcePath, targetPath) {
   const xmlData = fs.readFileSync(sourcePath, 'utf-8');
   const iso_param_temp = parseIsoXML(xmlData);
@@ -935,7 +897,6 @@ function convertRtc2IsoProfile(sourcePath, project_dir, targetPath) {
   fs.writeFileSync(targetPath, iso_xml, 'utf-8');
 }
 ////////// 
->>>>>>> origin/iso22166-202-profile
 module.exports = {
   handleMessage,
   getSettings,
