@@ -17,7 +17,8 @@ VS-Code版RtcBuilderの構成を示します．
   - Processing版RTコンポーネントの雛形コードを生成するための拡張機能です。
 
 ### 開発環境構築方法
-開発環境を構築したいディレクトリで，install-libs.bat もしくは install-libs.shを実行してください．
+ソースコードを配置したディレクトリで以下を実行してください．  
+```npm ci```
 
 ### 使用ライブラリ
 - Nunjucks 3.2.4
