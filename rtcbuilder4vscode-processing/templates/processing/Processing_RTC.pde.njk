@@ -1,0 +1,82 @@
+// -*- Java -*-
+// <rtc-template block="description">
+/*!
+ * @file {{ rtcParam.name }}.java
+ * @date $Date$
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}{% endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license}}{%- endif %}
+ *
+ * $Id$
+ */
+// </rtc-template>
+
+import jp.go.aist.rtm.RTC.Manager;
+import jp.go.aist.rtm.RTC.RTObject_impl;
+import jp.go.aist.rtm.RTC.RtcDeleteFunc;
+import jp.go.aist.rtm.RTC.RtcNewFunc;
+import jp.go.aist.rtm.RTC.RegisterModuleFunc;
+import jp.go.aist.rtm.RTC.util.Properties;
+
+//  Module specification
+//  <rtc-template block="module_spec">
+public static String {{ rtcParam.name.toLowerCase() }}_conf[] = {
+        "implementation_id", "{{ rtcParam.name }}",
+        "type_name",         "{{ rtcParam.name }}",
+        "description",       "{{ rtcParam.description }}",
+        "version",           "{{ rtcParam.version }}",
+        "vendor",            "{{ rtcParam.vendor }}",
+        "category",          "{{ rtcParam.category }}",
+        "activity_type",     "{{ rtcParam.componentType }}",
+        "max_instance",      "{{ rtcParam.maxInstance }}",
+        "language",          "Java",
+        "lang_type",         "compile",
+{%- if rtcParam.configParams.length > 0 %}
+        // Configuration variables
+{%- for configParam in rtcParam.configParams %}
+        "conf.default.{{ configParam.name }}", "{{ configParam.defaultValue }}",
+{%- endfor %}
+
+        // Widget
+{%- for configParam in rtcParam.configParams %}
+{%- if getWidget(configParam).length > 0 %}
+        "conf.__widget__.{{ configParam.name }}", "{{ getWidget(configParam) }}{% if getStep(configParam).length > 0 %}.{{ getStep(configParam) }}{% endif %}",
+{%- endif %}
+{%- endfor %}
+        // Constraints
+{%- for configParam in rtcParam.configParams %}
+{%- if configParam.constraint.length > 0 %}
+        "conf.__constraints__.{{ configParam.name }}", "{{ configParam.constraint }}",
+{%- endif %}
+{%- endfor %}
+{% for configParam in rtcParam.configParams %}
+        "conf.__type__.{{ configParam.name }}", "{{ configParam.type }}",
+{%- endfor %}
+{% endif %}
+	    ""
+};
+//  </rtc-template>
+
+/**
+ * {{ rtcParam.name }}
+ * <p> 
+ * {{ rtcParam.description }}
+ */
+public class {{ rtcParam.name }} implements RtcNewFunc, RtcDeleteFunc, RegisterModuleFunc {
+
+    public RTObject_impl createRtc(Manager mgr) {
+        return new {{ rtcParam.name }}Impl(mgr);
+    }
+
+    public void deleteRtc(RTObject_impl rtcBase) {
+        rtcBase = null;
+    }
+    public void registerModule() {
+        Properties prop = new Properties({{ rtcParam.name.toLowerCase() }}_conf);
+        final Manager manager = Manager.instance();
+        manager.registerFactory(prop, new {{ rtcParam.name }}(), new {{ rtcParam.name }}());
+    }
+}

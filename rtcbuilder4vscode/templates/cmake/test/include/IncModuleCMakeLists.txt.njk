@@ -1,0 +1,9 @@
+set(hdrs
+    {{ rtcParam.name }}Test.h
+{%- if checkWithoutDefaultPathes(rtcParam) == true %}
+{%- for consumerIdlFile in rtcParam.getConsumerIdlPathesAdded() %}
+    {{ getFilenameNoExt(consumerIdlFile.getIdlFile()) }}SVC_impl.h
+{%- endfor %}
+{%- endif %}
+    PARENT_SCOPE
+    )

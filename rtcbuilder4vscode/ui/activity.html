@@ -1,0 +1,194 @@
+<div class="title_area">
+  <font size="5" id="activity.ACTIVITY_TITLE">アクティビティ</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table id="activity_table" style="width : 100%;">
+      <tbody>
+    	<!--アクティビティ-->
+        <tr>
+          <td colspan="3" class="title_row" id="activity.ACTIVITY_SECTION">アクティビティ</td>
+        </tr>
+        <tr>
+          <td colspan="3" id="activity.ACTIVITY_EXPL">このセクションでは使用するアクションコールバックを指定します。</td>
+        </tr>
+        <tr>
+          <td style="text-align : center;" colspan="3" id="activity.LBL_INIT_FINAL">コンポーネントの初期化と終了処理に関するアクション</td>
+        </tr>
+        <tr>
+          <td class="selectable default_activity">
+            <label>onInitialize</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onFinalize</label>
+          </td>
+          <td style="width : 34%; text-align : center;"></td>
+        </tr>
+        <tr>
+          <td style="text-align : center;" colspan="3" id="activity.LBL_START_END">実行コンテキストの起動と停止に関するアクション</td>
+        </tr>
+        <tr>
+          <td class="selectable default_activity">
+            <label>onStartup</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onShutdown</label>
+          </td>
+          <td style="width : 34%; text-align : center;"></td>
+        </tr>
+        <tr>
+          <td style="text-align : center;" colspan="3" id="activity.LBL_ALIVE">alive状態でのコンポーネントアクション</td>
+        </tr>
+        <tr>
+          <td class="selectable default_activity">
+            <label>onActivated</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onDeactivated</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onAborting</label>
+          </td>
+        </tr>
+        <tr>
+          <td class="selectable default_activity">
+            <label>onError</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onReset</label>
+          </td>
+          <td style="width : 34%; text-align : center;"></td>
+        </tr>
+        <tr>
+          <td style="text-align : center;" colspan="3" id="activity.LBL_DATAFLOW">Dataflow型コンポーネントのアクション</td>
+        </tr>
+        <tr>
+          <td class="selectable default_activity">
+            <label>onExecute</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onStateUpdate</label>
+          </td>
+          <td class="selectable default_activity">
+            <label>onRateChanged</label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!--Documentation-->
+    <table style="width : 100%; margin-top: 8px;">
+      <tbody>
+        <tr>
+          <td colspan="3" class="title_row">Documentation</td>
+        </tr>
+        <tr>
+          <td colspan="3" id="activity.DOCUMENT_EXPL">このセクションでは各アクションの概要を説明するドキュメントを記述します。<br>
+            上段のアクションを選択すると、それぞれのドキュメントを記述できます。
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 20%;" id="activity.LBL_ACTIVITYNAME">アクティビティ名:</td>
+          <td style="width : 60%;"><input size="20" type="text" readonly id="activity_name" class="field" style="width : 98%;"></td>
+          <td class="group-border" style="width : 20%; text-align : center;">
+            <input type="radio" checked name="activity_enable" id="radio_on" value="ON" onclick="change_activated()">
+            <label for="radio_on" style="margin-left : 1px;">ON</label>
+            <input type="radio" checked name="activity_enable" id="radio_off" value="OFF" onclick="change_activated()">
+            <label for="radio_off" style="margin-left : 1px;">OFF</label>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 20%;" id="activity.LBL_DESCRIPTION">動作概要:</td>
+          <td colspan="2" style="width : 60%;">
+            <textarea id="activity_desc" rows="5" class="field" style="width : 100%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 20%;" id="activity.LBL_PRECONDITION">事前条件:</td>
+          <td colspan="2" style="width : 60%;">
+            <textarea id="activity_pre_cond" rows="5" class="field" style="width : 100%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td style="width : 20%;" id="activity.LBL_POSTCONDITION">事後条件:</td>
+          <td colspan="2" style="width : 60%;">
+            <textarea id="activity_post_cond" rows="5" class="field" style="width : 100%;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="activity.HINT_TITLE">ヒント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;">onInitialize</td>
+          <td id="activity.HINT_ONINITIALIZE_DESC">初期化処理です。コンポーネントライフサイクル開始時に一度だけ呼ばれます。常に有効。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onFinalize</td>
+          <td id="activity.HINT_ONFINALIZE_DESC">終了処理です。コンポーネントライフサイクルの終了時に1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onStartup</td>
+          <td id="activity.HINT_ONSTARTUP_DESC">ExecutionContextが実行を開始するとき1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onShutdown</td>
+          <td id="activity.HINT_ONSHUTDOWN_DESC">ExecutionContextが実行を停止するとき1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onActivated</td>
+          <td id="activity.HINT_ONACTIVATED_DESC">非アクティブ状態からアクティブ化されるとき1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onDeactivated</td>
+          <td id="activity.HINT_ONDEACTIVATED_DESC">アクティブ状態から非アクティブ化されるとき1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onAborting</td>
+          <td id="activity.HINT_ONABORTING_DESC">ERROR状態に入る前に1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onError</td>
+          <td id="activity.HINT_ONERROR_DESC">ERROR状態にいる間周期的に呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onReset</td>
+          <td id="activity.HINT_ONRESET_DESC">ERROR状態からリセットされ非アクティブ状態に移行するときに1度だけ呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;">onExecute</td>
+          <td id="activity.HINT_ONEXECUTE_DESC">アクティブ状態時に周期的に呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onStateUpdate</td>
+          <td id="activity.HINT_ONSTATEUPDATE_DESC">onExecuteの後毎回呼ばれます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">onRateChanged</td>
+          <td id="activity.HINT_ONRATECHANGED_DESC">ExecutionContextのrateが変更されたとき呼ばれます。</td>
+        </tr>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
+        <tr><td></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="activity.HINT_DESCRIPTION_TITLE">動作概要:</td>
+          <td id="activity.HINT_DESCRIPTION_DESC">アクティビティの概要説明を記述します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="activity.HINT_PRECONDITION_TITLE">事前条件:</td>
+          <td id="activity.HINT_PRECONDITION_DESC">アクティビティを実行する前に成立すべき事前条件を記述します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="activity.HINT_POSTCONDITION_TITLE">事後条件:</td>
+          <td id="activity.HINT_POSTCONDITION_DESC">アクティビティを実行した後に成立すべき事後条件を記述します。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

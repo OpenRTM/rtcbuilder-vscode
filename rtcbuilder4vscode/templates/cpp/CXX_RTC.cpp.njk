@@ -1,0 +1,285 @@
+// -*- C++ -*-
+// <rtc-template block="description">
+/*!
+ * @file  {{ rtcParam.name }}.cpp
+ * @brief {{ rtcParam.description }}
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}
+{%- endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license }}
+{%- endif %}
+ *
+ */
+// </rtc-template>
+
+#include "{{ rtcParam.name }}.h"
+
+// Module specification
+// <rtc-template block="module_spec">
+#if RTM_MAJOR_VERSION >= 2
+static const char* const modulename222_spec[] =
+#else
+static const char* modulename222_spec[] =
+#endif
+  {
+    "implementation_id", "{{ rtcParam.name }}",
+    "type_name",         "{{ rtcParam.name }}",
+    "description",       "{{ rtcParam.description }}",
+    "version",           "{{ rtcParam.version }}",
+    "vendor",            "{{ rtcParam.vendor }}",
+    "category",          "{{ rtcParam.category }}",
+    "activity_type",     "{{ rtcParam.activityType }}",
+    "kind",              "{{ rtcParam.componentKind }}",
+    "max_instance",      "{{ rtcParam.maxInstance }}",
+    "language",          "C++",
+    "lang_type",         "compile",
+{%- if rtcParam.configParams.length > 0 %}
+    // Configuration variables
+{%- for  configParam in rtcParam.configParams %}
+    "conf.default.{{ configParam.name }}", "{{ configParam.defaultValue }}",
+{%- endfor %}
+
+    // Widget
+{%- for configParam in rtcParam.configParams %}
+{%- if getWidget(configParam).length > 0 %}
+    "conf.__widget__.{{ configParam.name }}", "{{ getWidget(configParam) }}{% if getStep(configParam).length > 0 %}.{{ getStep(configParam) }}{% endif %}",
+{%- endif %}
+{%- endfor %}
+    // Constraints
+{%- for configParam in rtcParam.configParams %}
+{%- if configParam.constraint.length > 0 %}
+    "conf.__constraints__.{{ configParam.name }}", "{{ configParam.constraint }}",
+{%- endif %}
+{%- endfor %}
+{% for configParam in rtcParam.configParams %}
+    "conf.__type__.{{ configParam.name }}", "{{ configParam.type }}",
+{%- endfor %}
+
+{%- endif %}
+
+    ""
+  };
+// </rtc-template>
+
+/*!
+ * @brief constructor
+ * @param manager Maneger Object
+ */
+{{ rtcParam.name }}::{{ rtcParam.name }}(RTC::Manager* manager)
+    // <rtc-template block="initializer">
+  : RTC::{{ rtcParam.componentKind }}Base(manager){% for port in rtcParam.inports %}{%- if port.type!="" %},
+    {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}In{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }}("{{ port.name }}", {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }}){% endif %}{% endfor %}{%- for port in rtcParam.outports %}{%- if port.type!="" %},
+    {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}Out{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }}("{{ port.name }}", {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }}){%- endif %}{%- endfor %}
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %},
+    {{ rtcParam.commonPrefix }}{{ rtcParam.servicePortPrefix }}{{ servicePort.name }}Port{{ rtcParam.servicePortSuffix }}{{ rtcParam.commonSuffix }}("{{ servicePort.name }}"){%- endif %}{%- endfor %}{%- endif %}
+
+    // </rtc-template>
+{
+}
+
+/*!
+ * @brief destructor
+ */
+{{ rtcParam.name }}::~{{ rtcParam.name }}()
+{
+}
+
+
+{% if rtcParam.actions['onInitialize'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onInitialize'].overview }}
+ */{%- endif %}
+{% if rtcParam.configParams.length==0 and rtcParam.actions['onInitialize'].implemented==false and rtcParam.inports.length==0 and rtcParam.outports.length==0 and rtcParam.servicePorts.length==0 %}/*{% endif %}
+
+RTC::ReturnCode_t {{ rtcParam.name }}::onInitialize()
+{
+  // Registration: InPort/OutPort/Service
+  // <rtc-template block="registration">
+  // Set InPort buffers
+{%- for port in rtcParam.inports %}
+{% if port.type!="" %}  addInPort("{{ port.name }}", {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}In{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }});
+{%- endif %}
+{%- endfor %}
+  
+  // Set OutPort buffer
+{%- for  port in rtcParam.outports %}
+{% if port.type!="" %}  addOutPort("{{ port.name }}", {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}Out{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }});
+{%- endif %}
+{%- endfor %}
+
+  
+  // Set service provider to Ports
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+{%- for serviceInterface in servicePort.serviceinterfaces %}
+{%- if serviceInterface.direction=='Provided' %}
+  {{ rtcParam.commonPrefix }}{{ rtcParam.servicePortPrefix }}{{ servicePort.name }}Port{{ rtcParam.servicePortSuffix }}{{ rtcParam.commonSuffix }}.registerProvider("{{ serviceInterface.name }}", "{{ serviceInterface.interfacetype }}", {{ rtcParam.commonPrefix }}{{ rtcParam.serviceIFPrefix }}{{ getTmplVarNameSI(serviceInterface) }}{{ rtcParam.serviceIFSuffix }}{{ rtcParam.commonSuffix }});
+{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}{%- endif %}
+  
+  // Set service consumers to Ports
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+{%- for serviceInterface in servicePort.serviceinterfaces %}
+{%- if serviceInterface.direction == 'Required' %}
+  {{ rtcParam.commonPrefix }}{{ rtcParam.servicePortPrefix }}{{ servicePort.name }}Port{{ rtcParam.servicePortSuffix }}{{ rtcParam.commonSuffix }}.registerConsumer("{{ serviceInterface.name }}", "{{ serviceInterface.interfacetype }}", {{ rtcParam.commonPrefix }}{{ rtcParam.serviceIFPrefix }}{{ getTmplVarNameSI(serviceInterface) }}{{ rtcParam.serviceIFSuffix }}{{ rtcParam.commonSuffix }});
+{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}{%- endif %}
+  
+  // Set CORBA Service Ports
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+  addPort({{ rtcParam.commonPrefix }}{{ rtcParam.servicePortPrefix }}{{ servicePort.name }}Port{{ rtcParam.servicePortSuffix }}{{ rtcParam.commonSuffix }});
+{%- endif %}{%- endfor %}{%- endif %}
+  
+  // </rtc-template>
+
+  // <rtc-template block="bind_config">
+{%- if rtcParam.configParams.length>0 %}
+  // Bind variables and configuration variable
+{%- for configParam in rtcParam.configParams %}
+  bindParameter("{{ configParam.name }}", {{ rtcParam.commonPrefix }}{{ rtcParam.configurationPrefix }}{{ getTmplVarName(configParam) }}{{ rtcParam.configurationSuffix }}{{ rtcParam.commonSuffix }}, "{{ configParam.defaultValue }}");
+{%- endfor %}
+{%- endif %}
+  // </rtc-template>
+
+  
+  return RTC::RTC_OK;
+}
+
+{% if rtcParam.configParams.length==0 and rtcParam.actions['onInitialize'].implemented==false and rtcParam.inports.length==0 and rtcParam.outports.length==0 and rtcParam.servicePorts.length==0 %}*/
+{%- endif %}
+
+{%- if rtcParam.actions['onFinalize'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onFinalize'].overview }}
+ */
+{%- endif %}
+{%- if rtcParam.actions['onFinalize'].implemented==false %}/*{% endif %}
+
+RTC::ReturnCode_t {{ rtcParam.name }}::onFinalize()
+{
+  return RTC::RTC_OK;
+}
+
+{% if rtcParam.actions['onFinalize'].implemented==false %}*/
+{% endif %}
+
+{%- if rtcParam.actions['onStartup'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onStartup'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onStartup', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onStartup(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onStartup', rtcParam) }}{
+{{ chkCmnt('onStartup', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onStartup', rtcParam) }}}
+
+{% if rtcParam.actions['onShutdown'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onShutdown'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onShutdown', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onShutdown(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onShutdown', rtcParam) }}{
+{{ chkCmnt('onShutdown', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onShutdown', rtcParam) }}}
+
+{% if rtcParam.actions['onActivated'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onActivated'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onActivated', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onActivated(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onActivated', rtcParam) }}{
+{{ chkCmnt('onActivated', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onActivated', rtcParam) }}}
+
+{% if rtcParam.actions['onDeactivated'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onDeactivated'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onDeactivated', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onDeactivated(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onDeactivated', rtcParam) }}{
+{{ chkCmnt('onDeactivated', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onDeactivated', rtcParam) }}}
+
+{% if rtcParam.actions['onExecute'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onExecute'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onExecute', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onExecute(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onExecute', rtcParam) }}{
+{{ chkCmnt('onExecute', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onExecute', rtcParam) }}}
+
+{% if rtcParam.actions['onAborting'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onAborting'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onAborting', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onAborting(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onAborting', rtcParam) }}{
+{{ chkCmnt('onAborting', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onAborting', rtcParam) }}}
+
+{% if rtcParam.actions['onError'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onError'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onError', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onError(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onError', rtcParam) }}{
+{{ chkCmnt('onError', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onError', rtcParam) }}}
+
+{% if rtcParam.actions['onReset'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onReset'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onReset', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onReset(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onReset', rtcParam) }}{
+{{ chkCmnt('onReset', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onReset', rtcParam) }}}
+
+{% if rtcParam.actions['onStateUpdate'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onStateUpdate'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onStateUpdate', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onStateUpdate(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onStateUpdate', rtcParam) }}{
+{{ chkCmnt('onStateUpdate', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onStateUpdate', rtcParam) }}}
+
+{% if rtcParam.actions['onRateChanged'].overview.length>0 %}/*!
+ * {{ rtcParam.actions['onRateChanged'].overview }}
+ */
+{%- endif %}
+
+{{ chkCmnt('onRateChanged', rtcParam) }}RTC::ReturnCode_t {{ rtcParam.name }}::onRateChanged(RTC::UniqueId /*ec_id*/)
+{{ chkCmnt('onRateChanged', rtcParam) }}{
+{{ chkCmnt('onRateChanged', rtcParam) }}  return RTC::RTC_OK;
+{{ chkCmnt('onRateChanged', rtcParam) }}}
+
+
+
+extern "C"
+{
+ 
+  void {{ rtcParam.name }}Init(RTC::Manager* manager)
+  {
+    coil::Properties profile({{ rtcParam.name.toLowerCase() }}_spec);
+    manager->registerFactory(profile,
+                             RTC::Create<{{ rtcParam.name }}>,
+                             RTC::Delete<{{ rtcParam.name }}>);
+  }
+  
+}

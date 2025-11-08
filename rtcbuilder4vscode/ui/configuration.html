@@ -1,0 +1,244 @@
+<div class="title_area">
+  <font size="5" id="config.SECTION_TITLE">コンフィギュレーション・パラメータ</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row">RT-Component Configuration Parameter Definitions</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="config.EXPL">このセクションではRTコンポーネントのコンフィギュレーション・パラメータを設定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 100%;">
+            <div class="button-container">
+              <div class="required-field" id="config.LBL_NAME">*名称</div>
+              <div class="button-group">
+                <button onclick="add_config()" style="margin : 2px;" class="basicBtn">Add</button>
+                <button onclick="delete_config()" style="margin : 2px;" class="basicBtn">Delete</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table border="1" id="config_table" style="width : 100%;">
+                <tbody></tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table style="width : 100%;">
+      <tbody>
+        <!--Detail-->
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;">Detail</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="config.DETAIL_EXPL">このセクションでは各コンフィギュレーション・パラメータの詳細情報を指定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 100px;" id="config.LBL_PARAMNAME">パラメータ名:</td>
+          <td>
+            <input size="20" type="text" readonly id="config_name"
+              class="field" style="width : 100%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="group-border" style="width : 100%;">
+      <tbody>
+        <tr>
+          <td style="width : 100px;">
+            <div class="required-field" id="config.LBL_TYPE">*データ型</div>
+          </td>
+          <td>
+            <div class="combo-wrapper">
+              <input type="text" id="config_type" class="field" style="width : 98%;" autocomplete="off">
+              <div class="arrow">&#9662;</div> 
+              <ul id="type-options" class="combo-options hidden"></ul>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="required-field" id="config.LBL_DEFAULTVAL">*デフォルト値</div>
+          </td>
+          <td>
+            <input type="text" id="config_default" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_VARNAME">変数名</td>
+          <td>
+            <input type="text" id="config_var_name" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_UNIT">単位</td>
+          <td>
+            <input type="text" id="config_unit" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_CONSTRAINT">制約条件</td>
+          <td>
+            <input type="text" id="config_constraint" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td>Widget</td>
+          <td>
+            <select id="config_widget" class="field" style="width : 98%;" onchange="config_widget_changed()">
+              <option>text</option>
+              <option>slider</option>
+              <option>spin</option>
+              <option>radio</option>
+              <option>checkbox</option>
+              <option>ordered_list</option>
+             </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Step</td>
+          <td>
+            <input type="text" id="config_step" class="field" style="width : 98%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="group-border" style="width : 100%; margin-top: 8px;">
+      <tbody>
+        <tr>
+          <td  colspan="2" class="title_row">Documentation</td>
+        </tr>
+        <tr>
+          <td style="width : 100px;" id="config.LBL_DATANAME">データ名</td>
+          <td>
+            <input type="text" id="config_doc_name" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_DEFAULT">デフォルト値</td>
+          <td>
+            <input type="text" id="config_doc_default" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_DESCRIPTION">概要説明</td>
+          <td>
+            <textarea id="config_doc_abst" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_UNIT_DOC">単位</td>
+          <td>
+            <input type="text" id="config_doc_unit" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_RANGE">データ範囲</td>
+          <td>
+            <input type="text" id="config_doc_range" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="config.LBL_CONSTRAINT_DOC">制約条件</td>
+          <td>
+            <textarea id="config_doc_constraint" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="config.HINT_TITLE">ヒント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;">Config. Param.：</td>
+          <td id="config.HINT_COFIGPARAM_DESC">RTコンポーネントにはコンフィギュレーションのためのパラメータを持たせることができます。<br>
+            コンフィギュレーション・パラメータは実行時に外部から動的に変更することができます。<br>
+            再利用性を向上させるために、RTコンポーネントに実装するアルゴリズム等のパラメータは、コンフィギュレーション・パラメータに指定することを推奨します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_PARAMNAME_TITLE">パラメータ名：</td>
+          <td id="config.HINT_PARAMNAME_DESC">コンフィギュレーション・パラメータを識別する名前を指定します。<br>
+            パラメータ名は同一のRTコンポーネント内で一意でなければなりません。<br>
+            名前にはアルファベット、数字、ハイフン、アンダースコアを使用することができます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_PARAMTYPE_TITLE">データ型：</td>
+          <td id="config.HINT_PARAMTYPE_DESC">コンフィギュレーション・パラメータの型を指定します。<br>
+            基本型の他に、ベクトル型、行列型を使用することができます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_VARNAME_TITLE">変数名：</td>
+          <td id="config.HINT_VARNAME_DESC">コンフィギュレーション・パラメータに関連付けられる変数名を指定します。<br>
+            実際の名称は言語により異なります。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DEFAULT_TITLE">デフォルト値：</td>
+          <td id="config.HINT_DEFAULT_DESC">コンフィギュレーション・パラメータのデフォルト値を指定します。<br>
+            RTコンポーネント起動時のデフォルト値になるとともに、万一外部から解釈不能な値が入力された場合には、このデフォルト値が使用されます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_CONSTRAINT_TITLE">制約条件：</td>
+          <td id="config.HINT_CONSTRAINT_DESC">コンフィギュレーション・パラメータの制約条件を指定します。<br>
+            ・指定なし：空白<br>
+            ・100（即値）：100<br>
+            ・範囲指定: &lt;、&gt;、&lt;=、&gt;=<br>
+            ・列挙型指定: (enum0, enum1, ...)<br>
+            ・配列型指定: 制約1, 制約2, ...<br>
+            ・ハッシュ型指定: {key0: 制約0, key1: 制約1, ...}</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_UNIT_TITLE">単位：</td>
+          <td id="config.HINT_UNIT_DESC">コンフィギュレーション・パラメータの単位を指定します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">Widget：</td>
+          <td id="config.HINT_WIDGET_DESC">コンフィギュレーション・パラメータ設定時に利用するウィジットを指定します。<br>
+          (Widgetタイプとして｢radio｣を指定する場合には、制約条件としてenum型を指定する必要があります。)</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;">Step：</td>
+          <td id="config.HINT_STEP_DESC">設定用ウィジットとして｢slider｣を選択した場合の最小ステップを指定します。</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;" id="config.HINT_DOCUMENT_TITLE">ドキュメント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_NAME_TITLE">データ名 :</td>
+          <td id="config.HINT_DOC_NAME_DESC">データの名称。データの意味を端的に表す名称を指定。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_DEFAULT_TITLE">デフォルト値 :</td>
+          <td id="config.HINT_DOC_DEFAULT_DESC">データのデフォルト値とその意味を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_DESCRIPTION_TITLE">概要説明 :</td>
+          <td id="config.HINT_DOC_DESCRIPTION_DESC">データの意味の概要説明を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_UNIT_TITLE">単位 :</td>
+          <td id="config.HINT_DOC_UNIT_DESC">データの単位を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_RANGE_TITLE">データ範囲:</td>
+          <td id="config.HINT_DOC_RANGE_DESC">データがとりうる連続値の範囲を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="config.HINT_DOC_CONTRAINT_TITLE">制約条件:</td>
+          <td id="config.HINT_DOC_CONTRAINT_DESC">データが特定の値や制約条件（列挙型指定、配列指定、ハッシュ型指定等）を持つ場合はその条件を記載。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

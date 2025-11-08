@@ -1,0 +1,230 @@
+<div class="title_area">
+  <font size="5">RT-Component Basic Profile</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table style="width : 100%;">
+      <tbody>
+    	<!--RT-Component Basic Profile-->
+        <tr>
+          <td colspan="2" class="title_row">RT-Component Basic Profile</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="basic.COMPONENT_EXPL">このセクションではRTコンポーネントの基本情報を設定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 180px;"><span class="required-field" id="basic.LBL_MODULENAME">*コンポーネント名：</span></td>
+          <td>
+            <input type="text" id="basic_name" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_DESCRIPTION">概要：</td>
+          <td>
+            <input type="text" id="basic_description" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td><span class="required-field" id="basic.LBL_VERSION">*バージョン：</span></td>
+          <td>
+            <input type="text" id="basic_version" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td><span class="required-field" id="basic.LBL_VENDOR">*ベンダ名：</span></td>
+          <td>
+            <input type="text" id="basic_vendor" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td><span class="required-field" id="basic.LBL_CATEGORY">*カテゴリ：</span></td>
+          <td>
+            <div class="combo-wrapper">
+              <input type="text" id="basic_category" class="field" style="width : 98%;" autocomplete="off">
+              <div class="arrow">&#9662;</div> 
+              <ul id="category-options" class="combo-options hidden"></ul>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_COMPONENT_TYPE">コンポーネント型：</td>
+          <td>
+            <select id="basic_comp_type" class="field" style="width : 100%;">
+              <option>STATIC</option>
+              <option>UNIQUE</option>
+              <option>COMMUTATIVE</option>
+             </select>
+      	  </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_ACTIVITY_TYPE">アクティビティ型：</td>
+          <td>
+            <select id="basic_activity_type" class="field" style="width : 100%;">
+              <option>PERIODIC</option>
+              <option>SPORADIC</option>
+              <option>EVENTDRIVEN</option>
+             </select>
+      	  </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_MAX_INSTANCES">最大インスタンス数：</td>
+          <td>
+            <input type="text" id="basic_max_inst" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_EXECUTION_TYPE">実行型：</td>
+          <td>
+            <select id="basic_exec_type" class="field" style="width : 100%;">
+              <option>PeriodicExecutionContext</option>
+              <option>ExtTrigExecutionContext</option>
+             </select>
+      	  </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_EXECUTION_RATE">実行周期：</td>
+          <td>
+            <input type="text" id="basic_exec_period" class="field" style="width : 100%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_ABSTRACT">概要：</td>
+          <td>
+            <textarea id="basic_detail" rows="2" class="field" style="width : 100%;"></textarea>
+          </td>
+          </tr>
+        <tr>
+          <td>RTC Type：</td>
+          <td>
+            <input type="text" id="basic_rtc_type" class="field" style="width : 100%;">
+          </td>
+        </tr>
+
+    	<!--言語-->
+        <tr>
+          <td colspan="2" class="title_row" id="basic.LANG_TITLE">言語</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="basic.LANG_EXPL">このセクションでは使用する言語を指定します。</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="language-row">
+          </td>
+        </tr>
+        
+    	<!--コード生成-->
+        <tr>
+          <td colspan="2" class="title_row" id="basic.GENERATE_TITLE">コード生成</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="basic.GENERATE_EXPL">コードの生成を行います。</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button onclick="generateCode()" class="basicBtn" id="basic.BTN_GENERATE">コード生成</button>
+          </td>
+        </tr>
+    
+        <!--プロファイル-->
+        <tr>
+          <td colspan="2" class="title_row" id="basic.EXPORT_IMPORT_TITLE">プロファイル情報のインポート・エクスポート</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="basic.EXPORT_IMPORT_EXPL">プロファイル情報のインポートおよびエクスポートを行います。</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="button-group">
+              <button onclick="importProfile()" class="basicBtn" id="basic.BTN_IMPORT">インポート</button>
+              <button onclick="exportProfile()" class="basicBtn" id="basic.BTN_EXPORT">エクスポート</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="basic.HINT_TITLE">ヒント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 135px;" id="basic.HINT_MODULENAME_TITLE">コンポーネント名：</td>
+          <td id="basic.HINT_MODULENAME_DESC">RTコンポーネントを識別する名前を指定します。<br>
+          この名称はコンポーネントのベースインスタンス名にも使用されます。<br>
+          使用できる文字はアルファベット、数字、ハイフン、アンダースコアのみです。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_DESCRIPTION_TITLE">概要：</td>
+          <td id="basic.HINT_DESCRIPTION_DESC">RTコンポーネントが提供する機能の概要を入力します。<br>
+          ASCII文字が使用できます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_VERSION_TITLE">バージョン：</td>
+          <td id="basic.HINT_VERSION_DESC">RTコンポーネントのバージョンを指定します。<br>
+          x.y.z(x,y,zは数字)の形式で入力してください。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_VENDOR_TITLE">ベンダ名：</td>
+          <td id="basic.HINT_VENDOR_DESC">RTコンポーネントを作成した作者名、ベンダ名を指定します。<br>
+          ASCII文字が使用できます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_CATEGORY_TITLE">カテゴリ：</td>
+          <td id="basic.HINT_CATEGORY_DESC">RTコンポーネントのカテゴリを入力します。<br>
+          使用できる文字は、アルファベット、数字、ハイフン、アンダースコアのみです。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_COMPTYPE_TITLE">コンポーネント型：</td>
+          <td id="basic.HINT_COMPTYPE_DESC">RTコンポーネントの型を指定します。<br>
+          ・STATIC: 動的に生成/削除されないRTC<br>
+          ・UNIQUE: 動的に生成/削除されるユニークなRTC<br>
+          ・COMMUTATIVE: 動的に生成可能なRTC</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_ACTIVITYTYPE_TITLE">アクティビティ型：</td>
+          <td id="basic.HINT_ACTIVITYTYPE_DESC">RTコンポーネントのアクティビティ型を指定します。<br>
+          ・PERIODIC: 実行周期が固定の周期実行型RTC<br>
+          ・SPORADIC: 実行周期が非固定の周期実行型RTC<br>
+          ・EVENTDRIVEN: イベント駆動型RTC</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_MAXINST_TITLE">最大インスタンス数：</td>
+          <td id="basic.HINT_MAXINST_DESC">生成可能なインスタンス数を指定します。制限がない場合は０を指定します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_EXECUTIONTYPE_TITLE">実行型：</td>
+          <td id="basic.HINT_EXECUTIONTYPE_DESC">実行型を指定します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_EXECUTIONRATE_TITLE">実行周期：</td>
+          <td id="basic.HINT_EXECUTIONRATE_DESC">コンポーネントアクションの実行周期を[Hz]単位で指定します。<br>
+          この設定値はデータフロー型コンポーネントのみで有効です。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_ABSTRACT_TITLE">概要：</td>
+          <td id="basic.HINT_ABSTRACT_DESC">RTコンポーネントの簡単な説明を記述します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_RTCTYPE_TITLE">RTC Type：</td>
+          <td id="basic.HINT_RTCTYPE_DESC">特定機能を実現するRTCの種類を区別する必要がある場合に使用します。<br>
+          値が省略された場合には通常のRTCとして解釈されます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_GENERATE_TITLE">コード生成：</td>
+          <td id="basic.BASIC_HINT_GENERATE_DESC">設定した情報を基にRTCのスケルトンコードを生成します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_IMPORT_TITLE">インポート：</td>
+          <td id="basic.HINT_IMPORT_DESC">RtcProfile形式で保存した情報を読み込みます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="basic.HINT_EXPORT_TITLE">エクスポート：</td>
+          <td id="basic.HINT_EXPORT_DESC">設定した情報をRtcProfile形式で出力します。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

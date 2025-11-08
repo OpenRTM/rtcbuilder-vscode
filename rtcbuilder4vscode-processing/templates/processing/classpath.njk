@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+{%- if notNullRTMRoot() %}
+	<classpathentry kind="lib" path="{{ javaRoot }}/jar/OpenRTM-aist-{{ rtcParam.rtm_java_version }}.jar"/>
+	<classpathentry kind="lib" path="{{ javaRoot }}/jar/commons-cli-1.1.jar"/>
+{%- endif %}
+	<classpathentry kind="output" path="bin"/>
+</classpath>

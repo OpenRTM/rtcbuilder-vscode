@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Compare generated Code</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* height: 90vh; */
+      font-family: sans-serif;
+    }
+
+    .modal {
+      background: var(--vscode-editor-background);
+      padding: 20px;
+      border-radius: 6px;
+      width: 100%;
+      height: 90vh;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field {
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground, var(--vscode-foreground));
+      border: 1px solid var(--vscode-input-border, transparent);
+    }
+    .field:focus {
+      outline: 1px solid var(--vscode-focusBorder);
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .left-buttons, .right-buttons {
+      display: flex;
+      padding: 1px 3px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 3px 3px;
+      margin-top: 30px;
+      margin-bottom: 3px;
+    }
+
+    .spacer {
+      flex-grow: 1;
+    }
+
+    .basicBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 9px;
+      font-family: sans-serif;
+      color: #FFFFFF;
+      text-align: center;
+      background-color: #005BAC;
+      margin-left: 5px;
+      border-radius: 5px;
+      border-width: 1px;
+      border-color: #073190;
+      min-width: 100px;
+    }
+    .basicBtn:disabled {
+      background-color: #d2d2d2;
+      color: #6E6E6E;
+      border-color: #A0A0A0;
+    }
+
+    @media (any-hover: hover) {
+      .basicBtn {
+          transition: background-color 0.2s;
+      }
+
+      .basicBtn:enabled:hover {
+          background-color: #2DB9ED;
+      }
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex: 1;
+        gap: 10px;
+        /* overflow: hidden; */
+      }
+
+    .base_container {
+        display: flex;
+        width: 100%;
+        /* height: 100vh; */
+        padding: 0px;
+        margin: 0px;
+      }
+
+    .left_container {
+      width: 30%;
+      padding: 20px;
+      box-sizing: border-box;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    .right_container {
+      width: 70%;
+      padding: 20px;
+      box-sizing: border-box;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    table {
+      width: 30%;
+      border-collapse: collapse;
+      margin-top: 85px;
+    }
+
+    .compare_row {
+      background-color: transparent;
+      color: var(--vscode-foreground);
+      cursor: pointer;
+    }
+
+    .compare_row.selected {
+      background-color: var(--vscode-editor-selectionBackground);
+      color: var(--vscode-editor-selectionForeground, var(--vscode-foreground));
+    }
+
+    #container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+    }
+
+    #diff-container {
+      flex: 1;
+      overflow: auto;
+      padding: 0px;
+      margin: 0px;
+     /* width: 100%;
+      height: 100%; */
+    }
+
+    .diff_titles {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      color: var(--vscode-foreground);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    #diff-titles > div {
+      width: 50%;
+      text-align: center;
+      user-select: none;
+    }
+  </style>
+  <!--SCRIPT-->
+</head>
+<body>
+  <div class="modal">
+    <div class="content-wrapper">
+      <div class="base_container">
+        <div class="left_container">
+          <table border="1" style="width : 100%;">
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Mode</th>
+              </tr>
+            </thead>
+            <tbody id="compare_table" ></tbody>
+          </table>
+        </div>
+
+        <div class="right_container">
+          <div id="container">
+            <div class="button-row">
+              <div class="left-buttons">
+                <button class="basicBtn" onclick="selectOriginal()">Original</button>
+                <button id="btnMerge" class="basicBtn" onclick="selectMerge()">Merge</button>
+                <button class="basicBtn" onclick="selectGenerated()">Generated</button>
+              </div>
+              <div class="right-buttons">
+                <button id="btnPrev" class="basicBtn" onclick="prevDiff()" data-i18n="compare.prev">前へ</button>
+                <button id="btnNext" class="basicBtn" onclick="nextDiff()" data-i18n="compare.next">次へ</button>
+              </div>
+            </div>
+            <div id="diff-titles" class="diff_titles">
+              <div>Original</div>
+              <div>Generated</div>
+            </div>
+              <div id="diff-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="button-container">
+      <button class="basicBtn" onclick="okCompare()" data-i18n="compare.generate">コード生成実行</button>
+      <button class="basicBtn" onclick="cancelCompare()" data-i18n="compare.cancel">キャンセル</button>
+  </div>
+  </div>
+
+  <script>
+    const baseUri = "{{baseUri}}";
+    window.require = { paths: { 'vs': baseUri + '/vs' } };
+  </script>
+  <script src="{{baseUri}}/vs/loader.js"></script>
+  <script>
+    function t(key) {
+      return parent.window.translations[key] || key;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+    });
+
+    const vscode = acquireVsCodeApi();
+    let diffEditor_ = null, changes_ = [], currentIndex_ = 0;
+
+    let generatedCodes_;
+    let project_dir_;
+
+    require(["vs/editor/editor.main"], function () {
+      diffEditor_ = monaco.editor.createDiffEditor(document.getElementById("diff-container"), {
+          readOnly: true,
+          automaticLayout: true,
+          renderSideBySide: true,
+          wordWrap: "off",
+          scrollbar: {
+            horizontal: "auto",
+            vertical: "auto"
+          }
+      });
+      const isDark = document.body.classList.contains("vscode-dark");
+      monaco.editor.setTheme("vs-dark");
+
+    const savedState = vscode.getState();
+    console.log(savedState);
+    if (savedState) {
+        generatedCodes_ = savedState.generatedCodes;
+        project_dir_ = savedState.project_dir;
+        showCodeTable();
+    }
+
+    window.nextDiff = () => {
+        console.log(changes_);
+        if (!changes_.length) return;
+        currentIndex_ = (currentIndex_ + 1) % changes_.length;
+        const line = changes_[currentIndex_].modifiedStartLineNumber;
+        diffEditor_.getModifiedEditor().revealLineInCenter(line);
+      };
+
+      window.prevDiff = () => {
+        if (!changes_.length) return;
+        currentIndex = (currentIndex_ - 1 + changes_.length) % changes_.length;
+        const line = changes_[currentIndex_].modifiedStartLineNumber;
+        diffEditor_.getModifiedEditor().revealLineInCenter(line);
+      };
+    });
+      
+    window.addEventListener('message', event => {
+      const msg = event.data;
+      if (msg.command === 'initData') {
+        generatedCodes_ = msg.param;
+        project_dir_ = msg.project_dir;
+        showCodeTable();
+
+        const state = {
+          generatedCodes: generatedCodes_,
+          project_dir: project_dir_,
+        };
+        vscode.setState(state);
+      }
+    });
+  </script>
+</body>
+</html>

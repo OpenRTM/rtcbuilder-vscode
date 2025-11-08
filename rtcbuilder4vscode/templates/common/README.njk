@@ -1,0 +1,533 @@
+# {{ rtcParam.name }}
+
+## Overview
+
+{{ rtcParam.description }}
+
+## Description
+
+{{ rtcParam.doc_description }}
+
+### Input and Output
+
+{{ rtcParam.doc_in_out }}
+
+### Algorithm etc
+
+{{ rtcParam.doc_algorithm }}
+
+### Basic Information
+
+|  |  |
+----|---- 
+| Module Name | {{ rtcParam.name }} |
+| Description | {{ rtcParam.description }} |
+| Version | {{ rtcParam.version }} |
+| Vendor | {{ rtcParam.vendor }} |
+| Category | {{ rtcParam.category }} |
+| Comp. Type | {{ rtcParam.componentType }} |
+| Act. Type | {{ rtcParam.activityType }} |
+| Kind | {{ rtcParam.componentKind }} |
+| MAX Inst. | {{ rtcParam.maxInstance }} |
+
+### Activity definition
+
+<table>
+{%- if rtcParam.actions['onInitialize'].implemented %}
+  <tr>
+    <td rowspan="4">on_initialize</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onInitialize'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onInitialize'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onInitialize'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_initialize</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onFinalize'].implemented %}
+  <tr>
+    <td rowspan="4">on_finalize</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onFinalize'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onFinalize'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onFinalize'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_finalize</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onStartup'].implemented %}
+  <tr>
+    <td rowspan="4">on_startup</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onStartup'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onStartup'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onStartup'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_startup</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onShutdown'].implemented %}
+  <tr>
+    <td rowspan="4">on_shutdown</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onShutdown'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onShutdown'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onShutdown'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_shutdown</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onActivated'].implemented %}
+  <tr>
+    <td rowspan="4">on_activated</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onActivated'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onActivated'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onActivated'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_activated</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onDeactivated'].implemented %}
+  <tr>
+    <td rowspan="4">on_deactivated</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onDeactivated'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onDeactivated'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onDeactivated'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_deactivated</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onExecute'].implemented %}
+  <tr>
+    <td rowspan="4">on_execute</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onExecute'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onExecute'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onExecute'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_execute</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onAborting'].implemented %}
+  <tr>
+    <td rowspan="4">on_aborting</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onAborting'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onAborting'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onAborting'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_aborting</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onError'].implemented %}
+  <tr>
+    <td rowspan="4">on_error</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onError'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onError'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onError'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_error</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onReset'].implemented %}
+  <tr>
+    <td rowspan="4">on_reset</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onReset'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onReset'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onReset'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_reset</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onStateUpdate'].implemented %}
+  <tr>
+    <td rowspan="4">on_state_update</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onStateUpdate'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onStateUpdate'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onStateUpdate'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_state_update</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+{%- if rtcParam.actions['onRateChanged'].implemented %}
+  <tr>
+    <td rowspan="4">on_rate_changed</td>
+    <td colspan="2">implemented</td>
+    <tr>
+      <td>Description</td>
+      <td>{{ rtcParam.actions['onRateChanged'].overview }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ rtcParam.actions['onRateChanged'].pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ rtcParam.actions['onRateChanged'].post_condition }}</td>
+    </tr>
+  </tr>
+{%- else %}
+  <tr>
+    <td>on_rate_changed</td>
+    <td colspan="2"></td>
+  </tr>
+{%- endif %}
+</table>
+
+### InPorts definition
+
+{%- for port in rtcParam.inports %}
+#### {{ port.name }}
+
+{{ port.doc_description }}
+
+<table>
+  <tr>
+    <td>DataType</td>
+    <td>{{ port.type }}</td>
+    <td>{{ port.doc_type }}</td>
+  </tr>
+  <tr>
+    <td>IDL file</td>
+    <td colspan="2">{{ getFileName(port.idlFile) }}</td>
+  </tr>
+  <tr>
+    <td>Number of Data</td>
+    <td colspan="2">{{ port.doc_num }}</td>
+  </tr>
+  <tr>
+    <td>Semantics</td>
+    <td colspan="2">{{ port.doc_semantics }}</td>
+  </tr>
+  <tr>
+    <td>Unit</td>
+    <td colspan="2">{{ port.doc_unit }}</td>
+  </tr>
+  <tr>
+    <td>Occirrence frecency Period</td>
+    <td colspan="2">{{ port.doc_occerrence }}</td>
+  </tr>
+  <tr>
+    <td>Operational frecency Period</td>
+    <td colspan="2">{{ port.doc_operation }}</td>
+  </tr>
+</table>
+
+{%- endfor %}
+
+
+### OutPorts definition
+
+{%- for port in rtcParam.outports %}
+#### {{ port.name }}
+
+{{ port.doc_description }}
+
+<table>
+  <tr>
+    <td>DataType</td>
+    <td>{{ port.type }}</td>
+    <td>{{ port.doc_type }}</td>
+  </tr>
+  <tr>
+    <td>IDL file</td>
+    <td colspan="2">{{ getFileName(port.idlFile) }}</td>
+  </tr>
+  <tr>
+    <td>Number of Data</td>
+    <td colspan="2">{{ port.doc_num }}</td>
+  </tr>
+  <tr>
+    <td>Semantics</td>
+    <td colspan="2">{{ port.doc_semantics }}</td>
+  </tr>
+  <tr>
+    <td>Unit</td>
+    <td colspan="2">{{ port.doc_unit }}</td>
+  </tr>
+  <tr>
+    <td>Occirrence frecency Period</td>
+    <td colspan="2">{{ port.doc_occerrence }}</td>
+  </tr>
+  <tr>
+    <td>Operational frecency Period</td>
+    <td colspan="2">{{ port.doc_operation }}</td>
+  </tr>
+</table>
+
+{%- endfor %}
+
+
+### Service Port definition
+
+{%- for servicePort in rtcParam.serviceports %}
+#### {{ servicePort.name }}
+
+{{ servicePort.doc_description }}
+
+<table>
+  <tr>
+    <td>I/F Description</td>
+    <td colspan="2">{{ servicePort.doc_if_description }}</td>
+  </tr>
+  <tr>
+    <td colspan="3">Interface</td>
+  </tr>
+{%- for serviceInterface in servicePort.serviceinterfaces %}
+  <tr>
+    <td rowspan="9">{{ serviceInterface.name }}</td>
+    <td>Type</td>
+    <td>{{ serviceInterface.interfacetype }}</td>
+    <tr>
+      <td>Direction</td>
+{%- if serviceInterface.direction == 'Provided' %}
+      <td>Provider</td>
+{%- else %}
+      <td>Consumer</td>
+{%- endif %}
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td>{{ serviceInterface.doc_description }}</td>
+    </tr>
+    <tr>
+      <td>IDL file</td>
+      <td>{{ getFileName(serviceInterface.idlfile) }}</td>
+    </tr>
+    <tr>
+      <td>Argument</td>
+      <td>{{ serviceInterface.doc_argument }}</td>
+    </tr>
+    <tr>
+      <td>Return Value</td>
+      <td>{{ serviceInterface.doc_return }}</td>
+    </tr>
+    <tr>
+      <td>Exception</td>
+      <td>{{ serviceInterface.doc_exception }}</td>
+    </tr>
+    <tr>
+      <td>PreCondition</td>
+      <td>{{ serviceInterface.doc_pre_condition }}</td>
+    </tr>
+    <tr>
+      <td>PostCondition</td>
+      <td>{{ serviceInterface.doc_post_condition }}</td>
+    </tr>
+  </tr>
+{%- endfor %}
+</table>
+
+{%- endfor %}
+
+
+### Configuration definition
+
+{%- for configParam in rtcParam.configParams %}
+
+#### {{ configParam.name }}
+
+{{ configParam.doc_description }}
+
+
+<table>
+  <tr>
+    <td>DataType</td>
+    <td colspan="2">{{ configParam.type }}</td>
+  </tr>
+  <tr>
+    <td>DefaultValue</td>
+    <td>{{ configParam.defaultValue }}</td>
+    <td>{{ configParam.doc_default }}</td>
+  </tr>
+  <tr>
+    <td>Unit</td>
+    <td>{{ configParam.unit }}</td>
+    <td>{{ configParam.doc_unit }}</td>
+  </tr>
+  <tr>
+    <td>Widget</td>
+    <td colspan="2">{{ getWidget(configParam) }}</td>
+  </tr>
+  <tr>
+    <td>Step</td>
+    <td colspan="2">{{ getStep(configParam) }}</td>
+  </tr>
+  <tr>
+    <td>Constraint</td>
+    <td>{{ configParam.constraint }}</td>
+    <td>{{ configParam.doc_constraint }}</td>
+  </tr>
+  <tr>
+    <td>Range</td>
+    <td colspan="2">{{ configParam.doc_range }}</td>
+  </tr>
+</table>
+
+{%- endfor %}
+
+
+## Demo
+
+## Requirement
+
+## Setup
+
+### Windows
+
+### Ubuntu
+
+## Usage
+
+## Running the tests
+
+## LICENCE
+
+{{ rtcParam.doc_license }}
+
+
+## References
+
+{{ rtcParam.doc_reference }}
+
+
+## Author
+
+{{ rtcParam.doc_creator }}

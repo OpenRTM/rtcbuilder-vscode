@@ -1,0 +1,51 @@
+openrtm_ms = require "openrtm_ms"
+
+
+--[[
+--!  @file {{ idlFileParam.getIdlFileNoExt() }}_idl_examplefile.py
+--!  @brief Lua example implementations generated from {{ idlFileParam.getIdlFile() }}
+--!  @date $Date$
+
+{%- if rtcParam.doc_creator.length > 0 %}
+--!  @author {{rtcParam.doc_creator}}
+{% endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+
+--!  {{ rtcParam.doc_license }}{% endif %}
+
+--]]
+
+
+{{ idlFileParam.getIdlFileNoExt() }}_idl_example = {}
+
+
+{% for serviceClassParam in idlFileParam.serviceClass %}
+
+
+class {{ idlFileParam.getIdlFileNoExt() }}_idl_example.{{ getInterfaceBasename(serviceClassParam.name) }}_i
+    new: () =>
+        return
+    --[[
+    -- @class {{ getInterfaceBasename(serviceClassParam.name) }}_i
+    -- Example class implementing IDL interface {{ convFormat(serviceClassParam.name) }}
+    --]]
+
+    --[[
+    -- @brief standard constructor
+    -- Initialise member variables here
+    --]]
+
+{%- for serviceMethodParam in serviceClassParam.methods %}
+    -- {{ convCORBA2LuaArg(serviceMethodParam.type) }} {{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ serviceArgumentParam.direction }} {{ convCORBA2LuaArg(serviceArgumentParam.type) }} {{ serviceArgumentParam.name }}{% endfor %})
+    {{ serviceMethodParam.name }}: ({{ selectInParamName(serviceMethodParam) }}) =>
+        error(openrtm_ms.Manager\getORB()\newexcept{"CORBA::NO_IMPLEMENT",
+              minor:0,
+              completed:openrtm_ms.Manager\getORB().types\lookup("::CORBA::CompletionStatus").labelvalue.COMPLETED_NO})
+        -- *** Implement me
+        -- Must return:{{ selectOutParamName(serviceMethodParam) }}
+{% endfor %}
+
+{%- endfor %}
+
+
+return {{ idlFileParam.getIdlFileNoExt() }}_idl_example

@@ -1,0 +1,479 @@
+// -*- C++ -*-
+// <rtc-template block="description">
+/*!
+ * @file  {{ rtcParam.name }}.h
+ * @brief {{ rtcParam.description }}
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}
+{%- endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license }}
+{%- endif %}
+ *
+ */
+// </rtc-template>
+
+#ifndef {{ rtcParam.name.toUpperCase() }}_H
+#define {{ rtcParam.name.toUpperCase() }}_H
+
+#include <rtm/idl/BasicDataTypeSkel.h>
+#include <rtm/idl/ExtendedDataTypesSkel.h>
+#include <rtm/idl/InterfaceDataTypesSkel.h>
+
+// Service implementation headers
+// <rtc-template block="service_impl_h">
+{%- for providerIdlFile in rtcParam.providerIdlPathes %}
+#include "{{ getFilenameNoExt(providerIdlFile.getIdlFile()) }}SVC_impl.h"
+{%- endfor %}
+
+// </rtc-template>
+
+// Service Consumer stub headers
+// <rtc-template block="consumer_stub_h">
+{%- for consumerIdlFile in rtcParam.consumerIdlPathes %}
+#include "{{ getFilenameNoExt(consumerIdlFile.getIdlFile()) }}Stub.h"
+{%- endfor %}
+
+// </rtc-template>
+
+#include <rtm/Manager.h>
+#include <rtm/{{ rtcParam.componentKind }}Base.h>
+#include <rtm/CorbaPort.h>
+#include <rtm/DataInPort.h>
+#include <rtm/DataOutPort.h>
+
+
+// <rtc-template block="component_description">
+/*!
+ * @class {{ rtcParam.name }}
+ * @brief {{ rtcParam.description }}
+{%- if rtcParam.doc_description.length > 0 %}
+ *
+ * {{ rtcParam.doc_description }}
+{%- endif %}
+{%- if rtcParam.doc_in_out.length > 0 %}
+ *
+ * {{ rtcParam.doc_in_out }}
+{%- endif %}
+{%- if rtcParam.doc_algorithm.length > 0 %}
+ *
+ * {{ rtcParam.doc_algorithm }}
+{%- endif %}
+{%- if rtcParam.doc_reference.length > 0 %}
+ *
+ * @see {{ rtcParam.doc_reference }}
+{%- endif %}
+ *
+ */
+// </rtc-template>
+class {{ rtcParam.name }}
+  : public RTC::{{ rtcParam.componentKind }}Base
+{
+ public:
+  /*!
+   * @brief constructor
+   * @param manager Maneger Object
+   */
+  {{ rtcParam.name }}(RTC::Manager* manager);
+
+  /*!
+   * @brief destructor
+   */
+  ~{{ rtcParam.name }}() override;
+
+  // <rtc-template block="public_attribute">
+  
+  // </rtc-template>
+
+  // <rtc-template block="public_operation">
+  
+  // </rtc-template>
+
+  // <rtc-template block="activity">
+  /***
+{%- if rtcParam.actions['onInitialize'].overview.length>0 %}
+   * {{ rtcParam.actions['onInitialize'].overview }}
+{%- endif %}
+   *
+   * The initialize action (on CREATED->ALIVE transition)
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onInitialize'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onInitialize'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onInitialize'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onInitialize'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.configParams.length==0 and rtcParam.actions['onInitialize'].implemented==false and rtcParam.inports.length==0 and rtcParam.outports.length==0 and rtcParam.servicePorts.length==0 %}//{% endif %} RTC::ReturnCode_t onInitialize() override;
+
+  /***
+{% if rtcParam.actions['onFinalize'].overview.length>0 %}   * {{ rtcParam.actions['onFinalize'].overview }}
+{%- endif %}
+   *
+   * The finalize action (on ALIVE->END transition)
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onFinalize'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onFinalize'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onFinalize'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onFinalize'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onFinalize'].implemented==false %}//{% endif %} RTC::ReturnCode_t onFinalize() override;
+
+  /***
+{% if rtcParam.actions['onStartup'].overview.length>0 %}   * {{ rtcParam.actions['onStartup'].overview }}
+{%- endif %}
+   *
+   * The startup action when ExecutionContext startup
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onStartup'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onStartup'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onStartup'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onStartup'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onStartup'].implemented==false %}//{% endif %} RTC::ReturnCode_t onStartup(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onShutdown'].overview.length>0 %}   * {{ rtcParam.actions['onShutdown'].overview }}
+{%- endif %}
+   *
+   * The shutdown action when ExecutionContext stop
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onShutdown'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onShutdown'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onShutdown'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onShutdown'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onShutdown'].implemented==false %}//{% endif %} RTC::ReturnCode_t onShutdown(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onActivated'].overview.length>0 %}   * {{ rtcParam.actions['onActivated'].overview }}
+{%- endif %}
+   *
+   * The activated action (Active state entry action)
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onActivated'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onActivated'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onActivated'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onActivated'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onActivated'].implemented==false %}//{% endif %} RTC::ReturnCode_t onActivated(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onDeactivated'].overview.length>0 %}   * {{ rtcParam.actions['onDeactivated'].overview }}
+{%- endif %}
+   *
+   * The deactivated action (Active state exit action)
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onDeactivated'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onDeactivated'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onDeactivated'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onDeactivated'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onDeactivated'].implemented==false %}//{% endif %} RTC::ReturnCode_t onDeactivated(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onExecute'].overview.length>0 %}   * {{ rtcParam.actions['onExecute'].overview }}
+{%- endif %}
+   *
+   * The execution action that is invoked periodically
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onExecute'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onExecute'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onExecute'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onExecute'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onExecute'].implemented==false %}//{% endif %} RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onAborting'].overview.length>0 %}   * {{ rtcParam.actions['onAborting'].overview }}
+{%- endif %}
+   *
+   * The aborting action when main logic error occurred.
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onAborting'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onAborting'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onAborting'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onAborting'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onAborting'].implemented==false %}//{% endif %} RTC::ReturnCode_t onAborting(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onError'].overview.length>0 %}   * {{ rtcParam.actions['onError'].overview }}
+{%- endif %}
+   *
+   * The error action in ERROR state
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onError'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onError'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onError'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onError'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onError'].implemented==false %}//{% endif %} RTC::ReturnCode_t onError(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onReset'].overview.length>0 %}   * {{ rtcParam.actions['onReset'].overview }}
+{%- endif %}
+   *
+   * The reset action that is invoked resetting
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onReset'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onReset'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onReset'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onReset'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onReset'].implemented==false %}//{% endif %} RTC::ReturnCode_t onReset(RTC::UniqueId ec_id) override;
+  
+  /***
+{% if rtcParam.actions['onStateUpdate'].overview.length>0 %}   * {{ rtcParam.actions['onStateUpdate'].overview }}
+{%- endif %}
+   *
+   * The state update action that is invoked after onExecute() action
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onStateUpdate'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onStateUpdate'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onStateUpdate'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onStateUpdate'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onStateUpdate'].implemented==false %}//{% endif %} RTC::ReturnCode_t onStateUpdate(RTC::UniqueId ec_id) override;
+
+  /***
+{% if rtcParam.actions['onRateChanged'].overview.length>0 %}   * {{ rtcParam.actions['onRateChanged'].overview }}
+{%- endif %}
+   *
+   * The action that is invoked when execution context's rate is changed
+   *
+   * @param ec_id target ExecutionContext Id
+   *
+   * @return RTC::ReturnCode_t
+   * 
+{% if rtcParam.actions['onRateChanged'].pre_condition.length>0 %}   * @pre {{ rtcParam.actions['onRateChanged'].pre_condition }}
+{%- endif %}
+{% if rtcParam.actions['onRateChanged'].post_condition.length>0 %}   * @post {{ rtcParam.actions['onRateChanged'].post_condition }}
+{%- endif %}
+   * 
+   */
+  {% if rtcParam.actions['onRateChanged'].implemented==false %}//{% endif %} RTC::ReturnCode_t onRateChanged(RTC::UniqueId ec_id) override;
+  // </rtc-template>
+
+
+ protected:
+  // <rtc-template block="protected_attribute">
+  
+  // </rtc-template>
+
+  // <rtc-template block="protected_operation">
+  
+  // </rtc-template>
+
+  // Configuration variable declaration
+  // <rtc-template block="config_declare">
+{%- if rtcParam.configParams.length > 0 %}
+{%- for configParam in rtcParam.configParams %}
+  /*!
+   * {{ configParam.doc_description }}
+   * - Name: {{ configParam.doc_dataname }} {{ getTmplVarName(configParam) }}
+   * - DefaultValue: {{ configParam.defaultValue }}
+{% if configParam.doc_unit.length>0 %}   * - Unit: {{ configParam.doc_unit }}
+{%- endif %}
+{% if configParam.doc_range.length>0 %}   * - Range: {{ configParam.doc_range }}
+{%- endif %}
+{% if configParam.doc_constraint.length>0 %}   * - Constraint: {{ configParam.doc_constraint }}
+{%- endif %}
+   */
+  {{ convConfigSetType(configParam.type) }} {{ rtcParam.commonPrefix }}{{ rtcParam.configurationPrefix }}{{ getTmplVarName(configParam) }}{{ rtcParam.configurationSuffix }}{{ rtcParam.commonSuffix }};
+{%- endfor %}
+{%- endif %}
+
+  // </rtc-template>
+
+  // DataInPort declaration
+  // <rtc-template block="inport_declare">
+{%- for port in rtcParam.inports %}
+{% if port.type!="" %}  {{ port.type }} {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }};
+  /*!
+{% if port.doc_description.length>0 %}   * {{ port.doc_description }}
+{%- endif %}
+{% if port.doc_type.length>0 %}   * - Type: {{ port.doc_type }}
+{%- endif %}
+{% if port.doc_num.length>0 %}   * - Number: {{ port.doc_num }}
+{%- endif %}
+{% if port.doc_semantics.length>0 %}   * - Semantics: {{ port.doc_semantics }}
+{%- endif %}
+{% if port.doc_unit.length>0 %}   * - Unit: {{ port.doc_unit }}
+{%- endif %}
+{% if port.doc_occerrence.length>0 %}   * - Frequency: {{ port.doc_occerrence }}
+{%- endif %}
+{% if port.doc_operation.length>0 %}   * - Operation Cycle: {{ port.doc_operation }}
+{%- endif %}
+   */
+  RTC::InPort<{{ port.type }}> {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}In{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }};
+{%- endif %}
+{%- endfor %}
+  
+  // </rtc-template>
+
+
+  // DataOutPort declaration
+  // <rtc-template block="outport_declare">
+{%- for port in rtcParam.outports %}
+{% if port.type!="" %}  {{ port.type }} {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }};
+  /*!
+{% if port.doc_description.length>0 %}   * {{ port.doc_description }}
+{%- endif %}
+{% if port.doc_type.length>0 %}   * - Type: {{ port.doc_type }}
+{%- endif %}
+{% if port.doc_num.length>0 %}   * - Number: {{ port.doc_num }}
+{%- endif %}
+{% if port.doc_semantics.length>0 %}   * - Semantics: {{ port.doc_semantics }}
+{%- endif %}
+{% if port.doc_unit.length>0 %}   * - Unit: {{ port.doc_unit }}
+{%- endif %}
+{% if port.doc_occerrence.length>0 %}   * - Frequency: {{ port.doc_occerrence }}
+{%- endif %}
+{% if port.doc_operation.length>0 %}   * - Operation Cycle: {{ port.doc_operation }}
+{%- endif %}
+   */
+  RTC::OutPort<{{ port.type }}> {{ rtcParam.commonPrefix }}{{ rtcParam.dataPortPrefix }}{{ getTmplVarName(port) }}Out{{ rtcParam.dataPortSuffix }}{{ rtcParam.commonSuffix }};
+{%- endif %}
+{%- endfor %}
+  
+  // </rtc-template>
+
+  // CORBA Port declaration
+  // <rtc-template block="corbaport_declare">
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+  /*!
+{%if servicePort.doc_description.length>0 %}   * {{ servicePort.doc_description }}
+{%- endif %}
+{% if servicePort.doc_if_description.length>0 %}   * Interface: {{ servicePort.doc_if_description }}
+{%- endif %}
+   */
+  RTC::CorbaPort {{ rtcParam.commonPrefix }}{{ rtcParam.servicePortPrefix }}{{ servicePort.name }}Port{{ rtcParam.servicePortSuffix }}{{ rtcParam.commonSuffix }};
+{%- endif %}{%- endfor %}{%- endif %}
+  
+  // </rtc-template>
+
+  // Service declaration
+  // <rtc-template block="service_declare">
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+{%- for serviceInterface in servicePort.serviceinterfaces %}
+{%- if serviceInterface.direction=='Provided' %}
+  /*!
+{% if serviceInterface.doc_description.length>0 %}   * {{ serviceInterface.doc_description }}
+{%- endif %}
+{% if serviceInterface.doc_argument.length>0 %}   * - Argument:      {{ serviceInterface.doc_argument }}
+{%- endif %}
+{% if serviceInterface.doc_return.length>0 %}   * - Return Value:  {{ serviceInterface.doc_return }}
+{%- endif %}
+{% if serviceInterface.doc_exception.length>0 %}   * - Exception:     {{ serviceInterface.doc_exception }}
+{%- endif %}
+{% if serviceInterface.doc_pre_condition.length>0 %}   * - PreCondition:  {{ serviceInterface.doc_pre_condition }}
+{%- endif %}
+{% if serviceInterface.doc_post_condition.length>0 %}   * - PostCondition: {{ serviceInterface.doc_post_condition }}
+{%- endif %}
+   */
+  {{ getBasename(serviceInterface.interfacetype) }}SVC_impl {{ rtcParam.commonPrefix }}{{ rtcParam.serviceIFPrefix }}{{ getTmplVarNameSI(serviceInterface) }}{{ rtcParam.serviceIFSuffix }}{{ rtcParam.commonSuffix }};
+{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}{%- endif %}
+  
+  // </rtc-template>
+
+  // Consumer declaration
+  // <rtc-template block="consumer_declare">
+{%- if rtcParam.serviceports.length>0 %}
+{%- for servicePort in rtcParam.serviceports %}
+{%- if servicePort.serviceinterfaces.length>0 %}
+{%- for serviceInterface in servicePort.serviceinterfaces %}
+{%- if serviceInterface.direction=='Required' %}
+  /*!
+{% if serviceInterface.doc_description.length>0 %}   * {{ serviceInterface.doc_description }}
+{%- endif %}
+{%if serviceInterface.doc_argument.length>0 %}   * - Argument:      {{ serviceInterface.doc_argument }}
+{%- endif %}
+{% if serviceInterface.doc_return.length>0 %}   * - Return Value:  {{ serviceInterface.doc_return }}
+{%- endif %}
+{% if serviceInterface.doc_exception.length>0 %}   * - Exception:     {{ serviceInterface.doc_exception }}
+{%- endif %}
+{% if serviceInterface.doc_pre_condition.length>0 %}   * - PreCondition:  {{ serviceInterface.doc_pre_condition }}
+{%- endif %}
+{% if serviceInterface.doc_post_condition.length>0 %}   * - PostCondition: {{ serviceInterface.doc_post_condition }}
+{%- endif %}
+   */
+  RTC::CorbaConsumer<{{ serviceInterface.interfacetype }}> {{ rtcParam.commonPrefix }}{{ rtcParam.serviceIFPrefix }}{{ getTmplVarNameSI(serviceInterface) }}{{ rtcParam.serviceIFSuffix }}{{ rtcParam.commonSuffix }};
+{%- endif %}{%- endfor %}{%- endif %}{%- endfor %}{%- endif %}
+  
+  // </rtc-template>
+
+
+ private:
+  // <rtc-template block="private_attribute">
+  
+  // </rtc-template>
+
+  // <rtc-template block="private_operation">
+  
+  // </rtc-template>
+
+};
+
+
+extern "C"
+{
+  DLL_EXPORT void {{ rtcParam.name }}Init(RTC::Manager* manager);
+};
+
+#endif // {{ rtcParam.name.toUpperCase() }}_H

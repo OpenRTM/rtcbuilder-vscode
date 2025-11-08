@@ -1,0 +1,6 @@
+set(hdrs {{ rtcParam.name }}.h
+{%- for providerIdlFile in rtcParam.providerIdlPathes %}
+    {{ getFilenameNoExt(providerIdlFile.idlPath) }}SVC_impl.h
+{%- endfor %}
+    PARENT_SCOPE
+    )

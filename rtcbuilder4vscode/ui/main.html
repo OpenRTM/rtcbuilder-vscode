@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>RtcBuilder Editor Panel</title>
+  <!--STYLE-->
+  <!--SCRIPT_MODEL-->
+</head>
+
+<body>
+  <div class="title_area">
+    <div class="button-container">
+      <font size="5">RTC Builder</font>
+      <div class="project-container">
+        <span data-i18n="main.project" style="margin-right: 8px;"></span>
+        <span class="border-label" id="project-name"></span>
+        <button onclick="selectProject()" style="margin : 2px;" class="basicBtn" data-i18n="main.select">選択</button>
+      </div>
+      <div style="text-align: right;">
+        <button onclick="openSettings()" style="margin : 2px;" class="basicBtn"  data-i18n="main.preference">各種設定</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab" data-file="basic.html" data-i18n="main.basic">基本</div>
+    <div class="tab" data-file="activity.html" data-i18n="main.activity">アクティビティ</div>
+    <div class="tab" data-file="dataport.html" data-i18n="main.dataPort">データポート</div>
+    <div class="tab" data-file="serviceport.html" data-i18n="main.servicePort">サービスポート</div>
+    <div class="tab" data-file="configuration.html" data-i18n="main.configuration">コンフィギュレーション</div>
+    <div class="tab" data-file="document.html" data-i18n="main.document">ドキュメント生成</div>
+    <div class="tab" data-file="rtc_xml.html">RTC.xml</div>
+  </div>
+
+  <div id="content">Loading...</div>
+
+  <!--SCRIPT-->
+  <script>
+    function t(key) {
+      return window.translations[key] || key;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+    });
+
+    const vscode = acquireVsCodeApi();
+    let rtc_param_ = new RtcParam();
+    let settings_;
+    let prev_tab;
+
+    let language_mames_ = [];
+    let config_types_ = [];
+    let basic_categories_ = [ 'Actuator', 'Animation', 'Autonomous Decentralized System',
+                              'Chatbot', 'Computer Algebra System', 'Controller',
+                              'Converter', 'Database', 'Educational Tool',
+                              'Game', 'ImageProcessing', 'Machine Learning',
+                              'Manipulator', 'Manufacturing System', 'Master-Slave',
+                              'Mobile Robot', 'Motion Capture', 'Navigation',
+                              'Nonholonomic System', 'Office Suite', 'Robot',
+                              'Sample', 'Script Engine', 'Sensor',
+                              'Simulator', 'Speech Processing', 'Streaming',
+                              'Test', 'Transport System', 'User Interface',
+                        			'Vehicle', 'Web Application Server' ];
+
+    window.onload = function () {
+      vscode.postMessage({
+        command: 'getSettingsMain'
+      });
+
+      const savedState = vscode.getState();
+      if (savedState) {
+          language_mames_ = savedState.language_mames;
+      }
+    };
+    window.addEventListener('message', event => {
+      const msg = event.data;
+      console.log(msg);
+      if (msg.command === 'sendExtension') {
+        language_mames_ = msg.language_mames;
+        config_types_ = msg.config_types;
+
+        const state = {
+          language_mames: language_mames_
+        };
+        vscode.setState(state);
+
+      } else if (msg.command === 'sendProject') {
+        let project = msg.project;
+        setProjectLocation(project);
+
+      } else if (msg.command === 'sendSettings') {
+        settings_ = msg.settings;
+        const project_dir = settings_.project_dir;
+        document.getElementById('project-name').textContent = project_dir;
+        setProjectLocation(project_dir);
+        load_profile(prev_tab);
+
+      } else if (msg.command === 'sendDataTypes') {
+        updateDataType(msg.pathes, msg.types);
+      } else if (msg.command === 'sendServices') {
+        updateServiceDef(msg.pathes, msg.services);
+      } else if (msg.command === 'sendXML') {
+        updateXMLProfile(msg.xml);
+      } else if (msg.command === 'sendProfile') {
+        rtc_param_ = msg.profile;
+        // console.log(rtc_param_);
+        load_profile(prev_tab);
+        if(msg.showMessage) {
+          vscode.postMessage({
+            command: 'showMessage',
+            param: 'Profile情報を更新しました',
+            type: 'info'
+          });
+        }
+      }
+    });
+
+    const baseUri = '{{baseUri}}';
+
+    const contentDiv = document.getElementById('content');
+    const tabs = document.querySelectorAll('.tab');
+
+    async function loadTab(file) {
+      if(prev_tab != null) {
+        store_profile(prev_tab);
+      }
+      const response = await fetch(`${baseUri}/${file}`);
+      const html = await response.text();
+      contentDiv.innerHTML = html;
+      prev_tab = file;
+      load_profile(prev_tab);
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        loadTab(tab.dataset.file);
+      });
+    });
+
+    // 初期表示
+    loadTab('basic.html');
+    tabs[0].classList.add('active');
+  </script>
+</body>
+
+</html>

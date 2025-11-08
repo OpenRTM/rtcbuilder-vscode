@@ -1,0 +1,56 @@
+NOTICE
+======
+
+This product includes software developed by
+the National Institute of Advanced Industrial Science and Technology (AIST).
+
+RTCBuilder-vscode
+Copyright (C) 2003-2025
+    Noriaki Ando and the OpenRTM-aist Project Team
+    Intelligent Systems Research Institute (ISRI), AIST
+
+Licensed under the Apache License, Version 2.0.
+You may obtain a copy of the License at:
+    http://www.apache.org/licenses/LICENSE-2.0
+
+
+Third-Party Components
+----------------------
+
+The following third-party libraries are incorporated under their respective
+open-source licenses.  Their license texts are included in this distribution
+or may be found at the URLs shown below.
+
+1. **nunjucks 3.2.4** – BSD-2-Clause  
+   Copyright © Mozilla Foundation  
+   https://github.com/mozilla/nunjucks/blob/main/LICENSE
+
+2. **fast-xml-parser 5.2.5** – MIT  
+   Copyright © 2022 Ajay Kumar Guppa  
+   https://github.com/NaturalIntelligence/fast-xml-parser/blob/master/LICENSE
+
+3. **js2xmlparser 5.0.0** – Apache License 2.0  
+   Copyright © 2012-2024 Michael K. Eichberger  
+   https://github.com/michaelkourlas/js2xmlparser/blob/master/LICENSE
+
+4. **monaco-editor 0.52.2** – MIT  
+   © Microsoft Corporation  
+   https://github.com/microsoft/monaco-editor/blob/main/LICENSE.txt
+
+5. **iconv-lite 0.7.0** – MIT  
+   © Alexander Savenkov and contributors  
+   https://github.com/ashtuchkin/iconv-lite/blob/master/LICENSE
+
+6. **antlr4 (4.8.0)** – BSD-3-Clause  
+   © The ANTLR Project Contributors  
+   https://www.antlr.org/license.html
+
+
+Attribution Notice
+------------------
+Portions of this software may be derived from or inspired by the works listed
+above.  All such components retain their original copyright notices and
+license terms.  The inclusion of these components does not imply endorsement
+by their authors.
+
+End of NOTICE

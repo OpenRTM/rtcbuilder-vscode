@@ -1,0 +1,24 @@
+{
+  "Select project folder": "プロジェクトフォルダを選択"
+  , "Select": "選択"
+  , "Initialization failed.": "初期化に失敗しました"
+  , "Profile Export completed.": "Profile Exportが終了しました"
+  , "Conversion to RtcProfile failed.": "RtcProfileへの変換に失敗しました"
+  , "Select File": "ファイルを選択"
+  , "Profile Import failed.": "Profile Importに失敗しました"
+  , "Save": "保存する"
+  , "Profile Validation": "プロファイル検証"
+  , "Please select a save location.": "保存先を選択してください"
+  , "Failed to update profile information.": "Profile情報の更新に失敗しました"
+  , "The specified data type is invalid." : "指定されたデータ型が不正です。"
+
+
+  , "Warning: Included IDL [": "Warning: IDLファイル ["
+  , "] not found.": "] がありません．"
+  , "The generated file might be incomplete.": "生成されたファイルは不完全かもしれません．"
+  , "It can be solved by adding the include directives.": "生成ファイルにinclude文を追加する必要があるかもしれません．"
+  , "Continue? (OK/Cancel)": "処理を継続してもよろしいですか？ (OK/Cancel)"
+
+  , "The specified content is invalid.": "指定された内容が不正です"
+  , "The target RtcProfile content is invalid.": "対象のプロファイルの内容が不正です"
+}

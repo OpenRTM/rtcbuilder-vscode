@@ -1,0 +1,226 @@
+<div class="title_area">
+  <font size="5" id="dataport.SECTION">データポート</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" id="dataport.TITLE">DataPortプロファイル</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="dataport.EXPL">このセクションではRTコンポーネントのDataPort(データポート)の情報を設定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 50%;">
+            <div class="button-container">
+              <div class="required-field" id="dataport.INPORT_NAME">*InPortポート名</div>
+              <div class="button-group">
+                <button onclick="add_port(1)" style="margin : 2px;" class="basicBtn">Add</button>
+                <button onclick="delete_port(1)" style="margin : 2px;" class="basicBtn">Delete</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table border="1" id="inport_table" style="width : 100%;">
+                <tbody></tbody>
+              </table>
+            </div>
+          </td>
+          <td style="width : 50%;">
+            <div class="button-container">
+              <div class="required-field" id="dataport.OUTPORT_NAME">*OutPortポート名</div>
+              <div class="button-group">
+                <button onclick="add_port(2)" style="margin : 2px;" class="basicBtn">Add</button>
+                <button onclick="delete_port(2)" style="margin : 2px;" class="basicBtn">Delete</button>
+              </div>
+            </div>
+            <div class="table-container">
+              <table border="1" id="outport_table" style="width : 100%;">
+                <tbody></tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table style="width : 100%;">
+      <tbody>
+        <!--Detail-->
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;">Detail</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="dataport.DOCUMENT_EXPL">このセクションではデータポート毎の概要を説明するドキュメントを記述します。<br>
+                          上のデータポートを選択すると、それぞれのドキュメントが記述できます。</td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" id="dataport.LBL_PORTNAME">ポート名:</td>
+          <td>
+            <input size="20" type="text" readonly id="dataport_name"
+              class="field" style="width : 100%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="group-border" style="width : 100%;">
+      <tbody>
+        <tr>
+          <td style="width : 80px;">
+            <div class="required-field" id="dataport.LBL_PORTTYPE">*データ型</div>
+          </td>
+          <td>
+            <div class="combo-wrapper">
+              <input type="text" id="dataport_type" class="field" style="width : 98%;" autocomplete="off">
+              <div class="arrow">&#9662;</div> 
+              <ul id="dataport_options" class="combo-options hidden"></ul>
+            </div>
+          </td>
+          <td>
+            <button onclick="getCORBADataType()" class="basicBtn reloadBtn">Reload</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="dataport.LBL_IDLFILE">IDLファイル</div>
+          </td>
+          <td colspan="2">
+            <input size="20" type="text" readonly id="dataport_idl_file"
+              class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_VARNAME">変数名</td>
+          <td colspan="2">
+            <input type="text" id="dataport_var_name" class="field" style="width : 98%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="group-border" style="width : 100%; margin-top: 8px;">
+      <tbody>
+        <tr>
+          <td  colspan="2" class="title_row">Documentation</td>
+        </tr>
+        <tr>
+          <td style="width : 150px;" id="dataport.LBL_DESCRIPTION">概要説明</td>
+          <td>
+            <textarea id="dataport_doc_abst" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_SEMANTICS">詳細説明</td>
+          <td>
+            <textarea id="dataport_doc_detail" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_PORTTYPE_DET">データ型</td>
+          <td>
+            <input type="text" id="dataport_doc_type" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_DATANUM">データ数</td>
+          <td>
+            <input type="text" id="dataport_doc_num" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_UNIT">単位</td>
+          <td>
+            <input type="text" id="dataport_doc_unit" class="field" style="width : 98%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_OCCUR">発生頻度，周期</td>
+          <td>
+            <textarea id="dataport_doc_freq" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="dataport.LBL_OPERAT">処理頻度，周期</td>
+          <td>
+            <textarea id="dataport_doc_ope" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="dataport.HINT_TITLE">ヒント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;" id="dataport.HINT_DATAPORT_TITLE">データポート：</td>
+          <td id="dataport.HINT_DATAPORT_DESC">RTコンポーネント間でデータをやり取りするためのポートです。<br>
+            データを出力するOutPortと、データを入力するInPortがあります。<br>
+            InPortとOutPortを接続するには、両者のデータ型が同一である必要があります。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_INPORT_TITLE">InPort：</td>
+          <td id="dataport.HINT_INPORT_DESC">RTコンポーネントにデータを入力するためのポートです。<br>
+            他のRTコンポーネントのOutPortと接続され、データを受け取ります。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_OUTPORT_TITLE">OutPort：</td>
+          <td id="dataport.HINT_OUTPORT_DESC">RTコンポーネントからデータを出力するためのポートです。<br>
+            他のRTコンポーネントのInPortと接続され、そのRTコンポーネントにデータを送出します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_PORTNAME_TITLE">ポート名：</td>
+          <td id="dataport.HINT_PORTNAME_DESC">データポートを識別するための名称を指定します。<br>
+            ポート名は、同一のコンポーネント内で、InPort、OutPort、サービスポートそれぞれのポート名に対して一意である必要があります。<br>
+            ASCII文字が使用できます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_DATATYPE_TITLE">データ型：</td>
+          <td id="dataport.HINT_DATATYPE_DESC">データポート間でやり取りされるデータ型をプルダウンから選択します。<br>
+            InPortとOutPortを接続するには、データ型が一致する必要があります。<br>
+            OpenRTMが提供する基本型のほかに、独自のデータ型を利用することもできます。<br>
+            独自のデータ型を利用する場合には、データ型を定義したIDLファイルをプロジェクトのidlフォルダにコピーし、Reloadボタンを押すことで定義したデータ型がプルダウンリストに現れます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_VARNAME_TITLE">変数名：</td>
+          <td id="dataport.HINT_VARNAME_DESC">データポートに関連付けられる変数名を指定します。<br>
+            変数の名称は言語により異なります。</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_DOCUMENT_TITLE">ドキュメント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_OVERVIEW">概要説明:</td>
+          <td id="dataport.HINT_DOC_OVERVIEW">データポートが取り扱うデータの意味の概要説明を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_DETAIL">詳細説明:</td>
+          <td id="dataport.HINT_DOC_DETAIL">データの型の意味およびコンポーネントにおけるデータの意味を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_DATATYPE">データ型:</td>
+          <td id="dataport.HINT_DOC_DATATYPE">データポートのデータ型を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_DATANUM">データ数:</td>
+          <td id="dataport.HINT_DOC_DATANUM">配列型などの場合のデータ数の制限を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_UNIT">単位:</td>
+          <td id="dataport.HINT_DOC_UNIT">データポートのデータの単位を記載。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_OCCUR">発生頻度，周期:</td>
+          <td id="dataport.HINT_DOC_OCCUR">ポートがOutPortの場合はそのデータの発生頻度（突発的、平均〇秒に1回）やその周期（〇Hz等）を記載</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_TITLE_OPERAT">処理頻度，周期:</td>
+          <td id="dataport.HINT_DOC_OPERAT">ポートがInPortの場合はそのデータの発生頻度（突発的、平均〇秒に1回）やその周期（〇Hz等）を記載</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

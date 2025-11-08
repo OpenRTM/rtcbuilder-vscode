@@ -1,0 +1,54 @@
+# {{ rtcParam.name }} CMake config file
+#
+# This file sets the following variables:
+# {{ rtcParam.name }}_FOUND - Always TRUE.
+# {{ rtcParam.name }}_INCLUDE_DIRS - Directories containing the {{ rtcParam.name }} include files.
+# {{ rtcParam.name }}_IDL_DIRS - Directories containing the {{ rtcParam.name }} IDL files.
+# {{ rtcParam.name }}_LIBRARIES - Libraries needed to use {{ rtcParam.name }}.
+# {{ rtcParam.name }}_DEFINITIONS - Compiler flags for {{ rtcParam.name }}.
+# {{ rtcParam.name }}_VERSION - The version of {{ rtcParam.name }} found.
+# {{ rtcParam.name }}_VERSION_MAJOR - The major version of {{ rtcParam.name }} found.
+# {{ rtcParam.name }}_VERSION_MINOR - The minor version of {{ rtcParam.name }} found.
+# {{ rtcParam.name }}_VERSION_REVISION - The revision version of {{ rtcParam.name }} found.
+# {{ rtcParam.name }}_VERSION_CANDIDATE - The candidate version of {{ rtcParam.name }} found.
+
+message(STATUS "Found {{ rtcParam.name }}-@PROJECT_VERSION@")
+set({{ rtcParam.name }}_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set({{ rtcParam.name }}_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set({{ rtcParam.name }}_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set({{ rtcParam.name }}_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set({{ rtcParam.name }}_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set({{ rtcParam.name }}_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set({{ rtcParam.name }}_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set({{ rtcParam.name }}_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set({{ rtcParam.name }}_VERSION @PROJECT_VERSION@)
+set({{ rtcParam.name }}_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set({{ rtcParam.name }}_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set({{ rtcParam.name }}_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set({{ rtcParam.name }}_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+

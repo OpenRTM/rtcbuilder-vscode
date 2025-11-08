@@ -1,0 +1,264 @@
+<div class="title_area">
+  <font size="5" id="serviceport.SECTION">サービスポート</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row">RT-Component Service Ports</td>
+        </tr>
+        <tr>
+          <td style="width : 100%;">
+            <div class="service-button-container">
+              <div class="button-group">
+                <button id="service_port_btn" onclick="add_service_port()" style="margin : 2px;" class="basicBtn">Add Port</button>
+                <button id="service_interface_btn" onclick="add_service_interface()" style="margin : 2px;" class="basicBtn">Add Interface</button>
+                <button onclick="delete_service()" style="margin : 2px;" class="basicBtn">Delete</button>
+              </div>
+            </div>
+            <div class="tree-view-container">
+              <ul id="tree-root"></ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table id="service_port_area" style="width : 100%;">
+      <tbody>
+        <!--Detail-->
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;">RT-Component Service Port Profile</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="serviceport.PORT_EXPL">このセクションではRTコンポーネントのServicePortの情報を設定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 100px;">
+            <div class="required-field" id="serviceport.LBL_PORTNAME">*ポート名</div>
+          </td>
+          <td>
+            <input size="20" type="text" id="service_port_name" class="field" style="width : 100%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table id="service_interface_area" style="width : 100%;">
+      <tbody>
+        <!--Detail-->
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;">RT-Component Service Port Interface Profile</td>
+        </tr>
+        <tr>
+          <td colspan="2" id="serviceport.IF_EXPL">このセクションではRTコンポーネントのServiceInterfaceの情報を設定します。</td>
+        </tr>
+        <tr>
+          <td style="width : 130px;">
+            <div class="required-field" id="serviceport.LBL_IFNAME">*インターフェース名</div>
+          </td>
+          <td colspan="2" >
+            <input size="20" type="text" id="service_if_name" class="field" style="width : 95%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_IFDIRECTION">方向</td>
+          <td colspan="2" >
+            <select id="service_if_direction" class="field" style="width : 95%;" onchange="direction_combo_changed()">
+              <option>Provided</option>
+              <option>Required</option>
+             </select>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_IFINSTNAME">インスタンス名</td>
+          <td colspan="2" >
+            <input size="20" type="text" id="service_if_inst" class="field" style="width : 95%;">
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_IFVARNAME">変数名</td>
+          <td colspan="2" >
+            <input size="20" type="text" id="service_if_var" class="field" style="width : 95%;">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="required-field" id="serviceport.LBL_IFTYPE">*インターフェース型</div>
+          </td>
+          <td>
+            <select id="service_if_type" class="field" style="width : 95%;" onchange="service_if_combo_changed()">
+              <option>Img::CameraCaptureService</option>
+              <option>OpenRTM::InPortCdr</option>
+            </select>
+          </td>
+          <td>
+            <button onclick="getCORBAService()" class="basicBtn reloadBtn">Reload</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="serviceport.LBL_IDLFILE">IDLファイル</div>
+          </td>
+          <td colspan="2">
+            <input size="20" type="text" readonly id="service_if_idl_file"
+              class="field" style="width : 98%;">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table id="service_port_doc_area" class="group-border" style="width : 100%; margin-top: 8px;">
+      <tbody>
+        <tr>
+          <td  colspan="2" class="title_row">Documentation</td>
+        </tr>
+        <tr>
+          <td  style="width : 100px;" id="serviceport.LBL_DESCRIPTION">概要説明</td>
+          <td>
+            <textarea id="service_port_doc_abst" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_IFDESCRIPTION">I/F概要説明</td>
+          <td>
+            <textarea id="service_port_doc_if_abst" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table id="service_interface_doc_area" class="group-border" style="width : 100%; margin-top: 8px;">
+      <tbody>
+        <tr>
+          <td  colspan="2" class="title_row">Documentation</td>
+        </tr>
+        <tr>
+          <td style="width : 80px;" id="serviceport.LBL_DESCRIPTION_IF">概要説明</td>
+          <td>
+            <textarea id="service_if_doc_abst" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_ARGUMENT">引数</td>
+          <td>
+            <textarea id="service_if_doc_arg" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_RETURN">戻り値</td>
+          <td>
+            <textarea id="service_if_doc_ret" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_EXCEPTION">例外</td>
+          <td>
+            <textarea id="service_if_doc_exception" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_PRE_CONDITION">事前条件</td>
+          <td>
+            <textarea id="service_if_doc_pre_cond" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td id="serviceport.LBL_POST_CONDITION">事後条件</td>
+          <td>
+            <textarea id="service_if_doc_post_cond" rows="5" class="field" style="width : 98%;"></textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="serviceport.HINT_PORT_TITLE">ヒント(サービスポート)</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;" id="serviceport.HINT_PORT_NAME_TITLE">ポート名:</td>
+          <td id="serviceport.HINT_PORT_NAME_DESC">サービスポートを識別するための名称を指定します。<br>
+            ポート名は、同一のコンポーネント内で、サービスポート、InPort、OutPortそれぞれのポート名に対して一意である必要があります。<br>
+            半角英数字のみ入力可能です。</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_PORT_DESCRIPTION_TITLE">概要説明:</td>
+          <td id="serviceport.HINT_PORT_DESCRIPTION_DESC">サービスポートに対する概要説明を記述します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_PORT_IFDESCRIPTION_TITLE">I/F概要説明:</td>
+          <td id="serviceport.HINT_PORT_IFDESCRIPTION_DESC">サービスポートに付属するサービスインターフェースの概要説明を記述します。</td>
+        </tr>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="serviceport.HINT_INTERFACE_TITLE">ヒント(サービスインターフェース)</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;" id="serviceport.HINT_IF_NAME_TITLE">インターフェース名:</td>
+          <td id="serviceport.HINT_IF_NAME_DESC">サービスインターフェースの名称です。<br>
+            サービスインターフェース名は重複することができません。<br>
+            半角英数字のみ入力可能です。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IF_DIRECTION_TITLE">方向:</td>
+          <td id="serviceport.HINT_IF_DIRECTION_DESC">サービスインターフェースの種類です。以下の選択肢から選択可能です。<br>
+            -Provided：提供インターフェース(Service Provider用)<br>
+            -Required：要求インターフェース(Service Consumer用)<br>
+          </td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IF_INSTANCE_TITLE">インスタンス名:</td>
+          <td id="serviceport.HINT_IF_INSTANCE_DESC">サービスインターフェースのインスタンス名です。<br>
+            半角英数字のみ入力可能です。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IF_VARNAME_TITLE">変数名:</td>
+          <td id="serviceport.HINT_IF_VARNAME_DESC">サービスインターフェースの変数名です。<br>
+          省略された場合は、インスタンス名を使用します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IFTYPE_TITLE">インターフェース型:</td>
+          <td id="serviceport.HINT_IFTYPE_DESC">使用するサービスインターフェース型をプルダウンから選択します。<br>
+          独自のインターフェースを使用する場合は、プロジェクト内のidlフォルダに使用するIDLファイルをコピーし、Reloadボタンを押すと、IDLファイル内のインターフェースがプルダウンに現れます。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IDLFILE_TITLE">IDLファイル:</td>
+          <td id="serviceport.HINT_IDLFILE_DESC">選択したサービスインターフェース型が定義されているIDLファイルへのフルパスが表示されます。</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IFDESC_TITLE">I/F概要説明:</td>
+          <td id="serviceport.HINT_IFDESC_DESC">サービスインターフェースに対する概要説明を記述します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_ARGUMEN_TITLE">引数:</td>
+          <td id="serviceport.HINT_ARGUMEN_DESC">関数ごとの引数の意味を記載。<br>
+          例：関数名0(速度[6], 位置[6]), 関数名1(位置姿勢), ...</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_RETURN_TITLE">戻り値:</td>
+          <td id="serviceport.HINT_RETURN_DESC">関数ごとの戻り値の意味を記載。<br>
+          例：リターンコード = 関数名0(), 位置 = 関数名1(), ...</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_EXCEPTION_TITLE">例外:</td>
+          <td id="serviceport.HINT_EXCEPTION_DESC">関数ごとの例外の意味を記載。<br>
+          関数名0(): (例外：ファイルが見つからない、引数条件違反),<br>
+          関数名1(): （例外：一範囲エラー）</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_PRE_CONDITION_TITLE">事前条件:</td>
+          <td id="serviceport.HINT_PRE_CONDITION_DESC">関数ごとの事前条件の意味を記載。<br>
+          関数名0：事前条件、関数名1：事前条件</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_POST_CONDITION_TITLE">事後条件:</td>
+          <td id="serviceport.HINT_POST_CONDITION_DESC">関数ごとの事後条件の意味を記載。<br>
+          関数名0：事後条件、関数名1：事後条件</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

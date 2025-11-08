@@ -1,0 +1,295 @@
+{
+  "name": "rtcbuilder4vscode",
+  "displayName": "RTCBuilder for VS Code",
+  "publisher": "aist",
+  "version": "1.0.0",
+  "description": "RTCBuilder for VSCode",
+  "license": "Apache-2.0 OR Commercial",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OpenRTM-aist/rtcbuilder-vscode"
+  },
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "l10n": "./l10n",
+  "contributes": {
+    "configuration": {
+      "title": "RtcBuilder",
+      "properties": {
+        "rtcbuilder4vscode.project_dir": {
+          "type": "string",
+          "default": "",
+          "description": "プロジェクトディレクトリ"
+        },
+        "rtcbuilder4vscode.max_backup_num": {
+          "type": "number",
+          "default": 3,
+          "description": "バックアップファイル最大値"
+        },
+        "rtcbuilder4vscode.basic_name": {
+          "type": "string",
+          "default": "ModuleName",
+          "description": "コンポーネント名"
+        },
+        "rtcbuilder4vscode.basic_description": {
+          "type": "string",
+          "default": "ModuleDescription",
+          "description": "概要"
+        },
+        "rtcbuilder4vscode.basic_version": {
+          "type": "string",
+          "default": "1.0.0",
+          "description": "バージョン"
+        },
+        "rtcbuilder4vscode.basic_vendor": {
+          "type": "string",
+          "default": "VenderName",
+          "description": "ベンダ名"
+        },
+        "rtcbuilder4vscode.basic_category": {
+          "type": "string",
+          "default": "Category",
+          "description": "カテゴリ"
+        },
+        "rtcbuilder4vscode.basic_comp_type": {
+          "type": "string",
+          "default": "STATIC",
+          "description": "コンポーネント型"
+        },
+        "rtcbuilder4vscode.basic_activity_type": {
+          "type": "string",
+          "default": "PERIODIC",
+          "description": "アクティビティ型"
+        },
+        "rtcbuilder4vscode.basic_max_inst": {
+          "type": "number",
+          "default": 1,
+          "description": "最大インスタンス数"
+        },
+        "rtcbuilder4vscode.basic_exec_type": {
+          "type": "string",
+          "default": "PeriodicExecutionContext",
+          "description": "実行型"
+        },
+        "rtcbuilder4vscode.basic_exec_period": {
+          "type": "number",
+          "default": 1000,
+          "description": "実行周期"
+        },
+        "rtcbuilder4vscode.basic_prefix": {
+          "type": "string",
+          "default": "m_",
+          "description": "接頭語"
+        },
+        "rtcbuilder4vscode.basic_suffix": {
+          "type": "string",
+          "default": "",
+          "description": "接尾語"
+        },
+        "rtcbuilder4vscode.activity_aborting": {
+          "type": "boolean",
+          "default": false,
+          "description": "onAbortingの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_finalize": {
+          "type": "boolean",
+          "default": false,
+          "description": "onFinalizeの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_error": {
+          "type": "boolean",
+          "default": false,
+          "description": "onErrorの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_startup": {
+          "type": "boolean",
+          "default": false,
+          "description": "onStartupの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_reset": {
+          "type": "boolean",
+          "default": false,
+          "description": "onResetの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_shutdown": {
+          "type": "boolean",
+          "default": false,
+          "description": "onShutdownの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_execute": {
+          "type": "boolean",
+          "default": false,
+          "description": "onExecuteの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_activated": {
+          "type": "boolean",
+          "default": false,
+          "description": "onActivatedの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_stateupdate": {
+          "type": "boolean",
+          "default": false,
+          "description": "onStateUpdateの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_deactivated": {
+          "type": "boolean",
+          "default": false,
+          "description": "onDeactivatedの有効/無効"
+        },
+        "rtcbuilder4vscode.activity_ratechanged": {
+          "type": "boolean",
+          "default": false,
+          "description": "onRateChangedの有効/無効"
+        },
+        "rtcbuilder4vscode.doc_author": {
+          "type": "string",
+          "default": "",
+          "description": "作成者，連絡先"
+        },
+        "rtcbuilder4vscode.doc_licanse": {
+          "type": "string",
+          "default": "",
+          "description": "ライセンス，使用条件"
+        },
+        "rtcbuilder4vscode.config_name": {
+          "type": "string",
+          "default": "conf_name",
+          "description": "コンフィギュレーション 名称"
+        },
+        "rtcbuilder4vscode.config_type": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション データ型"
+        },
+        "rtcbuilder4vscode.config_var_name": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション 変数名"
+        },
+        "rtcbuilder4vscode.config_default": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション デフォルト値"
+        },
+        "rtcbuilder4vscode.config_constraint": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション 制約条件"
+        },
+        "rtcbuilder4vscode.config_unit": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション 単位"
+        },
+        "rtcbuilder4vscode.config_prefix": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション 接頭語"
+        },
+        "rtcbuilder4vscode.config_suffix": {
+          "type": "string",
+          "default": "",
+          "description": "コンフィギュレーション 接尾語"
+        },
+        "rtcbuilder4vscode.dataport_name": {
+          "type": "string",
+          "default": "dp_name",
+          "description": "データポート 名称"
+        },
+        "rtcbuilder4vscode.dataport_type": {
+          "type": "string",
+          "default": "",
+          "description": "データポート データ型"
+        },
+        "rtcbuilder4vscode.dataport_var_name": {
+          "type": "string",
+          "default": "",
+          "description": "データポート 変数名"
+        },
+        "rtcbuilder4vscode.dataport_prefix": {
+          "type": "string",
+          "default": "",
+          "description": "データポート 接頭語"
+        },
+        "rtcbuilder4vscode.dataport_suffix": {
+          "type": "string",
+          "default": "",
+          "description": "データポート 接尾語"
+        },
+        "rtcbuilder4vscode.serviceport_name": {
+          "type": "string",
+          "default": "sv_name",
+          "description": "サービスポート 名称"
+        },
+        "rtcbuilder4vscode.serviceport_prefix": {
+          "type": "string",
+          "default": "",
+          "description": "サービスポート 接頭語"
+        },
+        "rtcbuilder4vscode.serviceport_suffix": {
+          "type": "string",
+          "default": "",
+          "description": "サービスポート 接尾語"
+        },
+        "rtcbuilder4vscode.serviceif_name": {
+          "type": "string",
+          "default": "if_name",
+          "description": "サービスインターフェース 名称"
+        },
+        "rtcbuilder4vscode.serviceif_instance": {
+          "type": "string",
+          "default": "",
+          "description": "サービスインターフェース インスタンス名"
+        },
+        "rtcbuilder4vscode.serviceif_var_name": {
+          "type": "string",
+          "default": "",
+          "description": "サービスインターフェース 変数名"
+        },
+        "rtcbuilder4vscode.serviceif_prefix": {
+          "type": "string",
+          "default": "",
+          "description": "サービスインターフェース 接頭語"
+        },
+        "rtcbuilder4vscode.serviceif_suffix": {
+          "type": "string",
+          "default": "",
+          "description": "サービスインターフェース 接尾語"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "rtcbuilder.openPanel",
+        "title": "Open New RtcBuilder Editor"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.101.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1"
+  },
+  "dependencies": {
+    "antlr4": "4.8",
+    "fast-xml-parser": "^5.2.5",
+    "iconv-lite": "^0.7.0",
+    "js2xmlparser": "^5.0.0",
+    "monaco-editor": "^0.52.2",
+    "nunjucks": "^3.2.4"
+  }
+}

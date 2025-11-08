@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../rtcbuilder4vscode-python"
+		},
+		{
+			"path": "../rtcbuilder4vscode-java"
+		},
+		{
+			"path": "../rtcbuilder4vscode-lua"
+		},
+		{
+			"path": "../rtcbuilder4vscode-processing"
+		}
+	],
+	"settings": {}
+}

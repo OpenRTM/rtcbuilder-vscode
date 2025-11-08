@@ -1,0 +1,351 @@
+textarea {
+  resize: none;
+}
+
+table tr td {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1px 3px;
+}
+.button-group {
+  display: flex;
+  gap: 10px; /* ボタン同士の間隔 */
+}
+
+.basicBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 9px;
+  font-family: sans-serif;
+  color: #FFFFFF;
+  text-align: center;
+  background-color: #005BAC;
+  margin-left: 5px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: #073190;
+}
+.basicBtn:disabled {
+  background-color: #d2d2d2;
+  color: #6E6E6E;
+  border-color: #A0A0A0;
+}
+
+@media (any-hover: hover) {
+  .basicBtn {
+    transition: background-color 0.2s;
+  }
+
+  .basicBtn:enabled:hover {
+    background-color: #2DB9ED;
+  }
+}
+
+.reloadBtn {
+  margin-left: 0px;
+}
+
+.field {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground, var(--vscode-foreground));
+  border: 1px solid var(--vscode-input-border, transparent);
+  padding: 2px 4px; 
+}
+.field:focus {
+  outline: 1px solid var(--vscode-focusBorder);
+}
+
+.required-field {
+  color: var(--vscode-editorError-foreground, red);
+  font-weight: bold;
+}
+
+.border-label {
+  border: 1px solid var(--vscode-editorGroup-border)
+}
+
+.group-border {
+  border: 1px solid var(--vscode-editorGroup-border);
+  border-collapse: collapse;
+}
+
+/* タブ表示 */
+.tabs {
+  display: flex;
+}
+.tab {
+  padding: 5px 20px;
+  background: var(--vscode-tab-inactiveBackground, transparent);
+  color: var(--vscode-tab-inactiveForeground, var(--vscode-foreground));
+  cursor: pointer;
+  border: 1px solid var(--vscode-tab-border, transparent);
+}
+.tab:hover {
+  background-color: var(--vscode-tab-hoverBackground, var(--vscode-tab-inactiveBackground));
+  color: var(--vscode-tab-hoverForeground, var(--vscode-tab-inactiveForeground));
+}
+.tab.active {
+  background: var(--vscode-tab-activeBackground);
+  color: var(--vscode-tab-activeForeground);
+  border: 2px solid var(--vscode-tab-activeBorder, transparent);
+  font-weight: bold;
+}
+#content {
+  padding: 0px;
+}
+
+/* ２画面表示 */
+.base_container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    padding: 0px;
+  }
+
+.left_container, .right_container {
+  width: 50%;
+  padding: 20px;
+  box-sizing: border-box;
+  padding-top : 0px;
+  padding-left : 5px;
+  margin-top : 0px;
+}
+
+/* DataPortテーブル */
+.table-container {
+  height: 100px;
+  overflow-y: auto;
+  border: 1px solid var(--vscode-editorGroup-border);
+  border-collapse: collapse;
+}
+
+.result_row {
+    cursor: pointer;
+}
+
+/* ServicePortツリービュー */
+.tree-view-container {
+  height: 150px;
+  overflow-y: auto;
+  border: 1px solid var(--vscode-editorGroup-border);
+  border-collapse: collapse;
+}
+
+.service-button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+    padding: 1px 3px;
+}
+
+
+ul {
+  list-style-type: none;
+  padding-left: 1em;
+}
+
+.collapsible {
+  cursor: pointer;
+  user-select: none;
+}
+
+.nested {
+  display: none;
+  margin-left: 1em;
+}
+
+.active {
+  display: block;
+}
+
+.selected {
+  background-color: #007acc;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+li {
+  margin: 4px 0;
+}
+
+.tree-label {
+  display: inline-block;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.node-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.if-node-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  margin-right: 4px;
+  background-color: #007acc;
+}
+
+.toggle-icon {
+  width: 1em;
+}
+
+#service_interface_area{
+  display: none;
+}
+
+#service_interface_doc_area{
+  display: none;
+}
+
+.title_area {
+  padding: 0px;
+}
+.border-label {
+  display: inline-block;
+  border: 1px solid;
+  padding: 4px 8px;
+  width: 500px;
+  min-height: 16px; 
+}
+
+.project-container {
+    display: flex;
+    align-items: center;
+    padding: 1px 3px;
+}
+
+.title_row {
+  font-weight : bold;
+  color : var(--vscode-editor-background);
+  background: var(--vscode-editor-foreground);
+}
+
+.default_activity {
+  width : 33%;
+  text-align : center;
+  font-weight: bold;
+}
+
+.highlight_activity {
+  color: var(--vscode-editorError-foreground, red);
+  font-weight: bold;
+}
+
+.activated_activity {
+  background-color: #4187da;
+}
+
+/* RTC.xml */
+.rtc_container {
+  width: 100%;
+  height: 100vh;
+  padding: 5px;
+}
+
+.rtc-button-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: end;
+  padding: 1px 3px;
+  margin-top: 1px;
+}
+
+.rtc_text {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  padding: 5px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.3em;
+  overflow: auto;
+  font-family: system-ui;
+}
+
+.editor-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.line-numbers {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground, var(--vscode-foreground));
+  padding: 5px 5px;
+  text-align: right;
+  user-select: none;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: system-ui;
+  line-height: 1.3em;
+}
+
+.line-numbers span {
+  display: block;
+  height: 1.2em;
+}
+
+/* Configuration Set Data Type */
+.combo-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 95%;
+}
+
+.combo-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  max-height: 200px;
+  overflow-y: auto;
+
+  background-color: var(--vscode-dropdown-background);
+  color: var(--vscode-dropdown-foreground);
+  border: 1px solid var(--vscode-focusBorder);
+}
+
+.combo-options li {
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.combo-options li:hover {
+background-color: var(--vscode-list-hoverBackground);
+  color: var(--vscode-list-hoverForeground);
+}
+
+.hidden {
+  display: none;
+}
+
+.combo-wrapper .arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--vscode-dropdown-foreground);
+  font-size: 16px;
+}

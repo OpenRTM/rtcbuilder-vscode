@@ -1,0 +1,2 @@
+@echo off
+omniidl.exe -bpython -I"%RTM_ROOT%\rtm\idl" {% for IdlFile in allIdlFileParamBuild %}idl/{{ getFileName(IdlFile.idlPath) }} {% endfor %}

@@ -1,0 +1,68 @@
+Copyright Notice and Licensing Terms
+====================================
+
+Copyright (C) 2003–2025
+    Noriaki Ando and the OpenRTM-aist Project Team
+    Intelligent Systems Research Institute (ISRI),
+    National Institute of Advanced Industrial Science and Technology (AIST),
+    Tsukuba, Japan.
+
+------------------------------------------------------------------------------
+
+NOTICE
+------
+This document sets forth the terms under which this software may be used.
+Please read it carefully before using any portion of this software.  
+By using the software, you agree to be bound by these terms and acknowledge that this agreement is enforceable as a written contract.
+
+------------------------------------------------------------------------------
+
+LICENSE
+-------
+The RTCBuilder-vscode software is **dual-licensed**.  
+You may use, copy, distribute, and/or modify this software under one of the following two licenses:
+
+1. **Apache License, Version 2.0**  
+   See the file `LICENSE.txt` for the full text.
+
+2. **Individual (Commercial) License**  
+   You may obtain a commercial license from AIST and/or its Technology Licensing Organization (TLO)  
+   that permits use, copying, modification, distribution, and/or sublicensing of this software  
+   without the limitations or conditions of the Apache License, Version 2.0.  
+   Such license shall be concluded through a negotiated agreement between you and AIST and/or its TLO.  
+   To inquire about an individual license, please contact AIST using the information below.
+
+------------------------------------------------------------------------------
+
+SUBMISSIONS
+-----------
+RTCBuilder-vscode is maintained by the National Institute of Advanced Industrial Science and Technology (AIST), Tsukuba, Japan,  
+as part of its open-source software activities.
+
+By submitting comments, suggestions, code, code snippets, techniques, or algorithms (collectively, “Submissions”),  
+contributors represent that they have the right to do so and grant AIST a perpetual, worldwide, non-exclusive, royalty-free license  
+to use, reproduce, modify, and distribute such Submissions as part of the RTCBuilder-vscode project or related works.  
+Acceptance, incorporation, or modification of Submissions is at the sole discretion of the project maintainers.
+
+------------------------------------------------------------------------------
+
+DISCLAIMER
+----------
+THIS SOFTWARE IS PROVIDED BY THE AUTHORS AND CONTRIBUTORS "AS IS"  
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,  
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  
+IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,  
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;  
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT  
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,  
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+------------------------------------------------------------------------------
+
+CONTACT INFORMATION
+-------------------
+Noriaki Ando <n-ando@aist.go.jp>  
+National Institute of Advanced Industrial Science and Technology (AIST)  
+Intelligent Systems Research Institute (ISRI)  
+Tsukuba Central 2, 1-1-1 Umezono, Tsukuba, Ibaraki 305-8568, Japan  
+Tel: +81-80-2216-5009

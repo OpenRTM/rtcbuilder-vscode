@@ -1,0 +1,58 @@
+// -*-C++-*-
+/*!
+ * @file  {{ getIdlFileNoExt(idlFileParam.idlPath) }}SVC_impl.cpp
+ * @brief Service implementation code of {{ getFileName(idlFileParam.idlPath) }} (test code)
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}
+{%- endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license }}
+{%- endif %}
+ *
+ */
+
+#include "{{ getIdlFileNoExt(idlFileParam.idlPath)}}SVC_impl.h"
+
+ {% for serviceClassParam in idlFileParam.testServiceClass %}
+/*
+ * Example implementational code for IDL interface {{ convertDelimiter(serviceClassParam.name) }}
+ */
+{{ getBasename(serviceClassParam.name) }}SVC_impl::{{ getBasename(serviceClassParam.name) }}SVC_impl()
+{
+  // Please add extra constructor code here.
+}
+
+
+{{ getBasename(serviceClassParam.name) }}SVC_impl::~{{ getBasename(serviceClassParam.name) }}SVC_impl()
+{
+  // Please add extra destructor code here.
+}
+
+
+/*
+ * Methods corresponding to IDL attributes and operations
+ */
+{%- for serviceMethodParam in serviceClassParam.methods %}
+{{ convCpp2CORBA(serviceMethodParam, rtcParam.dataDefParams) }} {{ getBasename(serviceClassParam.name) }}SVC_impl::{{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ convCpp2CORBAforArg(serviceArgumentParam, rtcParam.dataDefParams) }} {{ serviceArgumentParam.name }}{% endfor %})
+{
+{% if checkMethodRet(serviceMethodParam, rtcParam.dataDefParams) %}	{{ convCpp2CORBA(serviceMethodParam, rtcParam.dataDefParams) }} result;
+{%- endif %}
+  // Please insert your code here and remove the following warning pragma
+#ifndef WIN32
+  #warning "Code missing in function <{{ convCpp2CORBA(serviceMethodParam, rtcParam.dataDefParams) }} {{ getBasename(serviceClassParam.name) }}SVC_impl::{{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ convCpp2CORBAforArg(serviceArgumentParam, rtcParam.dataDefParams) }} {{ serviceArgumentParam.name }}{%- endfor %})>"
+#endif
+{% if checkMethodRet(serviceMethodParam, rtcParam.dataDefParams) %}  return result;
+{%- else %}{% if serviceMethodParam.type != 'void' %}  return 0;{%- endif %}
+{%- endif %}
+}
+
+{% endfor %}
+
+
+// End of example implementational code
+
+{% endfor %}
+
+

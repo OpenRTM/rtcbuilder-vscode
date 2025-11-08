@@ -1,0 +1,63 @@
+// -*-C++-*-
+/*!
+ * @file  {{ getBasename( getIdlFileNoExt(idlFileParam.idlPath) ) }}SVC_impl.h
+ * @brief Service implementation header of {{ getFileName(idlFileParam.idlPath) }}
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}
+{%- endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license }}
+{%- endif %}
+ *
+ */
+
+{%- if getIncludeIdlParams(idlFileParam).length > 0 %}
+{%- for idl in getIncludeIdlParams(idlFileParam) %}
+#include "{{ getIdlFileNoExt(idl.idlPath) }}Skel.h"
+{%- endfor %}
+
+{%- endif %}
+#include "{{ getIdlFileNoExt(idlFileParam.idlPath) }}Skel.h"
+
+#ifndef {{ getIdlFileNoExt(idlFileParam.idlPath).toUpperCase() }}SVC_IMPL_H
+#define {{ getIdlFileNoExt(idlFileParam.idlPath).toUpperCase() }}SVC_IMPL_H
+ {% for serviceClassParam in idlFileParam.serviceClass %}
+/*!
+ * @class {{ getBasename(serviceClassParam.name) }}SVC_impl
+ * Example class implementing IDL interface {{ convertDelimiter(serviceClassParam.name) }}
+ */
+class {{ getBasename(serviceClassParam.name) }}SVC_impl
+ : public virtual POA_{{ convertDelimiter(serviceClassParam.name) }},
+   public virtual PortableServer::RefCountServantBase
+{
+ private:
+   // Make sure all instances are built on the heap by making the
+   // destructor non-public
+   //virtual ~{{ getBasename(serviceClassParam.name) }}SVC_impl();
+
+ public:
+  /*!
+   * @brief standard constructor
+   */
+   {{ getBasename(serviceClassParam.name) }}SVC_impl();
+  /*!
+   * @brief destructor
+   */
+   virtual ~{{ getBasename(serviceClassParam.name) }}SVC_impl();
+
+   // attributes and operations
+{%- for serviceMethodParam in serviceClassParam.methods %}
+   {{ convCpp2CORBA(serviceMethodParam, rtcParam.dataDefParams) }} {{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ convCpp2CORBAforArg(serviceArgumentParam, rtcParam.dataDefParams) }} {{ serviceArgumentParam.name }}{% endfor %});
+{%- endfor %}
+
+};
+
+{%- endfor %}
+
+
+
+#endif // {{ getIdlFileNoExt(idlFileParam.idlPath).toUpperCase() }}SVC_IMPL_H
+
+

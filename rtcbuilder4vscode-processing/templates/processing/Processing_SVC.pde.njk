@@ -1,0 +1,43 @@
+// -*-Java-*-
+/*!
+ * @file  {{ getInterfaceBasename(serviceClassParam.name) }}SVC_impl.java
+ * @brief Service implementation code of {{ idlFileParam.getIdlFile() }}
+{%- if rtcParam.doc_creator.length > 0 %}
+ *
+ * @author {{ rtcParam.doc_creator }}
+{%- endif %}
+{%- if rtcParam.doc_license.length > 0 %}
+ *
+ * {{ rtcParam.doc_license }}
+{%- endif %}
+ *
+ */
+{% if isModule(serviceClassParam.name) %}import {{ convFormat(serviceClassParam.name) }}POA;
+{%- endif %}
+/**
+ * {{ getInterfaceBasename(serviceClassParam.name) }}SVC_impl
+ * <p>
+ * Example class implementing IDL interface {{ serviceClassParam.name }}
+ */
+public class {{ getInterfaceBasename(serviceClassParam.name) }}SVC_impl extends {{ getInterfaceBasename(serviceClassParam.name) }}POA{
+    
+    public {{ getInterfaceBasename(serviceClassParam.name) }}SVC_impl() {
+        // Please add extra constructor code here.
+    }
+
+    /*
+     * Methods corresponding to IDL attributes and operations
+     */
+{%- for serviceMethodParam in serviceClassParam.methods %}
+    public {{ convCORBA2Java(serviceMethodParam, serviceClassParam, rtcParam.dataDefParams) }} {{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ convCORBA2JavaforArg(serviceArgumentParam, serviceArgumentParam.direction, serviceClassParam, rtcParam.dataDefParams) }} {{ serviceArgumentParam.name }}{% endfor %}) {
+        // Please insert your code here and remove the following warning pragma
+        // TODO "Code missing in function <{{ convCORBA2JavaNoDef(serviceMethodParam.type) }} {{ serviceMethodParam.name }}({% for serviceArgumentParam in serviceMethodParam.params %}{% if loop.index > 1 %}, {% endif %}{{ convCORBA2JavaforArgCmt(serviceArgumentParam.type, serviceArgumentParam.direction) }} {{ serviceArgumentParam.name }}{% endfor %})>"
+{% if serviceMethodParam.type !== 'void' %}{% if isRetNumber(serviceMethodParam, serviceClassParam, rtcParam.dataTypeParams) %}        return 0;
+{%- elseif isRetBoolean(serviceMethodParam, serviceClassParam, rtcParam.dataDefParams) %}        return false;
+{%- else %}        return null;
+{%- endif %}
+{%- endif %}
+    }
+{% endfor %}
+//  End of example implementational code
+}

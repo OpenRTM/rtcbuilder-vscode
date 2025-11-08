@@ -1,0 +1,118 @@
+<!--
+# -*- Buildfile -*-
+# @file  build_{{ rtcParam.name }}.xml
+# @brief RTComponent makefile for "{{ rtcParam.name }} component"
+# @date  $Date$
+#
+# $Id$
+ -->
+<project name="{{ rtcParam.name }}" default="generatedoc">
+	<property name="source" value="src" />
+	<property name="dest" value="bin" />
+	<property name="doc" value="doc" />
+	<property name="testsource" value="test/src" />
+	<property environment="env" />
+{%- if rtcParam.checkWithoutDefaultPathes() == true %}
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="setWindows" if="isWindows">
+		<property name="idlj.path" value="${env.JAVA_HOME}/bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR}" />
+	</target>
+
+	<target name="setUnix" if="isUnix">
+		<property name="idlj.path" value="${java.home}/../bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR2}" />
+	</target>
+{%- endif %}
+
+	<target name="mkdir">
+		<mkdir dir="${dest}" />
+{%- if rtcParam.checkWithoutDefaultPathes() == true %}
+		<mkdir dir="src/temp" />
+{%- endif %}
+	</target>
+
+{%- if rtcParam.checkWithoutDefaultPathes() == true %}
+	<target name="idlcompile"  depends="mkdir, setWindows, setUnix">
+		<echo message="idlj.path : ${idlj.path}"/>
+{%- for idlPath in rtcParam.providerIdlPathes %}
+{%- if  idlPath.checkDefault() == false %}
+		<exec executable="${idlj.path}">
+			<arg line="-td 'src/temp' -i '${rtm.idl.path}' {% for idlSearchPath in idlPath.idlSearchPathes %}-i '{{ idlSearchPath }}' {% endfor %}-fall 'idl/{{ getFileName(idlPath.idlPath) }}'"/>
+		</exec>
+{%- for idl in idlPath.getIncludeIdlParamsWithoutDefault() %}
+		<exec executable="${idlj.path}">
+			<arg line="-td 'src/temp' -i '${rtm.idl.path}' {% for idlSearchPath in idlPath.idlSearchPathes %}-i '{{ idlSearchPath }}' {% endfor %}-fall 'idl/{{ getFileName(idl.idlPath) }}'"/>
+		</exec>
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+{%- for idlPath in rtcParam.consumerIdlPathes %}
+{%- if idlPath.checkDefault() == false %}
+		<exec executable="${idlj.path}">
+			<arg line="-td 'src' -i '${rtm.idl.path}' {% for idlSearchPath in idlPath.idlSearchPathes %}-i '{{ idlSearchPath }}' {% endfor %}-fall 'idl/{{ getFileName(idlPath.idlPath) }}'"/>
+		</exec>
+{%- for idl in idlPath.getIncludeIdlParamsWithoutDefault() %}
+		<exec executable="${idlj.path}">
+			<arg line="-td 'src' -i '${rtm.idl.path}' {% for idlSearchPath in idlPath.idlSearchPathes %}-i '{{ idlSearchPath }}' {% endfor %}-fall 'idl/{{ getFileName(idl.idlPath) }}'"/>
+		</exec>
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
+		<native2ascii src="src/temp" dest="src"/>
+		<delete dir="src/temp"/>
+	</target>
+
+{%- endif %}
+{%- if rtcParam.checkWithoutDefaultPathes() == true %}
+	<target name="compile" depends="idlcompile">
+{%- else %}
+	<target name="compile" depends="mkdir">
+{%- endif %}
+		<javac includeantruntime="false" srcdir="${source}{{ getServiceNamePath(rtcParam) }}" destdir="${dest}">
+			<classpath>
+				<fileset dir="${env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="generatejar" depends="compile">
+		<delete file="{{ getServiceName(rtcParam) }}.jar" />
+		<jar destfile="{{ getServiceName(rtcParam) }}.jar"
+		basedir="${source}/{{ getServiceName(rtcParam) }}"
+		excludes="" />
+	</target>
+
+	<target name="generatedoc" depends="generatejar">
+		<javadoc 
+                        Locale="ja_JP"
+                        destdir="${doc}"
+                        docencoding="UTF-8"
+			author="true" doctitle="{{ rtcParam.name }}" 
+			nodeprecated="false" nodeprecatedlist="false" 
+                        noindex="false" nonavbar="false" notree="false" 
+			package="yes" splitindex="true" 
+                        use="true" version="true" charset="UTF-8" 
+                        >
+			<classpath>
+				<fileset dir="${env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+			<sourcefiles>
+				<fileset dir="${source}">
+					<include name="**/*.pde"/>
+				</fileset>
+                	</sourcefiles>
+                </javadoc>
+	</target>
+</project>

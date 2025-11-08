@@ -1,0 +1,39 @@
+{
+  "name": "rtcbuilder4vscode-lua",
+  "displayName": "RTCBuilder for VS Code(Lua)",
+  "publisher": "aist",
+  "version": "1.0.0",
+  "description": "RTCBuilder for VS Code(Lua)",
+  "license": "Apache-2.0 OR Commercial",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OpenRTM-aist/rtcbuilder-vscode"
+  },
+  "engines": {
+    "vscode": "^1.103.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": []
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.103.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1"
+  },
+  "dependencies": {
+    "nunjucks": "^3.2.4"
+  }
+}
