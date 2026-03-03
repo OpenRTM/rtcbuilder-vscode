@@ -48,6 +48,10 @@ table tr td {
   }
 }
 
+.btnRight {
+  margin-left: auto;
+}
+
 .reloadBtn {
   margin-left: 0px;
 }
@@ -57,6 +61,8 @@ table tr td {
   color: var(--vscode-input-foreground, var(--vscode-foreground));
   border: 1px solid var(--vscode-input-border, transparent);
   padding: 2px 4px; 
+  width: 100%;
+  box-sizing: border-box;
 }
 .field:focus {
   outline: 1px solid var(--vscode-focusBorder);
@@ -68,7 +74,9 @@ table tr td {
 }
 
 .border-label {
-  border: 1px solid var(--vscode-editorGroup-border)
+  border: 1px solid var(--vscode-editorGroup-border);
+  padding: 2px 4px;
+  white-space: normal;  
 }
 
 .group-border {
@@ -212,12 +220,11 @@ li {
 .title_area {
   padding: 0px;
 }
-.border-label {
-  display: inline-block;
-  border: 1px solid;
-  padding: 4px 8px;
-  width: 500px;
-  min-height: 16px; 
+
+.title_area_container {
+  padding: 0px;
+  display: flex;
+  align-items: center;
 }
 
 .project-container {
@@ -348,4 +355,75 @@ background-color: var(--vscode-list-hoverBackground);
   pointer-events: none;
   color: var(--vscode-dropdown-foreground);
   font-size: 16px;
+}
+
+.container-desc-label {
+  border: 1px solid var(--vscode-editorGroup-border);
+  padding: 2px 4px;
+  line-height: 1.5em;
+  min-height: 4.5em;
+  display: flex;
+  background-color: var(--vscode-editor-background); 
+}
+
+.container-target-table {
+  height: 100px;
+  overflow-y: auto;
+  border: 1px solid var(--vscode-editorGroup-border);
+  border-collapse: collapse;
+  border: 1pt;
+}
+
+.container-target-btn {
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.container-table {
+  height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--vscode-editorGroup-border);
+  border-collapse: collapse;
+  border: 1pt;
+}
+
+.container-library-sub-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.container-library-td {
+  vertical-align: top;
+}
+
+.container-library-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 4px;
+}
+
+.library-icon {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+.result_row_lib {
+    cursor: pointer;
+}
+
+.repository-btn {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.result_row_repository {
+    cursor: pointer;
 }

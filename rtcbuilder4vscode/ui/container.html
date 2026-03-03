@@ -1,0 +1,242 @@
+<div class="title_area_container">
+  <font size="5" id="container.SECTION">コンテナ生成</font>
+  <button onclick="loadConfigClick()" class="basicBtn btnRight" id="container.BTN_CONFIG_LOAD">設定ファイル読み込み</button>
+  <input type="file" id="fileInput" onclick="loadConfig()" hidden>
+</div>
+<div>
+  <font size="5" id="container.SETTING_CAUTION" style="color: red;" font-weight: bold;">コンテナ生成用の設定ファイルが読み込まれていません</font>
+</div>
+<div class="base_container">
+  <div class="left_container">
+    <table style="width : 100%;">
+      <tbody>
+        <colgroup>
+          <col style="width: 15%;">
+          <col style="width: 35%;">
+          <col style="width: 15%;">
+          <col style="width: 20%;">
+          <col style="width: 15%;">
+        </colgroup>
+      	<!--Basic Module Information-->
+        <tr>
+          <td colspan="5" class="title_row" id="container.BASIC_TITLE">Basic Module Information</td>
+        </tr>
+        <tr>
+          <td style="width : 100px;" id="container.LBL_MODULE_NAME">Module Name:</td>
+          <td colspan="4" class="border-label" id="container_mod_name">XXX</td>
+        </tr>
+        <tr>
+          <td id="basic.LBL_DESCRIPTION">概要 :</td>
+          <td colspan="4" class="container-desc-label" id="container_mod_desc">YYY</td>
+        </tr>
+
+      	<!--Target List-->
+        <tr>
+          <td colspan="5" class="title_row" id="container.TARGET_TITLE">Target List</td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="container-target-table">
+              <table border="1" style="width : 100%;">
+                <thead>
+                  <tr>
+                    <th id="container.TBL_MIDDLEWARE">Middleware</th>
+                    <th id="container.TBL_MIDDLEWARE_VERSION">Version</th>
+                    <th id="container.TBL_OS_VERSION">OS Version</th>
+                  </tr>
+                </thead>
+                <tbody id="target_table"></tbody>
+              </table>
+            </div>
+          </td>
+          <td>
+            <div class="container-target-btn">
+              <button onclick="add_target()" style="margin : 2px;" id="add_target_btn" class="basicBtn">Add</button>
+              <button onclick="delete_target()" style="margin : 2px;" id="delete_target_btn" class="basicBtn">Delete</button>
+            </div>
+          </td>
+        </tr>
+
+        <!--Emvironment-->
+        <tr>
+          <td colspan="5" class="title_row" id="container.ENVIRONMENT_TITLE">Environment</td>
+        </tr>
+        <tr>
+          <td id="container.LBL_MIDDLEWARE">Middleware:</td>
+          <td colspan="4">
+            <select id="container_middleware" class="field" style="width : 100%;" onchange="middleware_selected()">
+             </select>
+      	  </td>
+        </tr>
+        <tr>
+          <td id="container.LBL_MIDDLEWARE_VERSION">Version:</td>
+          <td>
+            <select id="container_middleware_version" class="field" style="width : 100%;" onchange="middleware_version_selected()">
+             </select>
+      	  </td>
+          <td id="container.LBL_OS_VERSION">OS Version:</td>
+          <td colspan="2">
+            <select id="container_os_version" class="field" style="width : 100%;" onchange="os_version_selected()">
+             </select>
+      	  </td>
+        </tr>
+        <tr>
+          <td id="container.LBL_WORKSPACE">Workspace:</td>
+          <td colspan="4">
+            <input type="text" id="container_workspace" class="field" style="width : 100%;">
+      	  </td>
+        </tr>
+        <tr>
+          <td id="container.LBL_LANGUAGE">Language:</td>
+          <td>
+            <select id="container_language" class="field" style="width : 100%;">
+             </select>
+      	  </td>
+          <td id="container.LBL_CONFIGURATION">Configuration:</td>
+          <td colspan="2">
+            <select id="container_configuration" class="field" style="width : 100%;">
+             </select>
+      	  </td>
+        </tr>
+
+        <!--Libraries-->
+        <tr>
+          <td colspan="5" class="title_row" id="container.LIBRARY_TITLE">Libraries</td>
+        </tr>
+        <tr>
+          <td colspan="5" id="container.LIBRARY_EXP">Edit Selected Libraries</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="container-table">
+              <table border="1" style="width : 100%;">
+                <thead>
+                  <tr>
+                    <th id="container.TBL_LIBRARY">Library Name</th>
+                  </tr>
+                </thead>
+                <tbody  id="library_table"></tbody>
+              </table>
+            </div>
+          </td>
+          <td colspan="3" class="container-library-td">
+            <div class="button-container">
+              <div class="button-group">
+                <button onclick="add_library()" style="margin : 2px;" id="add_library_btn" class="basicBtn">Add</button>
+                <button onclick="delete_library()" style="margin : 2px;" id="delete_library_btn" class="basicBtn">Delete</button>
+              </div>
+            </div>
+            <div class="container-library-box">
+              <div>
+                <div id="container.LBL_LIBRARY_SUB" class="container-library-sub-title">Functional Modules</div>
+              </div>
+              <div id="container.LBL_LIBRARY_SUB_EXP">Check to install module dependencies</div>
+              <div id = "container_library_list">
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!--Repositories-->
+        <tr>
+          <td colspan="5" class="title_row" id="container.REPOSITORY_TITLE">Repositories</td>
+        </tr>
+        <tr>
+          <td colspan="5" id="container.REPOSITORY_EXP">Source Code Repositories</td>
+        </tr>
+        <tr>
+          <td id="container.LBL_URL">URL:</td>
+          <td colspan="4">
+            <input type="text" id="container_url" class="field" style="width : 100%;">
+      	  </td>
+        </tr>
+        <tr>
+          <td id="container.LBL_BRANCH">Branch:</td>
+          <td>
+            <input type="text" id="container_branch" class="field" style="width : 100%;">
+      	  </td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            <div class="container-table">
+              <table border="1" id="container_table" style="width : 100%;">
+                <thead>
+                  <tr>
+                    <th id="container.TBL_URL">URL</th>
+                    <th id="container.TBL_BRANCH">Branch</th>
+                  </tr>
+                </thead>
+                <tbody id="repository_table"></tbody>
+              </table>
+            </div>
+          </td>
+          <td>
+            <div class="repository-btn">
+              <button onclick="add_repository()" style="margin : 2px;" id="add_repository_btn" class="basicBtn">Add</button>
+              <button onclick="delete_repository()" style="margin : 2px;" id="delete_repository_btn" class="basicBtn">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="right_container">
+    <table style="width : 100%;">
+      <tbody>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="contrainer.HINT_TITLE">ヒント</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;width : 150px;" id="container.HINT_MODULE_NAME">Module Name:</td>
+          <td id="container.HINT_MODULE_NAME_DESC">生成されるDockerfileの対象となるロボットソフトウェアモジュールの名称です。（基本タブの設定値が使用されます）</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_DESCRIPTION">Description:</td>
+          <td id="container.HINT_DESCRIPTION_DESC">ロボットソフトウェアモジュールの概要記述です。（基本タブの設定値が使用されます）</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_MIDDLEWARE">Middleware:</td>
+          <td id="container.HINT_MIDDLEWARE_DESC">使用するロボットミドルウェア（ROS 1, ROS 2, OpenRTMなど）を選択します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_MIDDLEWARE_VERSION">Middleware  Version:</td>
+          <td id="container.HINT_MIDDLEWARE_VERSION_DESC">ミドルウェアのディストリビューション（Noetic, Humbleなど）を選択します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_OS_VERSION">OS Version:</td>
+          <td id="container.HINT_OS_VERSION_DESC">ベースイメージとなるOSのバージョンを選択します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_WORKSPPACE">Workspace:</td>
+          <td id="container.HINT_WORKSPACE_DESC">コンテナ内に作成するワークスペースのディレクトリ名を入力します。（例: catkin_ws, colcon_ws）</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_LANGUAGE">Language:</td>
+          <td id="container.HINT_LANGUAGE_DESC">コンポーネントの開発に使用する主要言語（C++ または Python）を選択します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_CONFIGURATION">Configuration:</td>
+          <td id="container.HINT_CONFIGURATION_DESC">インストール構成を選択します。（Min: 最小構成 / Full: デスクトップ環境含む推奨構成 / Std: 標準）</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_LIBRARY">Library Name:</td>
+          <td id="container.HINT_LIBRARY_DESC">追加インストールするライブラリの名称を入力します。（論理名を入力すると、生成時に適切なパッケージ名に変換されます）</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_URL">URL:</td>
+          <td id="container.HINT_URL_DESC">ワークスペースにクローンするGitリポジトリのURLを入力します。（例: https://github.com/user/repo.git）</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="container.HINT_BRANCH">Branch:</td>
+          <td id="container.HINT_BRANCH_DESC">チェックアウトするブランチ名またはタグ名を入力します。（例: main, master, v1.0.0）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

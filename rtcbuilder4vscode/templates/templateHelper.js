@@ -443,6 +443,109 @@ function checkTypeInfo(typeDef, dataDefParams) {
   };
 }
 
+function convConfiguration(source) {
+  const value = source.toLowerCase();
+
+  if (value === "min") return 1;
+  if (value === "full" || value === "max") return 2;
+
+  return 0;
+}
+
+function getContainerLibName(containerConfig, param, source) {
+  const mdb = containerConfig.mapping_db;
+  const libDb = mdb.libraries;
+
+  const strKey = param.language.toLowerCase() === "python" ? "pip" : "apt";
+
+  if (source in libDb) {
+    const mapping = libDb[source];
+    const detailMap = mapping.platforms;
+
+    const def = getDefinition(mapping, param);
+
+    if (def) {
+      let targetValue = def[strKey];
+
+      if (targetValue) {
+        if (targetValue.includes("${ROS_DISTRO}")) {
+          const middleware = param.mdlVersion.toLowerCase();
+          targetValue = targetValue.replace("${ROS_DISTRO}", middleware);
+        }
+        return targetValue;
+      }
+    }
+  }
+  return source;
+}
+
+function getDefinition(detailMap, param) {
+  const middleware = param.middleware.replace(/ /g, "").toLowerCase();
+  if (middleware in detailMap) return detailMap[middleware];
+
+  const lang = param.language.toLowerCase();
+  if (lang in detailMap) return detailMap[lang];
+
+  const elems = param.osVersion.split(" ");
+  if (elems.length > 0) {
+    const osName = elems[0].toLowerCase();
+    if (osName in detailMap) return detailMap[osName];
+  }
+
+  if ("default" in detailMap) return detailMap["default"];
+
+  return null;
+}
+
+function convMiddleware(source) {
+  const middleware = source.replace(/ /g, "").toLowerCase();
+
+  if (middleware === "ros1") return 1;
+  if (middleware === "ros2") return 2;
+
+  return 0;
+}
+
+function convOSVersion(source) {
+  if (!source) return "";
+
+  const elems = source.split(" ");
+  return elems.length > 1 ? elems[1] : "";
+}
+
+function convOSVersionNum(source) {
+  if (!source) return 0;
+
+  const elems = source.split(" ");
+  if (elems.length > 1) {
+    const numVer = parseFloat(elems[1]);
+    return isNaN(numVer) ? 0 : numVer;
+  }
+
+  return 0;
+}
+
+function convOSName(source) {
+  if (!source) return "";
+
+  const elems = source.split(" ");
+
+  const part1 = elems[0]?.toLowerCase() ?? "";
+  const part2 = elems[2]
+    ? elems[2].replace(/[()]/g, "").toLowerCase()
+    : "";
+
+  return part1 ? `${part1} ${part2}`.trim() : "";
+}
+
+function getBranchName(source) {
+  const osVersion = convOSVersionNum(source);
+  if(osVersion < 18.05) {
+			return "v3.1.5";
+		}
+		return "main";
+}
+
 module.exports = {
   checkNotWidget,
   getWidget,
@@ -463,5 +566,13 @@ module.exports = {
   getTmplVarNameSI,
   convCpp2CORBA,
   convCpp2CORBAforArg,
-  checkMethodRet
+  checkMethodRet,
+
+  convConfiguration,
+  getContainerLibName,
+  convMiddleware,
+  convOSVersion,
+  convOSVersionNum,
+  convOSName,
+  getBranchName
 };

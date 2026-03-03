@@ -181,7 +181,8 @@
           <td id="dataport.HINT_DATATYPE_DESC">データポート間でやり取りされるデータ型をプルダウンから選択します。<br>
             InPortとOutPortを接続するには、データ型が一致する必要があります。<br>
             OpenRTMが提供する基本型のほかに、独自のデータ型を利用することもできます。<br>
-            独自のデータ型を利用する場合には、データ型を定義したIDLファイルをプロジェクトのidlフォルダにコピーし、Reloadボタンを押すことで定義したデータ型がプルダウンリストに現れます。</td>
+            独自のデータ型を利用する場合には、データ型を定義したIDLファイルをプロジェクトのidlフォルダにコピーし、Reloadボタンを押すことで定義したデータ型がプルダウンリストに現れます。
+          </td>
         </tr>
         <tr>
           <td style="vertical-align : top;" id="dataport.HINT_VARNAME_TITLE">変数名：</td>
@@ -219,6 +220,41 @@
         <tr>
           <td style="vertical-align : top;" id="dataport.HINT_TITLE_OPERAT">処理頻度，周期:</td>
           <td id="dataport.HINT_DOC_OPERAT">ポートがInPortの場合はそのデータの発生頻度（突発的、平均〇秒に1回）やその周期（〇Hz等）を記載</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="dataport.HINT_ROS_TITLE">ヒント(ROS)</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_DATAPORT_TITLE">データポート：</td>
+          <td id="dataport.HINT_ROS_DATAPORT_DESC">Topic通信を使用する場合は、本セクションで設定を行います。<br>
+            Topic通信は、ノード間でデータを非同期かつ継続的に送受信するための通信方式です。<br>
+            データを送信するノードは Publisher、データを受信するノードは Subscriber と呼ばれます。<br>
+            PublisherとSubscriberが通信を行うためには、同一のTopic名および同一のメッセージ型を使用している必要があります。<br>
+            いずれかが一致しない場合、通信は確立されません。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_INPORT_TITLE">InPort：</td>
+          <td id="dataport.HINT_ROS_INPORT_DESC">Topic 通信において、通信方式が Subscriber の場合、本セクションで設定を行います。<br>
+            同一のTopic名および一致するメッセージ型を持つPublisherから送信されたデータを受信します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_OUTPORT_TITLE">OutPort：</td>
+          <td id="dataport.HINT_ROS_OUTPORT_DESC">Topic 通信において、通信方式が Publisher の場合、本セクションで設定を行います。<br>
+            同一のTopic名および一致するメッセージ型を持つSubscriberに対してデータを配信します。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_PORTNAME_TITLE">ポート名：</td>
+          <td id="dataport.HINT_ROS_PORTNAME_DESC">Topic 通信で使用する Topic 名を入力します。<br>
+            Topic名は、ROSシステム内で通信チャネルを識別するための名称です。<br>
+            英数字（A–Z, a–z, 0–9）、アンダースコア（_）、およびスラッシュ（/）を使用できます。スペースや特殊文字は使用できません。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="dataport.HINT_DATATYPE_TITLE">データ型：</td>
+          <td id="dataport.HINT_ROS_DATATYPE_DESC">Topic通信でやり取りされるデータ型(Node::○○)をプルダウンから選択します。<br>
+            PublisherとSubscriberが通信を行うためには、同一のTopic名およびメッセージ型を指定する必要があります。<br>
+            ツールが提供する基本型に加えて、独自のメッセージ型を利用することもできます。<br>
+            独自型を使用する場合は、対応する .msg ファイルを IDL ファイルへ変換し、プロジェクトの IDL フォルダへコピーした後、Reload ボタンを押すと選択肢に表示されます。</td>
         </tr>
       </tbody>
     </table>

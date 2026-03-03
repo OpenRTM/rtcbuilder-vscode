@@ -16,7 +16,6 @@ class BasicInfo {
     this["@"] = {};
     this.children = {};
     this.versionUpLogs = [];
-    this.properties = [];
   }
   setAttribute(key, value) {
     if (value != null && 0 < value.length) this["@"][key] = value;
@@ -37,19 +36,11 @@ class BasicInfo {
   addVersionUpLog(log) {
     if (log) this.versionUpLogs.push(log);
   }
-  addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
-  }
   toXmlObject() {
     const obj = {};
     if (Object.keys(this["@"]).length) obj["@"] = this["@"];
 
     Object.assign(obj, this.children);
-
-    // Properties
-    if (this.properties.length > 0) {
-      obj["rtcExt:Properties"] = this.properties;
-    }
 
     if (this.versionUpLogs.length > 0) {
       obj["rtcExt:VersionUpLogs"] = this.versionUpLogs;
@@ -304,7 +295,7 @@ class Configuration {
     this.constraintXmlObj = constraint ? constraint.toXmlObject() : null;
   }
   addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
+    this.properties.push({ "@": { "rtcExt:name": name, "rtcExt:value": value } });
   }
   setDoc(doc) {
     this.doc = doc;
@@ -350,7 +341,6 @@ class DataPorts {
   constructor() {
     this["@"] = {};
     this.children = {};
-    this.properties = [];
   }
   setAttribute(key, value) {
     if (value != null) this["@"][key] = value;
@@ -360,9 +350,6 @@ class DataPorts {
     if (constraint) this.children["rtc:Constraint"] = constraint.toXmlObject();
     else delete this.children["rtc:Constraint"];
   }
-  addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
-  }
   setDoc(doc) {
     if (doc) {
       const xmlObj = doc.toXmlObject();
@@ -380,10 +367,6 @@ class DataPorts {
     const obj = {};
     if (Object.keys(this["@"]).length) obj["@"] = this["@"];
     Object.assign(obj, this.children);
-    // Properties
-    if (this.properties.length > 0) {
-      obj["rtcExt:Properties"] = this.properties;
-    }
     return obj;
   }
 }
@@ -392,14 +375,10 @@ class ServiceInterface {
   constructor() {
     this["@"] = {};
     this.children = {};
-    this.properties = [];
   }
   setAttribute(key, value) {
     if (value != null) this["@"][key] = value;
     else delete this["@"][key];
-  }
-  addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
   }
   setDoc(doc) {
     if (doc) {
@@ -418,10 +397,6 @@ class ServiceInterface {
     if (Object.keys(this["@"]).length) obj["@"] = this["@"];
 
     Object.assign(obj, this.children);
-    // Properties
-    if (this.properties.length > 0) {
-      obj["rtcExt:Properties"] = this.properties;
-    }
     return obj;
   }
 }
@@ -432,7 +407,6 @@ class ServicePorts {
     this.serviceInterfaces = [];
     this.transMethods = null;
     this.doc = null;
-    this.properties = [];
   }
   setAttribute(key, value) {
     if (value != null) this["@"][key] = value;
@@ -448,9 +422,6 @@ class ServicePorts {
       this.transMethods = null;
     }
   }
-  addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
-  }
   setDoc(doc) {
     this.doc = doc ? doc.toXmlObject() : null;
   }
@@ -463,50 +434,7 @@ class ServicePorts {
     if (this.doc && 0 < Object.keys(this.doc).length) {
       obj["rtcDoc:Doc"] = this.doc;
     } 
-    // Properties
-    if (this.properties.length > 0) {
-      obj["rtcExt:Properties"] = this.properties;
-    }
 
-    return obj;
-  }
-}
-
-class EnvLibrary {
-  constructor() {
-    this["@"] = {};
-  }
-  setAttribute(key, value) {
-    if (value != null) this["@"][key] = value;
-    else delete this["@"][key];
-  }
-  toXmlObject() {
-    const obj = {};
-    if (Object.keys(this["@"]).length) obj["@"] = this["@"];
-    return obj;
-  }
-}
-
-class TargetEnvironment {
-  constructor() {
-    this["@"] = {};
-    this.libraries = [];
-    this.cpus = [];
-    this.osVersions = [];
-  }
-  setAttribute(key, value) {
-    if (value != null) this["@"][key] = value;
-    else delete this["@"][key];
-  }
-  addLibrary(target) {
-    this.libraries.push(target.toXmlObject());
-  }
-  toXmlObject() {
-    const obj = {};
-    if (Object.keys(this["@"]).length) obj["@"] = this["@"];
-    if (this.osVersions.length > 0) obj["rtcExt:osVersions"] = this.osVersions;
-    if (this.cpus.length > 0) obj["rtcExt:cpus"] = this.cpus;
-    if (this.libraries.length > 0) obj["rtcExt:libraries"] = this.libraries;
     return obj;
   }
 }
@@ -515,23 +443,18 @@ class Language {
   constructor() {
     this["@"] = {};
     this.targets = [];
-    this.properties = [];
   }
   setAttribute(key, value) {
     if (value != null) this["@"][key] = value;
     else delete this["@"][key];
   }
   addTarget(target) {
-    this.targets.push(target.toXmlObject());
-  }
-  addProperty(name, value) {
-    this.properties.push({ "@": { "rtcExt:value": value, "rtcExt:name": name } });
+    this.targets.push(target);
   }
   toXmlObject() {
     const obj = {};
     if (Object.keys(this["@"]).length) obj["@"] = this["@"];
     if (this.targets.length > 0) obj["rtcExt:targets"] = this.targets;
-    if (this.properties.length > 0) obj["rtcExt:Properties"] = this.properties;
     return obj;
   }
 }
@@ -599,7 +522,5 @@ module.exports = {
   DataPorts,
   ServiceInterface,
   ServicePorts,
-  Language,
-  TargetEnvironment,
-  EnvLibrary
+  Language
 };

@@ -29,6 +29,7 @@
     <div class="tab" data-file="serviceport.html" data-i18n="main.servicePort">サービスポート</div>
     <div class="tab" data-file="configuration.html" data-i18n="main.configuration">コンフィギュレーション</div>
     <div class="tab" data-file="document.html" data-i18n="main.document">ドキュメント生成</div>
+    <div class="tab" data-file="container.html" data-i18n="main.container">コンテナ生成</div>
     <div class="tab" data-file="rtc_xml.html">RTC.xml</div>
   </div>
 
@@ -105,6 +106,8 @@
         updateServiceDef(msg.pathes, msg.services);
       } else if (msg.command === 'sendXML') {
         updateXMLProfile(msg.xml);
+      } else if (msg.command === 'sendRefResult') {
+        updateRefResult(msg.source, msg.file_name);
       } else if (msg.command === 'sendProfile') {
         rtc_param_ = msg.profile;
         // console.log(rtc_param_);
@@ -116,6 +119,20 @@
             type: 'info'
           });
         }
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      const isSave = (event.ctrlKey || event.metaKey) && event.key === 's';
+      if (isSave) {
+        event.preventDefault();
+        store_profile(prev_tab);
+        const project = document.getElementById('project-name').textContent;
+        vscode.postMessage({
+            command: 'saveProfile',
+            param: rtc_param_,
+            project_dir: project
+        });
       }
     });
 
@@ -146,6 +163,7 @@
     // 初期表示
     loadTab('basic.html');
     tabs[0].classList.add('active');
+
   </script>
 </body>
 

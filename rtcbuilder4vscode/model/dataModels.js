@@ -129,6 +129,10 @@ class DataPortParam {
         this.doc_unit = '';
         this.doc_occerrence = '';
         this.doc_operation = '';
+
+        this.properties = [];
+        this.comment = '';
+        this.position = '';
     }
 }
 
@@ -148,6 +152,9 @@ class ServicePortInterfaceParam {
         this.doc_exception = '';
         this.doc_pre_condition = '';
         this.doc_post_condition = '';
+
+        this.comment = '';
+        this.properties = [];
     }
 
     getTmplVarName() {
@@ -168,6 +175,10 @@ class ServicePortParam {
 
         this.doc_description = '';
         this.doc_if_description = '';
+
+        this.comment = '';
+        this.position = '';
+        this.properties = [];
     }
 }
 
@@ -189,6 +200,7 @@ class ConfigSetParam {
         this.doc_constraint = '';
 
         this.properties = [];
+        this.comment = '';
     }
 
     getWidget() {
@@ -238,6 +250,56 @@ class ConfigSetParam {
     }
 }
 
+class EnvLibraryParam {
+    constructor() {
+        this.name = '';
+        this.path = '';
+        this.version = '';
+        this.other = '';
+    }
+}
+
+class TargetEnvironmentParam {
+    constructor() {
+        this.langVersion = '';
+        this.os ='';
+        this.OSversions ='';
+        this.other ='';
+        this.CPUs = [];
+        this.cpuOther ='';
+        this.libraries = [];
+    }
+}
+
+class LanguageParam {
+    constructor() {
+        this.kind = '';
+        this.targets = [];
+        this.properties = [];
+    }
+}
+
+class RepositoryParam {
+    constructor() {
+        this.URL = '';
+        this.Branch = '';
+    }
+}
+
+class ContainerParam {
+    constructor() {
+        this.middleware = '';
+        this.mdlVersion = '';
+        this.osVersion = '';
+        this.workspace = '';
+        this.language = '';
+        this.configuration = '';
+        this.libraries = [];
+        this.preSets = [];
+        this.repositories = [];
+    }
+}
+
 class RtcParam {
     constructor() {
         this.name = '';
@@ -270,6 +332,8 @@ class RtcParam {
         this.actions['onExecute'] = new ActionParam();
         this.actions['onStateUpdate'] = new ActionParam();
         this.actions['onRateChanged'] = new ActionParam();
+        this.actions['onAction'] = new ActionParam();
+        this.actions['onModeChanged'] = new ActionParam();
 
         this.inports = [];
         this.outports = [];
@@ -277,6 +341,7 @@ class RtcParam {
         this.serviceClassParams = [];
         this.configParams = [];
         this.language = '';
+        this.lang = new LanguageParam();
         //
         this.doc_description = '';
         this.doc_in_out = '';
@@ -293,6 +358,9 @@ class RtcParam {
         this.includedIdls = [];
         this.idlPathes = [];
         this.serviceClassParams = [];
+        // 
+        this.containerSettings = [];
+        this.containerConfig = null;
         //
         this.commonPrefix = '';
 	    this.commonSuffix = '';
@@ -311,6 +379,15 @@ class RtcParam {
 
         this.rtm_java_version = '';
         this.libraryPath = [];
+
+        this.profile_version = '';
+        this.creation_date = '';
+        this.update_date = '';
+        this.comment = '';
+        this.save_project = '';
+        this.version_up_log = '';
+
+        this.properties = [];
     }
 
     validateBasicInfo() {
@@ -494,6 +571,44 @@ class RtcParam {
                 return { ret: false, msg: translations["script.config.VALIDATE_VAR_DUPLICATE"] + ' ' + config.name};
             }
             existedVarName.add(config.varname);
+        }
+        return { ret: true, msg: '' };
+    }
+
+    validateContainerInfo() {
+        for(const container of this.containerSettings) {
+            if( container.middleware.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_MIDDLEWARE"] };
+            }
+
+            if( container.mdlVersion.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_MIDDLEWARE_VERSION"] };
+            }
+            
+            if( container.osVersion.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_OS_VERSION"] };
+            }
+            
+            if( container.workspace.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_WORKSPACE"] };
+            }
+            
+            if( container.language.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_LANGUAGE"] };
+            }
+
+            if( container.configuration.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_CONFIGURATION"] };
+            }
+            
+            for(let each of container.repositories) {
+                if(each.URL.length ==0) {
+                    return { ret: false, msg: translations["script.container.VALIDATE_REPOSITORY_URL"] };
+                }
+                if(each.Branch.length ==0) {
+                    return { ret: false, msg: translations["script.container.VALIDATE_REPOSITORY_BRAMCH"] };
+                }
+            }
         }
         return { ret: true, msg: '' };
     }
@@ -760,5 +875,9 @@ module.exports = {
   ServicePortInterfaceParam,
   ServicePortParam,
   ConfigSetParam,
+  TargetEnvironmentParam,
+  EnvLibraryParam,
+  ContainerParam,
+  RepositoryParam,
   GeneratedResult
 };

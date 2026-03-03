@@ -50,6 +50,9 @@ async function activate(context) {
       const configSetScriptUri = panel.webview.asWebviewUri(
           vscode.Uri.file(path.join(context.extensionPath, 'ui', 'configuration.js'))
         );
+      const containerScriptUri = panel.webview.asWebviewUri(
+          vscode.Uri.file(path.join(context.extensionPath, 'ui', 'container.js'))
+        );
       const scriptUri = panel.webview.asWebviewUri(
           vscode.Uri.file(path.join(context.extensionPath, 'ui', 'scripts.js'))
         );
@@ -74,6 +77,9 @@ async function activate(context) {
       const proIconUri = panel.webview.asWebviewUri(
           vscode.Uri.file(path.join(context.extensionPath, 'figs', 'ProIF.png'))
         );
+      const hintIconUri = panel.webview.asWebviewUri(
+          vscode.Uri.file(path.join(context.extensionPath, 'figs', 'question.png'))
+        );
 
       let config_types = ["short", "int", "long", "float", "double", "string"];
 
@@ -87,11 +93,13 @@ async function activate(context) {
                                      <script src="${dataPortScriptUri}"></script>
                                      <script src="${servicePortScriptUri}"></script>
                                      <script src="${configSetScriptUri}"></script>
+                                     <script src="${containerScriptUri}"></script>
                                      <script src="${scriptUri}"></script>
                                      <script>
                                         const PORT_ICON_URI = "${portIconUri}";
                                         const REQ_ICON_URI = "${reqIconUri}";
                                         const PROV_ICON_URI = "${proIconUri}";
+                                        const HINT_ICON_URI = "${hintIconUri}";
                                       </script>`);
 
       panel.webview.html = html;
@@ -115,6 +123,7 @@ async function activate(context) {
   return {
     RtcParam
   };
+  
 }
 
 function deactivate() {}

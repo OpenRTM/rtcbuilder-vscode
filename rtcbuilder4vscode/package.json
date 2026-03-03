@@ -261,6 +261,11 @@
           "type": "string",
           "default": "",
           "description": "サービスインターフェース 接尾語"
+        },
+        "rtcbuilder4vscode.container_config": {
+          "type": "string",
+          "default": "",
+          "description": "コンテナ設定"
         }
       }
     },
