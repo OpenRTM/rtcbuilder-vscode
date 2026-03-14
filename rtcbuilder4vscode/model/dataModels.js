@@ -340,7 +340,7 @@ class RtcParam {
         this.serviceports = [];
         this.serviceClassParams = [];
         this.configParams = [];
-        this.language = '';
+        this.language = 'C++';
         this.lang = new LanguageParam();
         //
         this.doc_description = '';
