@@ -20,6 +20,26 @@ VS-Code版RtcBuilderの構成を示します．
 ソースコードを配置したディレクトリで以下を実行してください．  
 ```npm ci```
 
+### vsixパッケージビルド方法
+
+プロジェクトルートにて、以下のスクリプトを実行してください。
+
+```shell
+$ ./build.sh
+```
+ビルド後、dist ディレクトリ内に全てのvsixファイルが格納されます。
+各サブプロジェクトディレクトリ内の build.sh を実行することで、個々のプロジェクト毎にビルドも可能です。
+
+### インストール・起動方法
+
+VS-Codeにインストールする場合は、以下の通り install.sh を実行してください。
+
+```shell
+$ ./install.sh
+```
+
+その後、VS-Codeにて、Ctrl(Cmd)+Shift+P で **Open New RTCBuilder Editor** もしくは **RTCBuilder** とタイプして、RTCBuilderを起動してください。
+
 ### 使用ライブラリ
 - Nunjucks 3.2.4
   - <https://mozilla.github.io/nunjucks/>
@@ -45,7 +65,7 @@ The RTCBuilder-vscode software is **dual-licensed**.
 You may use, copy, distribute, and/or modify this software under one of the following two licenses:
 
 1. **Apache License, Version 2.0**  
-   See the file `LICENSE.txt` for the full text.
+   See the file `LICENSE` for the full text.
 
 2. **Individual (Commercial) License**  
    You may obtain a commercial license from AIST and/or its Technology Licensing Organization (TLO)  
