@@ -20,13 +20,21 @@ let comparePanel_;
 async function handleMessage(mainPanel, context, extensions, message, translations) {
   console.log(message);
   if (message.command === 'selectProject') {
-    let project = message.project;
-    if(project) {
-      project = vscode.Uri.file(project);
+    let project_dir = message.project;
+    if(project_dir) {
+      let param = message.param;
+      if(param) {
+        const result = createXML(param);
+        const fileName = path.join(project_dir, 'RTC.xml');
+        fs.writeFileSync(fileName, result, 'utf-8');
+      }
+      project_dir = vscode.Uri.file(project_dir);
+
+
     }
     const options = {
               title: vscode.l10n.t('Select project folder'),
-              defaultUri: project, 
+              defaultUri: project_dir, 
               canSelectMany: false,
               canSelectFiles: false,
               canSelectFolders: true,
@@ -35,68 +43,58 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
     const folderUri = await vscode.window.showOpenDialog(options);
     if (folderUri && folderUri.length > 0) {
-      const project_dir = folderUri[0].fsPath
+      const selected_project_dir = folderUri[0].fsPath
       mainPanel.webview.postMessage({
         command: 'sendProject',
-        project: project_dir
+        project: selected_project_dir
       });
-      const config = vscode.workspace.getConfiguration('rtcbuilder4vscode');
-      await config.update('project_dir', project_dir, vscode.ConfigurationTarget.Global);
     }
 
   } else if (message.command === 'initializeProject') {
       const project_dir = message.project_dir;
 
-      try {
-        const idlPath = path.join(project_dir, 'IDL');
-        if (!fs.existsSync(idlPath)) {
-          fs.mkdirSync(idlPath);
+      let existedProject = false;
+      if(project_dir != undefined) {
+        const typeResult = parseDataTypes(project_dir);
+        let typeList;
+        if(typeResult != undefined) {
+          typeList = typeResult.dateTypeList;
         }
-      } catch (e) {
-        vscode.window.showErrorMessage(vscode.l10n.t('Initialization failed.') + `\n\n` + e.message,{ modal: true });
-        return;
-      }
+        const serviceResult = parseServices(project_dir);
+        const serviceList = serviceResult.serviceList;
 
-      const typeResult = parseDataTypes(project_dir);
-      let typeList;
-      if(typeResult != undefined) {
-        typeList = typeResult.dateTypeList;
-      }
-      const serviceResult = parseServices(project_dir);
-      const serviceList = serviceResult.serviceList;
+        const profilePath = path.join(project_dir, 'RTC.xml');
+        if (fs.existsSync(profilePath)) {
+          try {
+            const xmlData = fs.readFileSync(profilePath, 'utf-8');
+            const errList = validateXML(xmlData);
+            if(0 < errList.length) {
+              errList.unshift(vscode.l10n.t('The target RtcProfile content is invalid.') + os.EOL);
+              vscode.window.showErrorMessage(errList.join(os.EOL),{ modal: true });
+              return;
+            }
 
-      const profilePath = path.join(project_dir, 'RTC.xml');
-      if (fs.existsSync(profilePath)) {
-        try {
-          const xmlData = fs.readFileSync(profilePath, 'utf-8');
-          const errList = validateXML(xmlData);
-          if(0 < errList.length) {
-            errList.unshift(vscode.l10n.t('The target RtcProfile content is invalid.') + os.EOL);
-            vscode.window.showErrorMessage(errList.join(os.EOL),{ modal: true });
-            return;
+            rtc_param_ = parseXML(xmlData, typeList, serviceList);
+
+            const settings = getSettings();
+            loadSettings2RtcParamPreSuf(settings, rtc_param_);
+            existedProject = true;
+
+            mainPanel.webview.postMessage({
+              command: 'sendProfile',
+              profile: rtc_param_,
+              showMessage: false
+            });
+          } catch (e) {
           }
-
-          rtc_param_ = parseXML(xmlData, typeList, serviceList);
-
-          const settings = getSettings();
-          loadSettings2RtcParamPreSuf(settings, rtc_param_);
-
-          mainPanel.webview.postMessage({
-            command: 'sendProfile',
-            profile: rtc_param_,
-            showMessage: false
-          });
-        } catch (e) {
         }
-
-      } else {
+      }
+      
+      if(existedProject == false) {
         try {
           rtc_param_ = new RtcParam();
           const settings = getSettings();
-          const fileName = path.join(project_dir, 'RTC.xml');
           loadSettings2RtcParam(settings, rtc_param_);
-          const result = createXML(rtc_param_);
-          fs.writeFileSync(fileName, result, 'utf-8');
           mainPanel.webview.postMessage({
             command: 'sendProfile',
             profile: rtc_param_,
@@ -108,8 +106,13 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
   } else if (message.command === 'saveProfile') {
       const param = message.param;
-      const project_dir = message.project_dir;
+      let project_dir = message.project_dir;
 
+      if(!project_dir || project_dir.length == 0) {
+        const selected_result = await selectProject(mainPanel);
+        if(selected_result.result == false) return;
+        project_dir = selected_result.project_dir;
+      }
       const result = createXML(param);
       const fileName = path.join(project_dir, 'RTC.xml');
       fs.writeFileSync(fileName, result, 'utf-8');
@@ -130,10 +133,14 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
     });
 
   } else if (message.command === 'generateCode') {
-    const project_dir = message.project_dir;
     const param = message.param;
     rtc_param_ = param;
-
+    let project_dir = message.project_dir;
+    if(!project_dir || project_dir.length == 0) {
+      const selected_result = await selectProject(mainPanel);
+      if(selected_result.result == false) return;
+      project_dir = selected_result.project_dir;
+    }
     // const destPath = path.join(project_dir, 'RTC.xml');
     // const originalProfile = fs.readFileSync(destPath, 'utf-8');
     // const generatedProfile = createXML(param);
@@ -450,6 +457,40 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
   }
 }
 
+async function selectProject(mainPanel) {
+  const options = {
+            title: vscode.l10n.t('Select project folder'),
+            canSelectMany: false,
+            canSelectFiles: false,
+            canSelectFolders: true,
+            openLabel: vscode.l10n.t('Select'),
+          };
+  const folderUri = await vscode.window.showOpenDialog(options);
+  if (folderUri && folderUri.length > 0) {
+    project_dir = folderUri[0].fsPath
+    mainPanel.webview.postMessage({
+      command: 'sendProject',
+      project: project_dir
+    });
+    try {
+      const idlPath = path.join(project_dir, 'IDL');
+      if (!fs.existsSync(idlPath)) {
+        fs.mkdirSync(idlPath);
+      }
+    } catch (e) {
+      vscode.window.showErrorMessage(vscode.l10n.t('Initialization failed.') + `\n\n` + e.message,{ modal: true });
+      return {
+        result: false,
+        project_dir: ''
+      };
+    }
+    return {
+      result: true,
+      project_dir: project_dir
+    };
+  }
+}
+
 function loadSettings2RtcParam(settings, param) {
   param.name = settings['basic_name'];
   param.description = settings['basic_description'];
@@ -559,16 +600,18 @@ function writeResults(context, project_dir, param) {
                      + String(now.getMinutes()).padStart(2, '0')
                      + String(now.getSeconds()).padStart(2, '0');
 
-  const destPath = path.join(project_dir, 'RTC.xml');
-  const originalProfile = fs.readFileSync(destPath, 'utf-8');
   const generatedProfile = createXML(rtc_param_);
-  if(compareXmlIgnoringDates(originalProfile, generatedProfile) == false) {
-    if(fs.existsSync(destPath)) {
-      fs.renameSync(destPath, destPath + genTime);
+  const destPath = path.join(project_dir, 'RTC.xml');
+  if(fs.existsSync(destPath)) {
+    const originalProfile = fs.readFileSync(destPath, 'utf-8');
+    if(compareXmlIgnoringDates(originalProfile, generatedProfile) == false) {
+      if(fs.existsSync(destPath)) {
+        fs.renameSync(destPath, destPath + genTime);
+      }
+      removeBackupFiles(project_dir, 'RTC.xml');
     }
-    removeBackupFiles(project_dir, 'RTC.xml');
-    fs.writeFileSync(destPath, generatedProfile, 'utf-8');
   }
+  fs.writeFileSync(destPath, generatedProfile, 'utf-8');
 
   for(const each of param) {
     if(each.mode.toLowerCase() === 'original'

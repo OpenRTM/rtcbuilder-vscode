@@ -23,11 +23,6 @@
     "configuration": {
       "title": "RtcBuilder",
       "properties": {
-        "rtcbuilder4vscode.project_dir": {
-          "type": "string",
-          "default": "",
-          "description": "プロジェクトディレクトリ"
-        },
         "rtcbuilder4vscode.max_backup_num": {
           "type": "number",
           "default": 3,

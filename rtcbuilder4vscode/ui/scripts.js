@@ -1,8 +1,10 @@
 ﻿function selectProject() {
+  store_profile(prev_tab);
   const project = document.getElementById('project-name').textContent;
   vscode.postMessage({
     command: 'selectProject',
-    project: project
+    project: project,
+    param: rtc_param_
   });
 }
 

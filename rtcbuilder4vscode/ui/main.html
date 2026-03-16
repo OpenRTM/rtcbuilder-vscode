@@ -119,6 +119,20 @@
       }
     });
 
+    window.addEventListener('keydown', (event) => {
+      const isSave = (event.ctrlKey || event.metaKey) && event.key === 's';
+      if (isSave) {
+        event.preventDefault();
+        store_profile(prev_tab);
+        const project = document.getElementById('project-name').textContent;
+        vscode.postMessage({
+            command: 'saveProfile',
+            param: rtc_param_,
+            project_dir: project
+        });
+      }
+    });
+
     const baseUri = '{{baseUri}}';
 
     const contentDiv = document.getElementById('content');

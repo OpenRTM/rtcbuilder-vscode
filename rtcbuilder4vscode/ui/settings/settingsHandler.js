@@ -4,8 +4,6 @@ function getSettings() {
   const config = vscode.workspace.getConfiguration('rtcbuilder4vscode');
 
   const settings = {
-    project_dir: config.get('project_dir'),
-
     max_backup_num: config.get('max_backup_num'),
 
     basic_name: config.get('basic_name'),
