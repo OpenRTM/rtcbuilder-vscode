@@ -11,11 +11,6 @@
 function setProjectLocation(project) {
   // console.log(project);
   document.getElementById('project-name').textContent = project;
-
-  vscode.postMessage({
-    command: 'initializeProject',
-    project_dir: project
-  });
 }
 
 function importProfile() {
@@ -98,12 +93,6 @@ function generateCode() {
 
 function openSettings() {
   store_profile(prev_tab);
-  const project = document.getElementById('project-name').textContent;
-  vscode.postMessage({
-    command: 'saveProfile',
-    param: rtc_param_,
-    project_dir: project
-  });
   vscode.postMessage({
     command: 'openSettings',
   });
@@ -133,9 +122,9 @@ function store_profile(target) {
   }
 }
 
-function load_profile(target) {
+function load_profile(target_tab) {
   // console.log('load_profile:' + target);
-  switch (target) {
+  switch (target_tab) {
     case 'basic.html':
       conv_lang_basic(window.translations)
       load_basic_info();

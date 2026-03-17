@@ -13,13 +13,20 @@ const { getSettings, saveSettings } = require('./ui/settings/settingsHandler');
 const { RtcParam } = require("./model/dataModels");
 const BlockParser = require("./blockParser.js")
 
-let rtc_param_;
 let settingPanel_;
 let comparePanel_;
 
-async function handleMessage(mainPanel, context, extensions, message, translations) {
+async function handleMessage(param, mainPanel, context, extensions, message, translations) {
   console.log(message);
-  if (message.command === 'selectProject') {
+  rtc_param_ = param;
+ 
+  if (message.command === 'getRtcParam') {
+      mainPanel.webview.postMessage({
+        command: 'sendRtcParam',
+        param: rtc_param_
+      });
+
+  } else if (message.command === 'selectProject') {
     let project_dir = message.project;
     if(project_dir) {
       let param = message.param;
@@ -29,8 +36,6 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
         fs.writeFileSync(fileName, result, 'utf-8');
       }
       project_dir = vscode.Uri.file(project_dir);
-
-
     }
     const options = {
               title: vscode.l10n.t('Select project folder'),
@@ -44,65 +49,37 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
     const folderUri = await vscode.window.showOpenDialog(options);
     if (folderUri && folderUri.length > 0) {
       const selected_project_dir = folderUri[0].fsPath
-      mainPanel.webview.postMessage({
-        command: 'sendProject',
-        project: selected_project_dir
-      });
-    }
 
-  } else if (message.command === 'initializeProject') {
-      const project_dir = message.project_dir;
-
-      let existedProject = false;
-      if(project_dir != undefined) {
-        const typeResult = parseDataTypes(project_dir);
-        let typeList;
-        if(typeResult != undefined) {
-          typeList = typeResult.dateTypeList;
-        }
-        const serviceResult = parseServices(project_dir);
-        const serviceList = serviceResult.serviceList;
-
-        const profilePath = path.join(project_dir, 'RTC.xml');
-        if (fs.existsSync(profilePath)) {
-          try {
-            const xmlData = fs.readFileSync(profilePath, 'utf-8');
-            const errList = validateXML(xmlData);
-            if(0 < errList.length) {
-              errList.unshift(vscode.l10n.t('The target RtcProfile content is invalid.') + os.EOL);
-              vscode.window.showErrorMessage(errList.join(os.EOL),{ modal: true });
-              return;
-            }
-
-            rtc_param_ = parseXML(xmlData, typeList, serviceList);
-
-            const settings = getSettings();
-            loadSettings2RtcParamPreSuf(settings, rtc_param_);
-            existedProject = true;
-
-            mainPanel.webview.postMessage({
-              command: 'sendProfile',
-              profile: rtc_param_,
-              showMessage: false
-            });
-          } catch (e) {
-          }
-        }
+      const typeResult = parseDataTypes(selected_project_dir);
+      let typeList;
+      if(typeResult != undefined) {
+        typeList = typeResult.dateTypeList;
       }
-      
-      if(existedProject == false) {
+      const serviceResult = parseServices(selected_project_dir);
+      const serviceList = serviceResult.serviceList;
+
+      const profilePath = path.join(selected_project_dir, 'RTC.xml');
+      if (fs.existsSync(profilePath)) {
         try {
-          rtc_param_ = new RtcParam();
-          const settings = getSettings();
-          loadSettings2RtcParam(settings, rtc_param_);
-          mainPanel.webview.postMessage({
-            command: 'sendProfile',
-            profile: rtc_param_,
-            showMessage: false
-          });
+          const xmlData = fs.readFileSync(profilePath, 'utf-8');
+          const errList = validateXML(xmlData);
+          if(0 < errList.length) {
+            errList.unshift(vscode.l10n.t('The target RtcProfile content is invalid.') + os.EOL);
+            vscode.window.showErrorMessage(errList.join(os.EOL),{ modal: true });
+            return;
+          }
+
+          rtc_param_ = parseXML(xmlData, typeList, serviceList);
         } catch (e) {
         }
       }
+
+      mainPanel.webview.postMessage({
+        command: 'sendProject',
+        project: selected_project_dir,
+        param: rtc_param_
+      });
+    }
 
   } else if (message.command === 'saveProfile') {
       const param = message.param;
@@ -227,7 +204,7 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
       comparePanel_.webview.onDidReceiveMessage(
           async message => {
-            handleMessage(comparePanel_, context, extensions, message);
+            handleMessage(rtc_param_, comparePanel_, context, extensions, message);
           },
           undefined,
           context.subscriptions
@@ -408,7 +385,7 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
     settingPanel_.webview.onDidReceiveMessage(
         async message => {
-          handleMessage(settingPanel_, context, extensions, message);
+          handleMessage(rtc_param_, settingPanel_, context, extensions, message);
         },
         undefined,
         context.subscriptions
@@ -726,5 +703,7 @@ function fileCompare(filePathA, filePathB) {
 }
 
 module.exports = {
-  handleMessage
+  handleMessage,
+  getSettings,
+  loadSettings2RtcParam
 };

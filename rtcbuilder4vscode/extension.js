@@ -1,7 +1,7 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
-const { handleMessage } = require('./messageHandler');
+const { handleMessage, getSettings, loadSettings2RtcParam } = require('./messageHandler');
 
 const { RtcParam } = require("./model/dataModels");
 
@@ -18,6 +18,7 @@ async function activate(context) {
         vscode.ViewColumn.One,
         {
           enableScripts: true,
+          retainContextWhenHidden: true,
           localResourceRoots: [
             vscode.Uri.file(path.join(context.extensionPath, 'ui')),
             vscode.Uri.file(path.join(context.extensionPath, 'model')),
@@ -96,10 +97,15 @@ async function activate(context) {
 
       panel.webview.html = html;
 
-	    // メッセージ受信
+      //初期化
+      let rtc_param = new RtcParam();
+      const settings = getSettings();
+      loadSettings2RtcParam(settings, rtc_param);
+
+      // メッセージ受信
       panel.webview.onDidReceiveMessage(
         async message => {
-          handleMessage(panel, context, extensions, message, translations);
+          handleMessage(rtc_param, panel, context, extensions, message, translations);
         },
         undefined,
         context.subscriptions

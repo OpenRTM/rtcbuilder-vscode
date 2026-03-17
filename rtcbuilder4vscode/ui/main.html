@@ -48,7 +48,7 @@
     });
 
     const vscode = acquireVsCodeApi();
-    let rtc_param_ = new RtcParam();
+    let rtc_param_;
     let settings_;
     let prev_tab;
 
@@ -67,15 +67,25 @@
                         			'Vehicle', 'Web Application Server' ];
 
     window.onload = function () {
-      vscode.postMessage({
-        command: 'getSettingsMain'
-      });
+      // vscode.postMessage({
+      //   command: 'getSettingsMain'
+      // });
 
       const savedState = vscode.getState();
       if (savedState) {
           language_mames_ = savedState.language_mames;
       }
-    };
+      if(!rtc_param_) {
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+              vscode.postMessage({
+                command: 'getRtcParam'
+              });
+          });
+        });
+      }
+     };
+
     window.addEventListener('message', event => {
       const msg = event.data;
       console.log(msg);
@@ -88,9 +98,15 @@
         };
         vscode.setState(state);
 
+      } else if (msg.command === 'sendRtcParam') {
+        rtc_param_ = msg.param;
+        load_profile(prev_tab);
+
       } else if (msg.command === 'sendProject') {
-        let project = msg.project;
+        const project = msg.project;
+        rtc_param_ = msg.param;
         setProjectLocation(project);
+        load_profile(prev_tab);
 
       } else if (msg.command === 'sendSettings') {
         settings_ = msg.settings;
