@@ -62,7 +62,6 @@ function createXML(param) {
   for(const prop of param.properties) {
     rtc.BasicInfo.addProperty(prop.name, prop.value);
   }
-
   ///////
   setActivityInfo(param, rtc, 'onInitialize');
   setActivityInfo(param, rtc, 'onFinalize');
@@ -143,7 +142,6 @@ function createXML(param) {
   for(const each of language.properties) {
     lang.addProperty(each.name, each.value);
   }
-
   /////
   const xmlObj = rtc.toXmlObject();
 
@@ -300,7 +298,6 @@ function setActivityInfo(param, rtc, source) {
   aStatus.setDoc(docInfo);
   rtc.Actions.setAction(capitalizeFirst(source), aStatus);
 }
-
 
 function formatNumber(num) {
   if (Number.isInteger(num)) {
@@ -756,7 +753,6 @@ function parseXML(param, typeList, serviceList) {
     }
     const langProprtyObj = langObj['rtcExt:Properties'];
     parseProperties(langProprtyObj, rtc_param.lang.properties);
-
   }
   return rtc_param;
 }

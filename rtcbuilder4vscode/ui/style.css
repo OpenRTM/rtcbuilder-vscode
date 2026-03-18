@@ -73,6 +73,14 @@ table tr td {
   font-weight: bold;
 }
 
+.border-label-project {
+  display: inline-block;
+  border: 1px solid;
+  padding: 4px 8px;
+  width: 500px;
+  min-height: 16px; 
+}
+
 .border-label {
   border: 1px solid var(--vscode-editorGroup-border);
   padding: 2px 4px;

@@ -1,29 +1,16 @@
 ﻿function selectProject() {
+  store_profile(prev_tab);
   const project = document.getElementById('project-name').textContent;
   vscode.postMessage({
     command: 'selectProject',
-    project: project
+    project: project,
+    param: rtc_param_
   });
 }
 
 function setProjectLocation(project) {
   // console.log(project);
   document.getElementById('project-name').textContent = project;
-
-  vscode.postMessage({
-    command: 'initializeProject',
-    project_dir: project
-  });
-}
-
-function exportISOProfile() {
-  const project_dir = document.getElementById('project-name').textContent;
-  store_profile(prev_tab);
-  vscode.postMessage({
-    command: 'exportISOProfile',
-    param: rtc_param_,
-    project_dir: project_dir
-  });
 }
 
 function importProfile() {
@@ -103,6 +90,16 @@ function exportProfile() {
   });
 }
 
+function exportISOProfile() {
+  const project_dir = document.getElementById('project-name').textContent;
+  store_profile(prev_tab);
+  vscode.postMessage({
+    command: 'exportISOProfile',
+    param: rtc_param_,
+    project_dir: project_dir
+  });
+}
+
 function testProfile() {
   const project_dir = document.getElementById('project-name').textContent;
   vscode.postMessage({
@@ -110,8 +107,6 @@ function testProfile() {
     project_dir: project_dir
   });
 }
-
-
 
 function generateCode() {
   store_profile(prev_tab);
@@ -199,12 +194,6 @@ function clearBkFiles() {
 
 function openSettings() {
   store_profile(prev_tab);
-  const project = document.getElementById('project-name').textContent;
-  vscode.postMessage({
-    command: 'saveProfile',
-    param: rtc_param_,
-    project_dir: project
-  });
   vscode.postMessage({
     command: 'openSettings',
   });
@@ -237,9 +226,9 @@ function store_profile(target) {
   }
 }
 
-function load_profile(target) {
+function load_profile(target_tab) {
   // console.log('load_profile:' + target);
-  switch (target) {
+  switch (target_tab) {
     case 'basic.html':
       conv_lang_basic(window.translations)
       load_basic_info();

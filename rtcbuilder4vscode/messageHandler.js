@@ -17,20 +17,33 @@ const { parseIsoXML } = require('./ISO/isoXmlHandler');
 const { RtcParam } = require("./model/dataModels");
 const BlockParser = require("./blockParser.js")
 
-let rtc_param_;
 let settingPanel_;
 let comparePanel_;
 
-async function handleMessage(mainPanel, context, extensions, message, translations) {
+async function handleMessage(param, mainPanel, context, extensions, message, translations) {
   console.log(message);
-  if (message.command === 'selectProject') {
-    let project = message.project;
-    if(project) {
-      project = vscode.Uri.file(project);
+  rtc_param_ = param;
+
+  if (message.command === 'getRtcParam') {
+      mainPanel.webview.postMessage({
+        command: 'sendRtcParam',
+        param: rtc_param_
+      });
+
+  } else if (message.command === 'selectProject') {
+    let project_dir = message.project;
+    if(project_dir) {
+      let param = message.param;
+      if(param) {
+        const result = createXML(param);
+        const fileName = path.join(project_dir, 'RTC.xml');
+        fs.writeFileSync(fileName, result, 'utf-8');
+      }
+      project_dir = vscode.Uri.file(project_dir);
     }
     const options = {
               title: vscode.l10n.t('Select project folder'),
-              defaultUri: project, 
+              defaultUri: project_dir, 
               canSelectMany: false,
               canSelectFiles: false,
               canSelectFolders: true,
@@ -39,37 +52,17 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
     const folderUri = await vscode.window.showOpenDialog(options);
     if (folderUri && folderUri.length > 0) {
-      const project_dir = folderUri[0].fsPath
-      mainPanel.webview.postMessage({
-        command: 'sendProject',
-        project: project_dir
-      });
-      const config = vscode.workspace.getConfiguration('rtcbuilder4vscode');
-      await config.update('project_dir', project_dir, vscode.ConfigurationTarget.Global);
-    }
+      const selected_project_dir = folderUri[0].fsPath
 
-  } else if (message.command === 'initializeProject') {
-      const project_dir = message.project_dir;
-
-      try {
-        const idlPath = path.join(project_dir, 'IDL');
-        if (!fs.existsSync(idlPath)) {
-          fs.mkdirSync(idlPath);
-        }
-      } catch (e) {
-        vscode.window.showErrorMessage(vscode.l10n.t('Initialization failed.') + `\n\n` + e.message,{ modal: true });
-        return;
-      }
-
-      const typeResult = parseDataTypes(project_dir);
+      const typeResult = parseDataTypes(selected_project_dir);
       let typeList;
       if(typeResult != undefined) {
         typeList = typeResult.dateTypeList;
       }
-      const serviceResult = parseServices(project_dir);
+      const serviceResult = parseServices(selected_project_dir);
       const serviceList = serviceResult.serviceList;
 
-      const profilePath = path.join(project_dir, 'RTC.xml');
+      const profilePath = path.join(selected_project_dir, 'RTC.xml');
       if (fs.existsSync(profilePath)) {
         try {
           const xmlData = fs.readFileSync(profilePath, 'utf-8');
@@ -81,39 +74,26 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
           }
 
           rtc_param_ = parseXML(xmlData, typeList, serviceList);
-
-          const settings = getSettings();
-          loadSettings2RtcParamPreSuf(settings, rtc_param_);
-
-          mainPanel.webview.postMessage({
-            command: 'sendProfile',
-            profile: rtc_param_,
-            showMessage: false
-          });
-        } catch (e) {
-        }
-
-      } else {
-        try {
-          rtc_param_ = new RtcParam();
-          const settings = getSettings();
-          const fileName = path.join(project_dir, 'RTC.xml');
-          loadSettings2RtcParam(settings, rtc_param_);
-          const result = createXML(rtc_param_);
-          fs.writeFileSync(fileName, result, 'utf-8');
-          mainPanel.webview.postMessage({
-            command: 'sendProfile',
-            profile: rtc_param_,
-            showMessage: false
-          });
         } catch (e) {
         }
       }
 
+      mainPanel.webview.postMessage({
+        command: 'sendProject',
+        project: selected_project_dir,
+        param: rtc_param_
+      });
+    }
+
   } else if (message.command === 'saveProfile') {
       const param = message.param;
-      const project_dir = message.project_dir;
+      let project_dir = message.project_dir;
 
+      if(!project_dir || project_dir.length == 0) {
+        const selected_result = await selectProject(mainPanel);
+        if(selected_result.result == false) return;
+        project_dir = selected_result.project_dir;
+      }
       const result = createXML(param);
       const fileName = path.join(project_dir, 'RTC.xml');
       fs.writeFileSync(fileName, result, 'utf-8');
@@ -135,10 +115,14 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
     });
 
   } else if (message.command === 'generateCode') {
-    const project_dir = message.project_dir;
     const param = message.param;
     rtc_param_ = param;
-
+    let project_dir = message.project_dir;
+    if(!project_dir || project_dir.length == 0) {
+      const selected_result = await selectProject(mainPanel);
+      if(selected_result.result == false) return;
+      project_dir = selected_result.project_dir;
+    }
     // const destPath = path.join(project_dir, 'RTC.xml');
     // const originalProfile = fs.readFileSync(destPath, 'utf-8');
     // const generatedProfile = createXML(param);
@@ -225,7 +209,7 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
       comparePanel_.webview.onDidReceiveMessage(
           async message => {
-            handleMessage(comparePanel_, context, extensions, message);
+            handleMessage(rtc_param_, comparePanel_, context, extensions, message);
           },
           undefined,
           context.subscriptions
@@ -275,63 +259,6 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
       pathes: result.idlSearchPathList,
       services : result.serviceList
     });
-
-  } else if (message.command === 'refProfile') {
-    const file_name = message.file_name;
-    const source = message.source;
-    const defaultUri = file_name ? vscode.Uri.file(path.dirname(file_name)) : vscode.workspace.workspaceFolders?.[0]?.uri;
-    if(source === 'import') {
-      const uris = await vscode.window.showOpenDialog({
-          canSelectMany: false,
-          openLabel: vscode.l10n.t('Select File'),
-          filters: {
-            'XML Files': ['xml'],
-            'All Files': ['*']
-          },
-          defaultUri: defaultUri
-        });
-        if(uris) {
-          const fileUri = uris[0];
-          const sourcePath = fileUri.fsPath;
-          mainPanel.webview.postMessage({
-            command: 'sendRefResult',
-            file_name: sourcePath,
-            source : source
-          });
-        }
-    } else {
-      const uris = await vscode.window.showSaveDialog({
-          canSelectMany: false,
-          openLabel: vscode.l10n.t('Select File'),
-          filters: {
-            'XML Files': ['xml'],
-            'All Files': ['*']
-          },
-          defaultUri: defaultUri
-        });
-        if(uris) {
-          const sourcePath = uris.fsPath;
-          mainPanel.webview.postMessage({
-            command: 'sendRefResult',
-            file_name: sourcePath,
-            source : source
-          });
-        }
-    }
-
-  } else if (message.command === 'exportISOProfile') {
-    const param = message.param;
-    const project_dir = message.project_dir;
-
-    const file_name = path.join(project_dir, 'iso22166_202.xml');
-
-    const iso_profile = convertRtc2Iso(param);
-    const iso_xml = createIsoXML(iso_profile);
-    fs.writeFileSync(file_name, iso_xml, 'utf-8');
-    vscode.window.showInformationMessage(
-      vscode.l10n.t('An ISO 22166-202 format profile has been generated.'),
-      { modal: true }
-    );
 
   } else if (message.command === 'importProfile') {
     const project_dir = message.project_dir;
@@ -399,6 +326,63 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
     }
     vscode.window.showInformationMessage(
       vscode.l10n.t('Profile Export completed.'),
+      { modal: true }
+    );
+
+  } else if (message.command === 'refProfile') {
+    const file_name = message.file_name;
+    const source = message.source;
+    const defaultUri = file_name ? vscode.Uri.file(path.dirname(file_name)) : vscode.workspace.workspaceFolders?.[0]?.uri;
+    if(source === 'import') {
+      const uris = await vscode.window.showOpenDialog({
+          canSelectMany: false,
+          openLabel: vscode.l10n.t('Select File'),
+          filters: {
+            'XML Files': ['xml'],
+            'All Files': ['*']
+          },
+          defaultUri: defaultUri
+        });
+        if(uris) {
+          const fileUri = uris[0];
+          const sourcePath = fileUri.fsPath;
+          mainPanel.webview.postMessage({
+            command: 'sendRefResult',
+            file_name: sourcePath,
+            source : source
+          });
+        }
+    } else {
+      const uris = await vscode.window.showSaveDialog({
+          canSelectMany: false,
+          openLabel: vscode.l10n.t('Select File'),
+          filters: {
+            'XML Files': ['xml'],
+            'All Files': ['*']
+          },
+          defaultUri: defaultUri
+        });
+        if(uris) {
+          const sourcePath = uris.fsPath;
+          mainPanel.webview.postMessage({
+            command: 'sendRefResult',
+            file_name: sourcePath,
+            source : source
+          });
+        }
+    }
+
+  } else if (message.command === 'exportISOProfile') {
+    const param = message.param;
+    const project_dir = message.project_dir;
+
+    const file_name = path.join(project_dir, 'iso22166_202.xml');
+
+    const iso_profile = convertRtc2Iso(param);
+    const iso_xml = createIsoXML(iso_profile);
+    fs.writeFileSync(file_name, iso_xml, 'utf-8');
+    vscode.window.showInformationMessage(
+      vscode.l10n.t('An ISO 22166-202 format profile has been generated.'),
       { modal: true }
     );
 
@@ -524,7 +508,7 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
 
     settingPanel_.webview.onDidReceiveMessage(
         async message => {
-          handleMessage(settingPanel_, context, extensions, message);
+          handleMessage(rtc_param_, settingPanel_, context, extensions, message);
         },
         undefined,
         context.subscriptions
@@ -576,6 +560,40 @@ async function handleMessage(mainPanel, context, extensions, message, translatio
     } else {
       vscode.window.showInformationMessage(message.param,{ modal: true });
     }
+  }
+}
+
+async function selectProject(mainPanel) {
+  const options = {
+            title: vscode.l10n.t('Select project folder'),
+            canSelectMany: false,
+            canSelectFiles: false,
+            canSelectFolders: true,
+            openLabel: vscode.l10n.t('Select'),
+          };
+  const folderUri = await vscode.window.showOpenDialog(options);
+  if (folderUri && folderUri.length > 0) {
+    project_dir = folderUri[0].fsPath
+    mainPanel.webview.postMessage({
+      command: 'sendProject',
+      project: project_dir
+    });
+    try {
+      const idlPath = path.join(project_dir, 'IDL');
+      if (!fs.existsSync(idlPath)) {
+        fs.mkdirSync(idlPath);
+      }
+    } catch (e) {
+      vscode.window.showErrorMessage(vscode.l10n.t('Initialization failed.') + `\n\n` + e.message,{ modal: true });
+      return {
+        result: false,
+        project_dir: ''
+      };
+    }
+    return {
+      result: true,
+      project_dir: project_dir
+    };
   }
 }
 
@@ -696,16 +714,18 @@ function writeResults(context, project_dir, param) {
                      + String(now.getMinutes()).padStart(2, '0')
                      + String(now.getSeconds()).padStart(2, '0');
 
-  const destPath = path.join(project_dir, 'RTC.xml');
-  const originalProfile = fs.readFileSync(destPath, 'utf-8');
   const generatedProfile = createXML(rtc_param_);
-  if(compareXmlIgnoringDates(originalProfile, generatedProfile) == false) {
-    if(fs.existsSync(destPath)) {
-      fs.renameSync(destPath, destPath + genTime);
+  const destPath = path.join(project_dir, 'RTC.xml');
+  if(fs.existsSync(destPath)) {
+    const originalProfile = fs.readFileSync(destPath, 'utf-8');
+    if(compareXmlIgnoringDates(originalProfile, generatedProfile) == false) {
+      if(fs.existsSync(destPath)) {
+        fs.renameSync(destPath, destPath + genTime);
+      }
+      removeBackupFiles(project_dir, 'RTC.xml');
     }
-    removeBackupFiles(project_dir, 'RTC.xml');
-    fs.writeFileSync(destPath, generatedProfile, 'utf-8');
   }
+  fs.writeFileSync(destPath, generatedProfile, 'utf-8');
   /////
   const isoProfile = convertRtc2Iso(rtc_param_);
   const isoXml = createIsoXML(isoProfile);
@@ -879,5 +899,7 @@ function convertRtc2IsoProfile(sourcePath, project_dir, targetPath) {
 }
 ////////// 
 module.exports = {
-  handleMessage
+  handleMessage,
+  getSettings,
+  loadSettings2RtcParam
 };
