@@ -9,7 +9,8 @@ const {
   RtcParam, ActionParam, PropertyParam,
   DataPortParam,
   ServicePortInterfaceParam, ServicePortParam,
-  ConfigSetParam
+  ConfigSetParam,
+  TargetEnvironmentParam, EnvLibraryParam
 } = require("./../model/dataModels");
 
 const {
@@ -17,7 +18,8 @@ const {
   Constraint, And, Or,
   ConstraintHashType, ConstraintListType, ConstraintUnitType,
   Configuration, ConfigurationSet,
-  DataPorts, ServiceInterface, ServicePorts, Language
+  DataPorts, ServiceInterface, ServicePorts,
+  Language, TargetEnvironment, EnvLibrary
 } = require("./../model/rtcProfileModel");
 
 function createXML(param) {
@@ -44,6 +46,7 @@ function createXML(param) {
   rtc.BasicInfo.setAttribute("rtc:hardwareProfile", param.hardwareProfile);
   rtc.BasicInfo.setAttribute("rtc:updateDate", currentDate);
   rtc.BasicInfo.setAttribute("rtc:creationDate", currentDate);
+  rtc.BasicInfo.setAttribute("rtcExt:saveProject", param.save_project);
   //
   const doc = new Doc();
   doc.setAttribute("rtcDoc:algorithm", param.doc_algorithm);
@@ -53,6 +56,10 @@ function createXML(param) {
   doc.setAttribute("rtcDoc:license", param.doc_license);
   doc.setAttribute("rtcDoc:reference", param.doc_reference);
   rtc.BasicInfo.setDoc(doc);
+
+  for(const prop of param.properties) {
+    rtc.BasicInfo.addProperty(prop.name, prop.value);
+  }
   ///////
   setActivityInfo(param, rtc, 'onInitialize');
   setActivityInfo(param, rtc, 'onFinalize');
@@ -67,92 +74,77 @@ function createXML(param) {
   setActivityInfo(param, rtc, 'onStateUpdate');
   setActivityInfo(param, rtc, 'onRateChanged');
   ///////
-  for(const dp of param.inports) {
-    const dataPort = new DataPorts();
-    dataPort.setAttribute("xsi:type", "rtcExt:dataport_ext");
-    dataPort.setAttribute("rtc:portType", "DataInPort");
-    dataPort.setAttribute("rtc:name", dp.name);
-    dataPort.setAttribute("rtc:type", dp.type);
-    dataPort.setAttribute("rtc:idlFile", dp.dispIdlFile);
-    dataPort.setAttribute("rtc:interfaceType", dp.interfaceType);
-    dataPort.setAttribute("rtc:dataflowType", dp.dataFlowType);
-    dataPort.setAttribute("rtc:subscriptionType", dp.subscriptionType);
-    dataPort.setAttribute("rtc:unit", dp.unit);
-    dataPort.setAttribute("rtcExt:variableName", dp.varname);
-
-    const dp_doc = new Doc();
-    dp_doc.setAttribute("rtcDoc:description", dp.doc_description);
-    dp_doc.setAttribute("rtcDoc:type", dp.doc_type);
-    dp_doc.setAttribute("rtcDoc:number", dp.doc_num);
-    dp_doc.setAttribute("rtcDoc:semantics", dp.doc_semantics);
-    dp_doc.setAttribute("rtcDoc:unit", dp.doc_unit);
-    dp_doc.setAttribute("rtcDoc:occerrence", dp.doc_occerrence);
-    dp_doc.setAttribute("rtcDoc:operation", dp.doc_operation);
-    dataPort.setDoc(dp_doc);
-
-    rtc.addDataPort(dataPort);
-  }
-  for(const dp of param.outports) {
-    const dataPort = new DataPorts();
-    dataPort.setAttribute("xsi:type", "rtcExt:dataport_ext");
-    dataPort.setAttribute("rtc:portType", "DataOutPort");
-    dataPort.setAttribute("rtc:name", dp.name);
-    dataPort.setAttribute("rtc:type", dp.type);
-    dataPort.setAttribute("rtc:idlFile", dp.dispIdlFile);
-    dataPort.setAttribute("rtc:interfaceType", dp.interfaceType);
-    dataPort.setAttribute("rtc:dataflowType", dp.dataFlowType);
-    dataPort.setAttribute("rtc:subscriptionType", dp.subscriptionType);
-    dataPort.setAttribute("rtc:unit", dp.unit);
-    dataPort.setAttribute("rtcExt:variableName", dp.varname);
-
-    const dp_doc = new Doc();
-    dp_doc.setAttribute("rtcDoc:description", dp.doc_description);
-    dp_doc.setAttribute("rtcDoc:type", dp.doc_type);
-    dp_doc.setAttribute("rtcDoc:number", dp.doc_num);
-    dp_doc.setAttribute("rtcDoc:semantics", dp.doc_semantics);
-    dp_doc.setAttribute("rtcDoc:unit", dp.doc_unit);
-    dp_doc.setAttribute("rtcDoc:occerrence", dp.doc_occerrence);
-    dp_doc.setAttribute("rtcDoc:operation", dp.doc_operation);
-    dataPort.setDoc(dp_doc);
-
-    rtc.addDataPort(dataPort);
-  }
+  setDataPortInfo(param.inports, rtc, "DataInPort");
+  setDataPortInfo(param.outports, rtc, "DataOutPort");
+  setServicePortInfo(param.serviceports, rtc);
   ///////
-  for(const sp of param.serviceports) {
-    const servicePort = new ServicePorts();
-    servicePort.setAttribute("xsi:type", "rtcExt:serviceport_ext");
-    servicePort.setAttribute("rtc:name", sp.name);
+  setConfigurationInfo(param.configParams, rtc);
 
-    const sp_doc = new Doc();
-    sp_doc.setAttribute("rtcDoc:description", sp.doc_description);
-    sp_doc.setAttribute("rtcDoc:ifdescription", sp.doc_if_description);
-    servicePort.setDoc(sp_doc);
-    //
-    for(const si of sp.serviceinterfaces) {
-      const serviceIf = new ServiceInterface();
-      serviceIf.setAttribute("xsi:type", "rtcExt:serviceinterface_ext");
-      serviceIf.setAttribute("rtc:name", si.name);
-      serviceIf.setAttribute("rtc:type", si.interfacetype);
-      serviceIf.setAttribute("rtc:direction", si.direction);
-      serviceIf.setAttribute("rtc:instanceName", si.instancename);
-      serviceIf.setAttribute("rtc:idlFile", si.idlDispfile);
-      serviceIf.setAttribute("rtcExt:variableName", si.varname);
-
-      const s1_doc = new Doc();
-      s1_doc.setAttribute("rtcDoc:description", si.doc_description);
-      s1_doc.setAttribute("rtcDoc:docArgument", si.doc_argument);
-      s1_doc.setAttribute("rtcDoc:docReturn", si.doc_return);
-      s1_doc.setAttribute("rtcDoc:docException", si.doc_exception);
-      s1_doc.setAttribute("rtcDoc:docPreCondition", si.doc_pre_condition);
-      s1_doc.setAttribute("rtcDoc:docPostCondition", si.doc_post_condition);
-      serviceIf.setDoc(s1_doc);
-
-      servicePort.addServiceInterface(serviceIf);
+  const lang = new Language();
+  lang.setAttribute("xsi:type", "rtcExt:language_ext");
+  lang.setAttribute("rtc:kind", param.language);
+  rtc.setLanguage(lang);
+  
+  const language = param.lang;
+  for(const each of language.targets) {
+    const target = new TargetEnvironment();
+    if(each.cpuOther && 0 < each.cpuOther.length) {
+      target.setAttribute("rtcExt:cpuOther", each.cpuOther);
     }
-    rtc.addServicePort(servicePort);
+    if(each.other && 0 < each.other.length) {
+      target.setAttribute("rtcExt:other", each.other);
+    }
+    if(each.os && 0 < each.os.length) {
+      target.setAttribute("rtcExt:os", each.os);
+    }
+    if(each.langVersion && 0 < each.langVersion.length) {
+      target.setAttribute("rtcExt:langVersion", each.langVersion);
+    }
+
+    if(each.OSversions && 0 < each.OSversions.length) {
+      target.osVersions.push(each.OSversions);
+    }
+
+    const cpus = each.CPUs;
+    for(const each_cpu of cpus) {
+      target.cpus.push(each_cpu);
+    }
+
+    const libs = each.libraries;
+    for(const each_lib of libs) {
+      const env_lib = new EnvLibrary();
+      env_lib.setAttribute("rtcExt:version", each_lib.version);
+      env_lib.setAttribute("rtcExt:name", each_lib.name);
+      target.addLibrary(env_lib);
+    }
+    if(0 < each.langVersion.length || 0 < libs.length ) {
+      lang.addTarget(target);
+    }
   }
-  ///////
-  for(const config of param.configParams) {
+
+  for(const each of language.properties) {
+    lang.addProperty(each.name, each.value);
+  }
+  /////
+  const xmlObj = rtc.toXmlObject();
+
+  const options = {
+    declaration: {
+        include: true,
+        encoding: "UTF-8",
+        standalone: "yes"
+    },
+    format: {
+        pretty: true
+    }
+  };
+  let xml = js2xmlparser.parse("rtc:RtcProfile", xmlObj, options);
+  xml = xml.replace(/([\w:]+)=\'([^']*)\'/g, '$1="$2"');
+  return xml;
+}
+
+function setConfigurationInfo(configs, rtc) {
+  for (const config of configs) {
     const conf = new Configuration();
     conf.setAttribute("xsi:type", "rtcExt:configuration_ext");
     conf.setAttribute("rtc:name", config.name);
@@ -172,45 +164,89 @@ function createXML(param) {
     conf_doc.setAttribute("rtcDoc:constraint", config.doc_constraint);
     conf.setDoc(conf_doc);
 
-    for(const prop of config.properties) {
+    for (const prop of config.properties) {
       conf.addProperty(prop.name, prop.value);
     }
 
     rtc.ConfigurationSet.addConfiguration(conf);
   }
-
-  const lang = new Language();
-  lang.setAttribute("xsi:type", "rtcExt:language_ext");
-  lang.setAttribute("rtc:kind", param.language);
-  rtc.setLanguage(lang);
-
-  const xmlObj = rtc.toXmlObject();
-
-  const options = {
-    declaration: {
-        include: true,
-        encoding: "UTF-8",
-        standalone: "yes"
-    },
-    format: {
-        pretty: true
-    }
-  };
-  const xml = js2xmlparser.parse("rtc:RtcProfile", xmlObj, options);
-  return xml;
 }
 
-function formatNumber(num) {
-  if (Number.isInteger(num)) {
-    return num.toFixed(1);
-  } else {
-    return num.toString();
+function setServicePortInfo(ports, rtc) {
+  for (const sp of ports) {
+    const servicePort = new ServicePorts();
+    servicePort.setAttribute("xsi:type", "rtcExt:serviceport_ext");
+    servicePort.setAttribute("rtc:name", sp.name);
+    servicePort.setAttribute("rtcExt:position", sp.position);
+
+    const sp_doc = new Doc();
+    sp_doc.setAttribute("rtcDoc:description", sp.doc_description);
+    sp_doc.setAttribute("rtcDoc:ifdescription", sp.doc_if_description);
+    servicePort.setDoc(sp_doc);
+    for (const prop of sp.properties) {
+      servicePort.addProperty(prop.name, prop.value);
+    }
+    //
+    for (const si of sp.serviceinterfaces) {
+      const serviceIf = new ServiceInterface();
+      serviceIf.setAttribute("xsi:type", "rtcExt:serviceinterface_ext");
+      serviceIf.setAttribute("rtc:name", si.name);
+      serviceIf.setAttribute("rtc:type", si.interfacetype);
+      serviceIf.setAttribute("rtc:direction", si.direction);
+      serviceIf.setAttribute("rtc:instanceName", si.instancename);
+      serviceIf.setAttribute("rtc:idlFile", si.idlDispfile);
+      serviceIf.setAttribute("rtcExt:variableName", si.varname);
+
+      const s1_doc = new Doc();
+      s1_doc.setAttribute("rtcDoc:description", si.doc_description);
+      s1_doc.setAttribute("rtcDoc:docArgument", si.doc_argument);
+      s1_doc.setAttribute("rtcDoc:docReturn", si.doc_return);
+      s1_doc.setAttribute("rtcDoc:docException", si.doc_exception);
+      s1_doc.setAttribute("rtcDoc:docPreCondition", si.doc_pre_condition);
+      s1_doc.setAttribute("rtcDoc:docPostCondition", si.doc_post_condition);
+      serviceIf.setDoc(s1_doc);
+
+      for (const prop of si.properties) {
+        serviceIf.addProperty(prop.name, prop.value);
+      }
+
+      servicePort.addServiceInterface(serviceIf);
+    }
+    rtc.addServicePort(servicePort);
   }
 }
 
-function capitalizeFirst(str) {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1);
+function setDataPortInfo(ports, rtc, type) {
+  for (const dp of ports) {
+    const dataPort = new DataPorts();
+    dataPort.setAttribute("xsi:type", "rtcExt:dataport_ext");
+    dataPort.setAttribute("rtc:portType", type);
+    dataPort.setAttribute("rtc:name", dp.name);
+    dataPort.setAttribute("rtc:type", dp.type);
+    dataPort.setAttribute("rtc:idlFile", dp.dispIdlFile);
+    dataPort.setAttribute("rtc:interfaceType", dp.interfaceType);
+    dataPort.setAttribute("rtc:dataflowType", dp.dataFlowType);
+    dataPort.setAttribute("rtc:subscriptionType", dp.subscriptionType);
+    dataPort.setAttribute("rtc:unit", dp.unit);
+    dataPort.setAttribute("rtcExt:variableName", dp.varname);
+    dataPort.setAttribute("rtcExt:position", dp.position);
+
+    const dp_doc = new Doc();
+    dp_doc.setAttribute("rtcDoc:description", dp.doc_description);
+    dp_doc.setAttribute("rtcDoc:type", dp.doc_type);
+    dp_doc.setAttribute("rtcDoc:number", dp.doc_num);
+    dp_doc.setAttribute("rtcDoc:semantics", dp.doc_semantics);
+    dp_doc.setAttribute("rtcDoc:unit", dp.doc_unit);
+    dp_doc.setAttribute("rtcDoc:occerrence", dp.doc_occerrence);
+    dp_doc.setAttribute("rtcDoc:operation", dp.doc_operation);
+    dataPort.setDoc(dp_doc);
+
+    for (const prop of dp.properties) {
+      dataPort.addProperty(prop.name, prop.value);
+    }
+
+    rtc.addDataPort(dataPort);
+  }
 }
 
 function setActivityInfo(param, rtc, source) {
@@ -224,6 +260,19 @@ function setActivityInfo(param, rtc, source) {
   docInfo.setAttribute("rtcDoc:postCondition", param.actions[source].post_condition);
   aStatus.setDoc(docInfo);
   rtc.Actions.setAction(capitalizeFirst(source), aStatus);
+}
+
+function formatNumber(num) {
+  if (Number.isInteger(num)) {
+    return num.toFixed(1);
+  } else {
+    return num.toString();
+  }
+}
+
+function capitalizeFirst(str) {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function convertToXmlConstraint(source) {
@@ -562,7 +611,9 @@ function parseXML(param, typeList, serviceList) {
   // console.log(jsObj);
 
   let rtc_param = new RtcParam();
+
   const rtcObj = jsObj['rtc:RtcProfile'];
+  rtc_param.profile_version = jsonVal(rtcObj, 'rtc:version');
 
   const basicObj = rtcObj['rtc:BasicInfo'];
   rtc_param.name = jsonVal(basicObj, 'rtc:name');
@@ -580,6 +631,13 @@ function parseXML(param, typeList, serviceList) {
   rtc_param.abstractDesc = jsonVal(basicObj, 'rtc:abstract');
   rtc_param.hardwareProfile = jsonVal(basicObj, 'rtc:hardwareProfile');
 
+  rtc_param.creation_date = jsonVal(basicObj, 'rtc:creationDate');
+  rtc_param.update_date = jsonVal(basicObj, 'rtc:updateDate');
+  rtc_param.comment = jsonVal(basicObj, 'rtcExt:comment');
+  rtc_param.save_project = jsonVal(basicObj, 'rtcExt:saveProject');
+  let versionUpLogs = jsonVal(basicObj, 'rtcExt:VersionUpLogs');
+  rtc_param.version_up_log = Array.isArray(versionUpLogs) ? versionUpLogs.join(", ") : "";
+
   const basicDocObj = basicObj['rtcDoc:Doc'];
   if(basicDocObj) {
     rtc_param.doc_algorithm = jsonVal(basicDocObj, 'rtcDoc:algorithm');
@@ -589,6 +647,9 @@ function parseXML(param, typeList, serviceList) {
     rtc_param.doc_license = jsonVal(basicDocObj, 'rtcDoc:license');
     rtc_param.doc_reference = jsonVal(basicDocObj, 'rtcDoc:reference');
   }
+
+  const proprtyObj = basicObj['rtcExt:Properties'];
+  parseProperties(proprtyObj, rtc_param.properties);
   // 
   const actionsObj = rtcObj['rtc:Actions'];
   parseActivityInfo(rtc_param, 'onInitialize', actionsObj, 'rtc:OnInitialize');
@@ -643,8 +704,43 @@ function parseXML(param, typeList, serviceList) {
   const langObj = rtcObj['rtc:Language'];
   if(langObj) {
     rtc_param.language = jsonVal(langObj, 'rtc:kind');
+    const targetObj = langObj['rtcExt:targets'];
+    if(targetObj) {
+      if(isIterable(targetObj)) {
+        for(const env of targetObj) {
+          parseTargetEnv(rtc_param, env, langObj);
+        }
+      } else {
+          parseTargetEnv(rtc_param, targetObj, langObj);
+      }
+    }
+    const langProprtyObj = langObj['rtcExt:Properties'];
+    parseProperties(langProprtyObj, rtc_param.lang.properties);
   }
   return rtc_param;
+}
+
+function parseTargetEnv(rtc_param, sourceObj, langObj) {
+  let env = new TargetEnvironmentParam();
+  rtc_param.lang.targets.push(env);
+
+  let langVer = jsonVal(sourceObj, 'rtcExt:langVersion');
+  env.langVersion = jsonVal(sourceObj, 'rtcExt:langVersion');
+  env.os = jsonVal(sourceObj, 'rtcExt:os');
+  env.OSversions = jsonVal(sourceObj, 'rtcExt:osVersions');
+  env.other = jsonVal(sourceObj, 'rtcExt:other');
+  env.cpuOther = jsonVal(sourceObj, 'rtcExt:cpuOther');
+
+  const cpusObj = sourceObj['rtcExt:cpus'];
+  env.CPUs.push(cpusObj);
+
+  const libObj = sourceObj['rtcExt:libraries'];
+  for(const each of libObj) {
+    let lib = new EnvLibraryParam();
+    lib.name = jsonVal(each, 'rtcExt:name');
+    lib.version = jsonVal(each, 'rtcExt:version');
+    env.libraries.push(lib);
+  }
 }
 
 function parseConfigurationInfo(rtc_param, sourceObj) {
@@ -666,29 +762,35 @@ function parseConfigurationInfo(rtc_param, sourceObj) {
     config.doc_range = jsonVal(configDocObj, 'rtcDoc:range');
     config.doc_constraint = jsonVal(configDocObj, 'rtcDoc:constraint');
   }
+  config.comment = jsonVal(sourceObj, 'rtcExt:comment');
 
   const proprtyObj = sourceObj['rtcExt:Properties'];
+  parseProperties(proprtyObj, config.properties);
+}
+
+function parseProperties(proprtyObj, result) {
   if(proprtyObj) {
     if(isIterable(proprtyObj)) {
       for(const prop of proprtyObj) {
-        let prop = new PropertyParam({
+        let prop_param = new PropertyParam({
                       name: jsonVal(prop, 'rtcExt:name'),
                       value: jsonVal(prop, 'rtcExt:value')
                     });
-        config.properties.push(prop);
+        result.push(prop_param);
       }
     } else {
-      let prop = new PropertyParam({
+      let prop_param = new PropertyParam({
                       name: jsonVal(proprtyObj, 'rtcExt:name'),
                       value: jsonVal(proprtyObj, 'rtcExt:value')
                     });
-      config.properties.push(prop);
+      result.push(prop_param);
     }
   }
 }
 
 function parseXmlConstraint(sourceObj) {
   let result = [];
+  if(!sourceObj) return result;
 
   const hashObj = sourceObj['rtc:ConstraintHashType'];
   if(hashObj) {
@@ -841,6 +943,8 @@ function parseServicePortInfo(rtc_param, sourceObj, serviceList) {
     sp.doc_description = jsonVal(servicePortDocObj, 'rtcDoc:description');
     sp.doc_if_description = jsonVal(servicePortDocObj, 'rtcDoc:ifdescription');
   }
+  sp.comment = jsonVal(sourceObj, 'rtcExt:comment');
+  sp.position = jsonVal(sourceObj, 'rtcExt:position');
 
   const serviceIFObj = sourceObj['rtc:ServiceInterface'];
   if(serviceIFObj) {
@@ -852,6 +956,8 @@ function parseServicePortInfo(rtc_param, sourceObj, serviceList) {
         parseServiceIFInfo(rtc_param, sp, serviceIFObj, serviceList);
     }
   }
+  const proprtyObj = sourceObj['rtcExt:Properties'];
+  parseProperties(proprtyObj, sp.properties);
 }
 
 function parseServiceIFInfo(rtc_param, sPort, sourceObj, serviceList) {
@@ -878,6 +984,9 @@ function parseServiceIFInfo(rtc_param, sPort, sourceObj, serviceList) {
     si.doc_pre_condition = jsonVal(serviceIFDocObj, 'rtcDoc:docPreCondition');
     si.doc_post_condition = jsonVal(serviceIFDocObj, 'rtcDoc:docPostCondition');
   }
+  si.comment = jsonVal(sourceObj, 'rtcExt:comment');
+  const proprtyObj = sourceObj['rtcExt:Properties'];
+  parseProperties(proprtyObj, si.properties);
 }
 
 function parseDataPortInfo(rtc_param, sourceObj, typeList) {
@@ -894,12 +1003,16 @@ function parseDataPortInfo(rtc_param, sourceObj, typeList) {
   dp.dataFlowType = jsonVal(sourceObj, 'rtc:dataflowType');
   dp.subscriptionType = jsonVal(sourceObj, 'rtc:subscriptionType');
   dp.unit = jsonVal(sourceObj, 'rtc:unit');
+  dp.idlFile = jsonVal(sourceObj, 'rtc:idlFile');
   dp.varname = jsonVal(sourceObj, 'rtcExt:variableName');
+  dp.position = jsonVal(sourceObj, 'rtcExt:position');
   if(jsonVal(sourceObj, 'rtc:portType') == 'DataInPort') {
     rtc_param.inports.push(dp);
   } else if(jsonVal(sourceObj, 'rtc:portType') == 'DataOutPort') {
     rtc_param.outports.push(dp);
   }
+  const proprtyObj = sourceObj['rtcExt:Properties'];
+  parseProperties(proprtyObj, dp.properties);
 
   const dataPortDocObj = sourceObj['rtcDoc:Doc'];
   if(dataPortDocObj) {
@@ -911,6 +1024,8 @@ function parseDataPortInfo(rtc_param, sourceObj, typeList) {
     dp.doc_occerrence = jsonVal(dataPortDocObj, 'rtcDoc:occerrence');
     dp.doc_operation = jsonVal(dataPortDocObj, 'rtcDoc:operation');
   }
+  dp.comment = jsonVal(sourceObj, 'rtcExt:comment');
+  dp.position = jsonVal(sourceObj, 'rtcExt:position');
 }
 
 function parseActivityInfo(rtc_param, key, actionsObj, obj_key) {

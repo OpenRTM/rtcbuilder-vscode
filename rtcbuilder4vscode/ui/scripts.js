@@ -91,6 +91,14 @@ function generateCode() {
   });
 }
 
+function clearBkFiles() {
+  const project = document.getElementById('project-name').textContent;
+  vscode.postMessage({
+    command: 'confirmBkClear',
+    project_dir: project
+  });
+}
+
 function openSettings() {
   store_profile(prev_tab);
   vscode.postMessage({

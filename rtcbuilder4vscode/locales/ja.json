@@ -26,6 +26,7 @@
     , "basic.GENERATE_TITLE": "コード生成"
     , "basic.GENERATE_EXPL": "コードの生成を行います。"
     , "basic.BTN_GENERATE": "コード生成"
+    , "basic.BTN_BK_CLEAR": "バックアップファイル クリア"
     , "basic.EXPORT_IMPORT_TITLE": "プロファイル情報のインポート・エクスポート"
     , "basic.EXPORT_IMPORT_EXPL": "プロファイル情報のインポートおよびエクスポートを行います。"
     , "basic.BTN_IMPORT": "インポート"

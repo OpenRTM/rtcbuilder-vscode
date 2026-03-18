@@ -322,6 +322,32 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
         );
       }
 
+  } else if (message.command === 'confirmBkClear') {
+    const project_dir = message.project_dir;
+    const result = await vscode.window.showWarningMessage(
+                            vscode.l10n.t('Are you sure you want to delete all backup files?'),
+                            { modal: true },
+                            'OK');
+    if( result !== 'OK') return;
+
+    const files = listAllFiles(project_dir);
+    for (const each of files) {
+      const name = path.basename(each);
+      if (name.length < 14) {
+          continue;
+      }
+
+      const last14 = name.slice(-14);
+      if (/^\d{14}$/.test(last14)) {
+        await vscode.workspace.fs.delete(vscode.Uri.file(each), { 
+            useTrash: true
+        });
+        // vscode.Uri.file(each);
+        //   await fs.unlink(each);
+      }
+    }
+    vscode.window.showInformationMessage(vscode.l10n.t("All backup files have been deleted."),{ modal: true });
+
   } else if (message.command === 'validateProfile') {
       try {
         const xmlData = message.contents;
@@ -700,6 +726,25 @@ function fileCompare(filePathA, filePathB) {
   } catch (e) {
     return false;
   }
+}
+
+function listAllFiles(target_dir) {
+    let result = [];
+
+    const files = fs.readdirSync(target_dir, { withFileTypes: true });
+    for (const entry of files) {
+        const fullPath = path.join(target_dir, entry.name);
+
+        if (entry.isFile()) {
+            result.push(fullPath);
+        }
+
+        if (entry.isDirectory()) {
+            result = result.concat(listAllFiles(fullPath));
+        }
+    }
+
+    return result;
 }
 
 module.exports = {

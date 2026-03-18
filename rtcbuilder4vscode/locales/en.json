@@ -26,6 +26,7 @@
     , "basic.GENERATE_TITLE": "Code Generation"
     , "basic.GENERATE_EXPL": "Generates code."
     , "basic.BTN_GENERATE": "Code Generation"
+    , "basic.BTN_BK_CLEAR": "Clear Backup Files"
     , "basic.EXPORT_IMPORT_TITLE": "Import/Export Profile information"
     , "basic.EXPORT_IMPORT_EXPL": "Imports/Exports Profile information."
     , "basic.BTN_IMPORT": "Import"

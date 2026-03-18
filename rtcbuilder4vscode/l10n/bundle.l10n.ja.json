@@ -21,4 +21,7 @@
 
   , "The specified content is invalid.": "指定された内容が不正です"
   , "The target RtcProfile content is invalid.": "対象のプロファイルの内容が不正です"
+
+  , "Are you sure you want to delete all backup files?": "バックアップファイルを全て削除してもよろしいですか？"
+  , "All backup files have been deleted.": "バックアップファイルを全て削除しました"
 }
