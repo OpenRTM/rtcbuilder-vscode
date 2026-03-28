@@ -68,9 +68,9 @@
                         			'Vehicle', 'Web Application Server' ];
 
     window.onload = function () {
-      // vscode.postMessage({
-      //   command: 'getSettingsMain'
-      // });
+      vscode.postMessage({
+        command: 'getSettingsMain'
+      });
 
       const savedState = vscode.getState();
       if (savedState) {
@@ -111,9 +111,6 @@
 
       } else if (msg.command === 'sendSettings') {
         settings_ = msg.settings;
-        const project_dir = settings_.project_dir;
-        document.getElementById('project-name').textContent = project_dir;
-        setProjectLocation(project_dir);
         load_profile(prev_tab);
 
       } else if (msg.command === 'sendDataTypes') {

@@ -50,6 +50,9 @@ function load_basic_info() {
     container.appendChild(label);
   });
   /////
+  console.log(rtc_param_);
+  if(!rtc_param_) return;
+  
   document.getElementById('basic_name').value = rtc_param_.name;
   document.getElementById('basic_description').value = rtc_param_.description;
   document.getElementById('basic_version').value = rtc_param_.version;
