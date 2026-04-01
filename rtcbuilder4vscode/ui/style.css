@@ -435,3 +435,11 @@ background-color: var(--vscode-list-hoverBackground);
 .result_row_repository {
     cursor: pointer;
 }
+
+td.selectable {
+  cursor: pointer;
+}
+td.selectable label {
+  cursor: pointer;
+  user-select: none;
+}

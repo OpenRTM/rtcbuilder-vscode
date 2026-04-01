@@ -47,8 +47,30 @@ function setupTableClickEvents(table) {
   }
 
   table.addEventListener('click', (event) => {
-    if (event.target.tagName.toLowerCase() === 'td') {
-      selectActivity(event.target);
+    const cell = event.target.closest('td.selectable');
+    if (cell && table.contains(cell)) {
+      selectActivity(cell);
+    }
+  });
+
+  table.addEventListener('dblclick', (event) => {
+    const cell = event.target.closest('td.selectable');
+    if (cell && table.contains(cell)) {
+      const selectedText = cell.textContent.trim();
+      if (selectedText == 'onInitialize') return;
+      
+      let target_act = rtc_param_.actions[selectedText];
+      target_act.implemented = !target_act.implemented;
+      const valueToCheck = target_act.implemented ? 'ON' : 'OFF';
+      const radios = document.querySelectorAll('input[name="activity_enable"]');
+      radios.forEach(radio => {
+        radio.checked = (radio.value === valueToCheck);
+      });
+      if (target_act.implemented) {
+        cell.classList.add('activated_activity');
+      } else {
+        cell.classList.remove('activated_activity');
+      }
     }
   });
 }

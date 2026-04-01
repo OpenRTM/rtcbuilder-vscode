@@ -108,7 +108,7 @@ function load_dataport(isParse = false) {
 
 function add_port(inout) {
   let dp = new DataPortParam();
-  // console.log(settings_);
+  console.log(settings_);
   dp.name = settings_.dataport_name;
   dp.type = settings_.dataport_type;
   dp.varname = settings_.dataport_var_name;

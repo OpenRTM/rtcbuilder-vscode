@@ -153,22 +153,40 @@ function update_detail_config(config) {
     store_configuration();
   }
   // console.log(config);
+  if(config) {
+    document.getElementById('config_name').value = config.name;
+    document.getElementById('config_type').value = config.type;
+    document.getElementById('config_default').value = config.defaultValue;
+    document.getElementById('config_var_name').value = config.varname;
+    document.getElementById('config_unit').value = config.unit;
+    document.getElementById('config_constraint').value = config.constraint;
+    document.getElementById('config_widget').value = config.getWidget();
+    document.getElementById('config_step').value = config.getStep();
 
-  document.getElementById('config_name').value = config.name;
-  document.getElementById('config_type').value = config.type;
-  document.getElementById('config_default').value = config.defaultValue;
-  document.getElementById('config_var_name').value = config.varname;
-  document.getElementById('config_unit').value = config.unit;
-  document.getElementById('config_constraint').value = config.constraint;
-  document.getElementById('config_widget').value = config.getWidget();
-  document.getElementById('config_step').value = config.getStep();
+    document.getElementById('config_doc_name').value = config.doc_dataname;
+    document.getElementById('config_doc_default').value = config.doc_default;
+    document.getElementById('config_doc_abst').value = getDisplayDocText(config.doc_description);
+    document.getElementById('config_doc_unit').value = config.doc_unit;
+    document.getElementById('config_doc_range').value = config.doc_range;
+    document.getElementById('config_doc_constraint').value = getDisplayDocText(config.doc_constraint);
 
-  document.getElementById('config_doc_name').value = config.doc_dataname;
-  document.getElementById('config_doc_default').value = config.doc_default;
-  document.getElementById('config_doc_abst').value = getDisplayDocText(config.doc_description);
-  document.getElementById('config_doc_unit').value = config.doc_unit;
-  document.getElementById('config_doc_range').value = config.doc_range;
-  document.getElementById('config_doc_constraint').value = getDisplayDocText(config.doc_constraint);
+  } else {
+    document.getElementById('config_name').value = '';
+    document.getElementById('config_type').value = '';
+    document.getElementById('config_default').value = '';
+    document.getElementById('config_var_name').value = '';
+    document.getElementById('config_unit').value = '';
+    document.getElementById('config_constraint').value = '';
+    document.getElementById('config_widget').value = '';
+    document.getElementById('config_step').value = '';
+
+    document.getElementById('config_doc_name').value = '';
+    document.getElementById('config_doc_default').value = '';
+    document.getElementById('config_doc_abst').value = '';
+    document.getElementById('config_doc_unit').value = '';
+    document.getElementById('config_doc_range').value = '';
+    document.getElementById('config_doc_constraint').value = '';
+  }
 
   current_config_ = config;
 }

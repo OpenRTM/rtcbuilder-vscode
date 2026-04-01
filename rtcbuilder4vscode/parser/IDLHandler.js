@@ -21,8 +21,10 @@ function parseServices(param) {
     idlSearchPathList.push(new IdlPathParam({ path: fullPath, dispPath: dispPath, isDefault: true }));
   }
 
-  const projectIdlPath = path.join(param, 'idl');
-  idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  if(param) {
+    const projectIdlPath = path.join(param, 'idl');
+    idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  }
   //
   const exclusionList = [
     'componentobserver.idl', 
@@ -110,8 +112,10 @@ function getDataTypesDef(param) {
     idlSearchPathList.push(new IdlPathParam({ path: fullPath, dispPath: dispPath, isDefault: true }));
   }
 
-  const projectIdlPath = path.join(param, 'idl');
-  idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  if(param) {
+    const projectIdlPath = path.join(param, 'idl');
+    idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  }
   //
   const exclusionList = [
     'componentobserver.idl', 
@@ -197,8 +201,10 @@ function parseDataTypes(param) {
     idlSearchPathList.push(new IdlPathParam({ path: fullPath, dispPath: dispPath, isDefault: true }));
   }
 
-  const projectIdlPath = path.join(param, 'idl');
-  idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  if(param) {
+    const projectIdlPath = path.join(param, 'idl');
+    idlSearchPathList.push(new IdlPathParam({ path: projectIdlPath, dispPath: 'idl', isDefault: false }));
+  }
   //
   const exclusionList = [
     'componentobserver.idl', 
