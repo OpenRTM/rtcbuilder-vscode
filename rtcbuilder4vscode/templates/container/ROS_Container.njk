@@ -1,0 +1,48 @@
+# {{ rtcParam.description }}
+# Base image
+{%- if convConfiguration(containerParam.configuration) == 1 %}
+FROM ros:{{ containerParam.mdlVersion.toLowerCase() }}-ros-base
+{%- elseif convConfiguration(containerParam.configuration) == 2  %}
+FROM osrf/ros:{{ containerParam.mdlVersion.toLowerCase() }}-desktop-full
+{%- endif %}
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO={{ containerParam.mdlVersion.toLowerCase() }}
+
+# Install APT packages
+RUN apt-get update && apt-get install -y \
+{%- for libParam in containerParam.libraries %}
+    {{ getContainerLibName(rtcParam.containerConfig, containerParam, libParam) }} \
+{%- endfor %}
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# Setup Workspace
+RUN mkdir -p /root/{{ containerParam.workspace }}/src
+WORKDIR /root/{{ containerParam.workspace }}/src
+
+# Clone & Build
+{%- for repParam in containerParam.repositories %}
+RUN git clone -b {{ repParam.Branch }} {{ repParam.URL }} 
+{%- endfor %}
+
+WORKDIR /root/{{ containerParam.workspace }}
+{%- if convMiddleware(containerParam.middleware) == 1 %}
+RUN rosdep init || true && rosdep update && rosdep install -r -y -i --from-paths src
+RUN catkin init && bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin build" 
+{%- elseif convMiddleware(containerParam.middleware) == 2 %}
+RUN apt-get update && rosdep update && rosdep install -r -y -i --from-paths src
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --symlink-install" 
+{%- endif %}
+
+# Bashrc
+RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc && \
+{%- if convMiddleware(containerParam.middleware) == 1 %}
+    echo "source /root/${containerParam.workspace}/devel/setup.bash" >> /root/.bashrc
+{%- elseif convMiddleware(containerParam.middleware) == 2 %}
+    echo "source /root/${containerParam.workspace}/install/setup.bash" >> /root/.bashrc
+{%- endif %}
+
+WORKDIR /root/{{ containerParam.workspace }}
+CMD ["bash", "-l"]

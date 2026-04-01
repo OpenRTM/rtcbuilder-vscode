@@ -221,7 +221,8 @@
         <tr>
           <td style="vertical-align : top;" id="serviceport.HINT_IFTYPE_TITLE">インターフェース型:</td>
           <td id="serviceport.HINT_IFTYPE_DESC">使用するサービスインターフェース型をプルダウンから選択します。<br>
-          独自のインターフェースを使用する場合は、プロジェクト内のidlフォルダに使用するIDLファイルをコピーし、Reloadボタンを押すと、IDLファイル内のインターフェースがプルダウンに現れます。</td>
+          独自のインターフェースを使用する場合は、プロジェクト内のidlフォルダに使用するIDLファイルをコピーし、Reloadボタンを押すと、IDLファイル内のインターフェースがプルダウンに現れます。
+        </td>
         </tr>
         <tr>
           <td style="vertical-align : top;" id="serviceport.HINT_IDLFILE_TITLE">IDLファイル:</td>
@@ -257,6 +258,41 @@
           <td style="vertical-align : top;" id="serviceport.HINT_POST_CONDITION_TITLE">事後条件:</td>
           <td id="serviceport.HINT_POST_CONDITION_DESC">関数ごとの事後条件の意味を記載。<br>
           関数名0：事後条件、関数名1：事後条件</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td colspan="2" class="title_row" style="width : 130px;" id="serviceport.HINT_PORT_TITLE">ヒント(ROS)</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_TITLE">サービスポート:</td>
+          <td id="serviceport.HINT_DESC">Service 通信を使用する場合、このセクションで設定を行います。<br>
+            Service通信は、ノード間でリクエスト／レスポンス型の同期通信を行うための通信方式です。<br>
+            Service Clientがリクエストを送信し、Service Serverが処理結果をレスポンスとして返します。<br>
+            通信を確立するためには、Service名およびService型が一致している必要があります。<br>
+            いずれかが一致しない場合、通信は確立されません。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_PORT_NAME_TITLE">ポート名:</td>
+          <td id="serviceport.HINT_ROS_PORT_NAME_DESC">Service 通信で使用する Service 名を入力します。<br>
+            Service名は、ROSシステム内で通信チャネルを識別するための名称です。<br>
+            Service名には、英数字（A–Z, a–z, 0–9）、アンダースコア（_）、およびスラッシュ（/）を使用できます。スペースや特殊文字は使用できません。</td>
+        </tr>
+        <tr><td colspan="99" style="height: 20px; border: none;"></td></tr>
+        <tr>
+          <td style="vertical-align : top;width : 130px;" id="serviceport.HINT_IF_NAME_TITLE">インターフェース名:</td>
+          <td id="serviceport.HINT_ROS_IF_NAME_DESC">ポート名で入力したService名を入力してください。</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IF_DIRECTION_TITLE">方向:</td>
+          <td id="serviceport.HINT__ROS_IF_DIRECTION_DESC">Service 通信で使用する役割を選択します。<br>
+            -Provided：Service Server（Serviceを提供する側）<br>
+            -Required：Required：Service Client（Serviceを呼び出す側）</td>
+        </tr>
+        <tr>
+          <td style="vertical-align : top;" id="serviceport.HINT_IFTYPE_TITLE">インターフェース型:</td>
+          <td id="serviceport.HINT_ROS_IFTYPE_DESC">Service通信で使用するService型をプルダウンから選択します。<br>
+            Service ServerとService Clientが通信を行うためには、同一のService名および同一のService型を指定する必要があります。<br>
+            独自の Service 型を使用する場合は、対応する .srv ファイルを IDL に変換し、IDL フォルダへコピーしてから Reload を押すと、定義済みインターフェースが表示されます。</td>
         </tr>
       </tbody>
     </table>

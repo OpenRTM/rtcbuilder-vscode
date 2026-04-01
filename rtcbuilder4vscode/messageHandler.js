@@ -10,6 +10,10 @@ const { generateCode } = require('./templates/templateHandler');
 const { parseServices, parseDataTypes, praseIDL } = require('./parser/IDLHandler');
 const { getSettings, saveSettings } = require('./ui/settings/settingsHandler');
 
+const { convertRtc2Iso, createIsoXML } = require('./ISO/rtc2IsoProfileHandler');
+const { convertIso2Rtc } = require('./ISO/iso2RtcProfileHandler');
+const { parseIsoXML } = require('./ISO/isoXmlHandler');
+
 const { RtcParam } = require("./model/dataModels");
 const BlockParser = require("./blockParser.js")
 
@@ -19,7 +23,11 @@ let comparePanel_;
 async function handleMessage(param, mainPanel, context, extensions, message, translations) {
   console.log(message);
   rtc_param_ = param;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> origin/iso22166-202-profile
   if (message.command === 'getRtcParam') {
       mainPanel.webview.postMessage({
         command: 'sendRtcParam',
@@ -93,6 +101,7 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
       const result = createXML(param);
       const fileName = path.join(project_dir, 'RTC.xml');
       fs.writeFileSync(fileName, result, 'utf-8');
+      writeISOProfile(project_dir);
 
   } else if (message.command === 'createXML') {
     let result;
@@ -257,22 +266,11 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
 
   } else if (message.command === 'importProfile') {
     const project_dir = message.project_dir;
-    const uris = await vscode.window.showOpenDialog({
-        canSelectMany: false,
-        openLabel: vscode.l10n.t('Select File'),
-        filters: {
-          'XML Files': ['xml'],
-          'All Files': ['*']
-        },
-        defaultUri: vscode.Uri.file(
-          vscode.workspace.workspaceFolders?.[0]?.uri.fsPath + '/'
-        )
-      });
-    if (uris && uris.length > 0) {
-      try {
-        const fileUri = uris[0];
-        const sourcePath = fileUri.fsPath;
-        const xmlData = fs.readFileSync(sourcePath, 'utf-8');
+    const type = message.type;
+    const sourcePath = message.file_name;
+    try {
+      const xmlData = fs.readFileSync(sourcePath, 'utf-8');
+      if(type === 'RTC') {
         const errList = validateXML(xmlData);
         if(0 < errList.length) {
           errList.unshift(vscode.l10n.t('The target RtcProfile content is invalid.') + os.EOL);
@@ -294,33 +292,103 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
 
         const destPath = path.join(project_dir, 'RTC.xml');
         fs.copyFileSync(sourcePath, destPath);
-      } catch (e) {
-        vscode.window.showErrorMessage(vscode.l10n.t('Profile Import failed.') + `\n\n` + e.message,{ modal: true });
+
+      } else if(type === 'ISO') {
+        const iso_param_temp = parseIsoXML(xmlData);
+        rtc_param_ = convertIso2Rtc(iso_param_temp);
+        mainPanel.webview.postMessage({
+          command: 'sendProfile',
+          profile: rtc_param_,
+          showMessage: true
+        });
+        const destPath = path.join(project_dir, 'iso22166_202.xml');
+        fs.copyFileSync(sourcePath, destPath);
+
+        const destPathRTC = path.join(project_dir, 'RTC.xml');
+        const result = createXML(rtc_param_);
+        fs.writeFileSync(destPathRTC, result, 'utf-8');
       }
+    } catch (e) {
+      vscode.window.showErrorMessage(vscode.l10n.t('Profile Import failed.') + `\n\n` + e.message,{ modal: true });
     }
 
   } else if (message.command === 'exportProfile') {
-    const uri = await vscode.window.showSaveDialog({
-        saveLabel: vscode.l10n.t('Save'),
-        title: vscode.l10n.t('Please select a save location.'),
-        filters: {
-          'XML Files': ['xml'],
-          'All Files': ['*']
-        },
-        defaultUri: vscode.Uri.file(
-          vscode.workspace.workspaceFolders?.[0]?.uri.fsPath + '/'
-        )
-      });
+    const param = message.param;
+    const selected_rtc = message.selected_rtc;
+    const file_name_rtc = message.file_name_rtc;
+    const selected_iso = message.selected_iso;
+    const file_name_iso = message.file_name_iso;
 
-      if (uri) {
-        const param = message.param;
-        const result = createXML(param);
-        fs.writeFileSync(uri.fsPath, result, 'utf-8');
-        vscode.window.showInformationMessage(
-          vscode.l10n.t('Profile Export completed.'),
-          { modal: true }
-        );
-      }
+    if(selected_rtc) {
+      const result = createXML(param);
+      fs.writeFileSync(file_name_rtc, result, 'utf-8');
+    }
+    if(selected_iso) {
+      const iso_profile = convertRtc2Iso(param);
+      const iso_xml = createIsoXML(iso_profile);
+      fs.writeFileSync(file_name_iso, iso_xml, 'utf-8');
+    }
+    vscode.window.showInformationMessage(
+      vscode.l10n.t('Profile Export completed.'),
+      { modal: true }
+    );
+
+  } else if (message.command === 'refProfile') {
+    const file_name = message.file_name;
+    const source = message.source;
+    const defaultUri = file_name ? vscode.Uri.file(path.dirname(file_name)) : vscode.workspace.workspaceFolders?.[0]?.uri;
+    if(source === 'import') {
+      const uris = await vscode.window.showOpenDialog({
+          canSelectMany: false,
+          openLabel: vscode.l10n.t('Select File'),
+          filters: {
+            'XML Files': ['xml'],
+            'All Files': ['*']
+          },
+          defaultUri: defaultUri
+        });
+        if(uris) {
+          const fileUri = uris[0];
+          const sourcePath = fileUri.fsPath;
+          mainPanel.webview.postMessage({
+            command: 'sendRefResult',
+            file_name: sourcePath,
+            source : source
+          });
+        }
+    } else {
+      const uris = await vscode.window.showSaveDialog({
+          canSelectMany: false,
+          openLabel: vscode.l10n.t('Select File'),
+          filters: {
+            'XML Files': ['xml'],
+            'All Files': ['*']
+          },
+          defaultUri: defaultUri
+        });
+        if(uris) {
+          const sourcePath = uris.fsPath;
+          mainPanel.webview.postMessage({
+            command: 'sendRefResult',
+            file_name: sourcePath,
+            source : source
+          });
+        }
+    }
+
+  } else if (message.command === 'exportISOProfile') {
+    const param = message.param;
+    const project_dir = message.project_dir;
+
+    const file_name = path.join(project_dir, 'iso22166_202.xml');
+
+    const iso_profile = convertRtc2Iso(param);
+    const iso_xml = createIsoXML(iso_profile);
+    fs.writeFileSync(file_name, iso_xml, 'utf-8');
+    vscode.window.showInformationMessage(
+      vscode.l10n.t('An ISO 22166-202 format profile has been generated.'),
+      { modal: true }
+    );
 
   } else if (message.command === 'confirmBkClear') {
     const project_dir = message.project_dir;
@@ -337,6 +405,24 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
           continue;
       }
 
+<<<<<<< HEAD
+  } else if (message.command === 'confirmBkClear') {
+    const project_dir = message.project_dir;
+    const result = await vscode.window.showWarningMessage(
+                            vscode.l10n.t('Are you sure you want to delete all backup files?'),
+                            { modal: true },
+                            'OK');
+    if( result !== 'OK') return;
+
+    const files = listAllFiles(project_dir);
+    for (const each of files) {
+      const name = path.basename(each);
+      if (name.length < 14) {
+          continue;
+      }
+
+=======
+>>>>>>> origin/iso22166-202-profile
       const last14 = name.slice(-14);
       if (/^\d{14}$/.test(last14)) {
         await vscode.workspace.fs.delete(vscode.Uri.file(each), { 
@@ -348,6 +434,42 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
     }
     vscode.window.showInformationMessage(vscode.l10n.t("All backup files have been deleted."),{ modal: true });
 
+<<<<<<< HEAD
+=======
+  } else if (message.command === 'testProfile') {
+    const project_dir = message.project_dir;
+
+    //RTC - ISO - RTC
+    {
+      const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC_Docker_Base.xml';
+      const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Docker.xml';
+      convertRtc2IsoProfile(sourcePath, project_dir, targetPath);
+    }
+    /////////
+    {
+      const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Docker.xml';
+      const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC_Docker_Conv.xml';
+      convertIso2RtcProfile(sourcePath, targetPath);
+    }
+    /////////
+    // // ISO - RTC - ISO
+    // {
+    //   const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Base.xml';
+    //   const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC.xml';
+    //   // const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Base_InOut.xml';
+    //   // const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC_Conv_InOut.xml';
+    //   convertIso2RtcProfile(sourcePath, targetPath);
+    // }
+    // {
+    //   const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC.xml';
+    //   const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Conv.xml';
+    //   // const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC_Conv_InOut.xml';
+    //   // const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Conv_InOut.xml';
+    //   convertRtc2IsoProfile(sourcePath, project_dir, targetPath);
+    // }
+    let a = 0;
+
+>>>>>>> origin/iso22166-202-profile
   } else if (message.command === 'validateProfile') {
       try {
         const xmlData = message.contents;
@@ -449,6 +571,12 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
       settingPanel_.dispose();
       settingPanel_ = null;
     }
+
+  } else if (message.command === 'updateContainerConfig') {
+    const param = message.settings;
+      if(param) {
+        await saveSettings(param);
+      }
 
   } else if (message.command === 'showMessage') {
     const type = message.type;
@@ -590,6 +718,14 @@ function writeProfile(project_dir) {
   const destPath = path.join(project_dir, 'RTC.xml');
   const generatedProfile = createXML(rtc_param_);
   fs.writeFileSync(destPath, generatedProfile, 'utf-8');
+  writeISOProfile(project_dir);
+}
+
+function writeISOProfile(project_dir) {
+  const destPath = path.join(project_dir, 'iso22166_202.xml');
+  const isoProfile = convertRtc2Iso(rtc_param_);
+  const isoXml = createIsoXML(isoProfile);
+  fs.writeFileSync(destPath, isoXml, 'utf-8');
 }
 
 function writeResults(context, project_dir, param) {
@@ -615,7 +751,27 @@ function writeResults(context, project_dir, param) {
     }
   }
   fs.writeFileSync(destPath, generatedProfile, 'utf-8');
+<<<<<<< HEAD
 
+=======
+  /////
+  const isoProfile = convertRtc2Iso(rtc_param_);
+  const isoXml = createIsoXML(isoProfile);
+  const destISOPath = path.join(project_dir, 'iso22166_202.xml');
+  if (fs.existsSync(destISOPath)) {
+    const originalISOProfile = fs.readFileSync(destISOPath, 'utf-8');
+    if(compareXmlIgnoringDates(originalISOProfile, isoXml) == false) {
+      if(fs.existsSync(destISOPath)) {
+        fs.renameSync(destISOPath, destISOPath + genTime);
+      }
+      removeBackupFiles(project_dir, 'iso22166_202.xml');
+      fs.writeFileSync(destISOPath, isoXml, 'utf-8');
+    }
+  } else {
+    fs.writeFileSync(destISOPath, isoXml, 'utf-8');
+  }
+  /////
+>>>>>>> origin/iso22166-202-profile
   for(const each of param) {
     if(each.mode.toLowerCase() === 'original'
         || each.mode.toLowerCase() === 'same') continue;
@@ -727,10 +883,16 @@ function fileCompare(filePathA, filePathB) {
     return false;
   }
 }
-
+////////// 
 function listAllFiles(target_dir) {
     let result = [];
 
+<<<<<<< HEAD
+function listAllFiles(target_dir) {
+    let result = [];
+
+=======
+>>>>>>> origin/iso22166-202-profile
     const files = fs.readdirSync(target_dir, { withFileTypes: true });
     for (const entry of files) {
         const fullPath = path.join(target_dir, entry.name);
@@ -747,6 +909,33 @@ function listAllFiles(target_dir) {
     return result;
 }
 
+<<<<<<< HEAD
+=======
+function convertIso2RtcProfile(sourcePath, targetPath) {
+  const xmlData = fs.readFileSync(sourcePath, 'utf-8');
+  const iso_param_temp = parseIsoXML(xmlData);
+  const rtc_param_temp = convertIso2Rtc(iso_param_temp);
+  const result = createXML(rtc_param_temp);
+
+  fs.writeFileSync(targetPath, result, 'utf-8');
+}
+
+function convertRtc2IsoProfile(sourcePath, project_dir, targetPath) {
+  const xmlData = fs.readFileSync(sourcePath, 'utf-8');
+
+  const typeResult = parseDataTypes(project_dir);
+  const typeList = typeResult.dateTypeList;
+  const serviceResult = parseServices(project_dir);
+  const serviceList = serviceResult.serviceList;
+
+  const rtc_param_temp = parseXML(xmlData, typeList, serviceList);
+
+  const iso_profile = convertRtc2Iso(rtc_param_temp);
+  const iso_xml = createIsoXML(iso_profile);
+  fs.writeFileSync(targetPath, iso_xml, 'utf-8');
+}
+////////// 
+>>>>>>> origin/iso22166-202-profile
 module.exports = {
   handleMessage,
   getSettings,

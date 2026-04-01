@@ -3,6 +3,7 @@
   , "Select": "選択"
   , "Initialization failed.": "初期化に失敗しました"
   , "Profile Export completed.": "Profile Exportが終了しました"
+  , "An ISO 22166-202 format profile has been generated.": "ISO 22166-202 形式のプロファイルを生成しました"
   , "Conversion to RtcProfile failed.": "RtcProfileへの変換に失敗しました"
   , "Select File": "ファイルを選択"
   , "Profile Import failed.": "Profile Importに失敗しました"

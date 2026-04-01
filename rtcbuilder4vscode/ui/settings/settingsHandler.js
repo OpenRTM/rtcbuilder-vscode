@@ -58,6 +58,8 @@ function getSettings() {
     serviceif_var_name: config.get('serviceif_var_name'),
     serviceif_prefix: config.get('serviceif_prefix'),
     serviceif_suffix: config.get('serviceif_suffix'),
+
+    container_config: config.get('container_config')
   };
 
   return settings;
@@ -121,6 +123,8 @@ async function saveSettings(param) {
   await config.update('serviceif_var_name', param['serviceif_var_name'], vscode.ConfigurationTarget.Global);
   await config.update('serviceif_prefix', param['serviceif_prefix'], vscode.ConfigurationTarget.Global);
   await config.update('serviceif_suffix', param['serviceif_suffix'], vscode.ConfigurationTarget.Global);
+
+  await config.update('container_config', param['container_config'], vscode.ConfigurationTarget.Global);
 }
 
 module.exports = {

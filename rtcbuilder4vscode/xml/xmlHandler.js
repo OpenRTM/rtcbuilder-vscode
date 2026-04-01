@@ -10,7 +10,12 @@ const {
   DataPortParam,
   ServicePortInterfaceParam, ServicePortParam,
   ConfigSetParam,
+<<<<<<< HEAD
   TargetEnvironmentParam, EnvLibraryParam
+=======
+  TargetEnvironmentParam, EnvLibraryParam,
+  ContainerParam, RepositoryParam
+>>>>>>> origin/iso22166-202-profile
 } = require("./../model/dataModels");
 
 const {
@@ -22,6 +27,8 @@ const {
   Language, TargetEnvironment, EnvLibrary
 } = require("./../model/rtcProfileModel");
 
+const CONTAINER_PREFIX = "__container__";
+
 function createXML(param) {
   let currentDate = formatDateWithTimezoneOffset();
 
@@ -29,7 +36,6 @@ function createXML(param) {
   rtc["@"]["rtc:id"] = "RTC:" + param.vendor + ":" + param.category + ":" + param.name + ":" + param.version;
   rtc.BasicInfo.setAttribute("xsi:type", "rtcExt:basic_info_ext");
 
-  // rtc.BasicInfo.setAttribute("rtcExt:saveProject", "Output Project");
   rtc.BasicInfo.setAttribute("rtc:name", param.name);
   rtc.BasicInfo.setAttribute("rtc:componentType", param.componentType);
   rtc.BasicInfo.setAttribute("rtc:activityType", param.activityType);
@@ -85,6 +91,7 @@ function createXML(param) {
   lang.setAttribute("rtc:kind", param.language);
   rtc.setLanguage(lang);
   
+<<<<<<< HEAD
   const language = param.lang;
   for(const each of language.targets) {
     const target = new TargetEnvironment();
@@ -122,6 +129,60 @@ function createXML(param) {
     }
   }
 
+=======
+  for(const each of param.containerSettings) {
+    const target = setContainerSettingInfo(each);
+    lang.addTarget(target);
+
+    const strKey = CONTAINER_PREFIX + "lib_" + lang.targets.length;
+    for(const lib of each.libraries) {
+      lang.addProperty(strKey, lib);
+    }
+
+    const strKeyCat = CONTAINER_PREFIX + "category_" + lang.targets.length;
+    for(const elem of each.preSets) {
+      lang.addProperty(strKeyCat, elem);
+    }
+  }
+
+  const language = param.lang;
+  for(const each of language.targets) {
+    const target = new TargetEnvironment();
+    if(each.cpuOther && 0 < each.cpuOther.length) {
+      target.setAttribute("rtcExt:cpuOther", each.cpuOther);
+    }
+    if(each.other && 0 < each.other.length) {
+      target.setAttribute("rtcExt:other", each.other);
+    }
+    if(each.os && 0 < each.os.length) {
+      target.setAttribute("rtcExt:os", each.os);
+    }
+    if(each.langVersion && 0 < each.langVersion.length) {
+      target.setAttribute("rtcExt:langVersion", each.langVersion);
+    }
+
+    if(each.OSversions && 0 < each.OSversions.length) {
+      target.osVersions.push(each.OSversions);
+    }
+
+    const cpus = each.CPUs;
+    for(const each_cpu of cpus) {
+      target.cpus.push(each_cpu);
+    }
+
+    const libs = each.libraries;
+    for(const each_lib of libs) {
+      const env_lib = new EnvLibrary();
+      env_lib.setAttribute("rtcExt:version", each_lib.version);
+      env_lib.setAttribute("rtcExt:name", each_lib.name);
+      target.addLibrary(env_lib);
+    }
+    if(0 < each.langVersion.length || 0 < libs.length ) {
+      lang.addTarget(target);
+    }
+  }
+
+>>>>>>> origin/iso22166-202-profile
   for(const each of language.properties) {
     lang.addProperty(each.name, each.value);
   }
@@ -143,6 +204,29 @@ function createXML(param) {
   return xml;
 }
 
+<<<<<<< HEAD
+=======
+function setContainerSettingInfo(source) {
+  const env = new TargetEnvironment();
+
+  env.setAttribute("rtcExt:os", source.middleware);
+  env.setAttribute("rtcExt:cpuOther", source.mdlVersion);
+  env.osVersions.push(source.osVersion);
+  env.setAttribute("rtcExt:other", source.workspace);
+  env.setAttribute("rtcExt:langVersion", CONTAINER_PREFIX + source.language);
+  env.cpus.push(source.configuration);
+
+  for(const each of source.repositories) {
+    const lib = new EnvLibrary();
+    lib.setAttribute("rtcExt:name", each.URL);
+    lib.setAttribute("rtcExt:version", each.Branch);
+    env.libraries.push(lib);
+  }
+
+  return env;
+}
+
+>>>>>>> origin/iso22166-202-profile
 function setConfigurationInfo(configs, rtc) {
   for (const config of configs) {
     const conf = new Configuration();
@@ -725,6 +809,7 @@ function parseTargetEnv(rtc_param, sourceObj, langObj) {
   rtc_param.lang.targets.push(env);
 
   let langVer = jsonVal(sourceObj, 'rtcExt:langVersion');
+<<<<<<< HEAD
   env.langVersion = jsonVal(sourceObj, 'rtcExt:langVersion');
   env.os = jsonVal(sourceObj, 'rtcExt:os');
   env.OSversions = jsonVal(sourceObj, 'rtcExt:osVersions');
@@ -740,6 +825,74 @@ function parseTargetEnv(rtc_param, sourceObj, langObj) {
     lib.name = jsonVal(each, 'rtcExt:name');
     lib.version = jsonVal(each, 'rtcExt:version');
     env.libraries.push(lib);
+=======
+  if(langVer.startsWith(CONTAINER_PREFIX)) {
+    langVer = langVer.replace(CONTAINER_PREFIX, "");
+    let param = new ContainerParam();
+    param.middleware = jsonVal(sourceObj, 'rtcExt:os');
+    param.mdlVersion = jsonVal(sourceObj, 'rtcExt:cpuOther');
+    param.osVersion = jsonVal(sourceObj, 'rtcExt:osVersions');
+    param.workspace = jsonVal(sourceObj, 'rtcExt:other');
+    param.language = langVer;
+    param.configuration = jsonVal(sourceObj, 'rtcExt:cpus');
+    rtc_param.containerSettings.push(param);
+
+    const libObj = sourceObj['rtcExt:libraries'];
+    if(libObj) {
+      for(const each of libObj) {
+        let rep = new RepositoryParam();
+        rep.URL = jsonVal(each, 'rtcExt:name');
+        rep.Branch = jsonVal(each, 'rtcExt:version');
+        param.repositories.push(rep);
+      }
+    }
+    const proprtyObj = langObj['rtcExt:Properties'];
+    const strKey = CONTAINER_PREFIX + "lib_" + rtc_param.containerSettings.length;
+    const libsObj = proprtyObj.filter(p => jsonVal(p, 'rtcExt:name').toLowerCase() === strKey);
+    if(libsObj) {
+      if(isIterable(libsObj)) {
+        for(const prop of libsObj) {
+          const lib = jsonVal(prop, 'rtcExt:value');
+          param.libraries.push(lib);
+        }
+      } else {
+        const lib = jsonVal(prop, 'rtcExt:value');
+        param.libraries.push(lib);
+      }
+    }
+
+    const strKeyCat = CONTAINER_PREFIX + "category_" + rtc_param.containerSettings.length;
+    const libsObjCat = proprtyObj.filter(p => jsonVal(p, 'rtcExt:name').toLowerCase() === strKeyCat);
+    if(libsObjCat) {
+      if(isIterable(libsObjCat)) {
+        for(const prop of libsObjCat) {
+          const lib = jsonVal(prop, 'rtcExt:value');
+          param.preSets.push(lib);
+        }
+      } else {
+        const lib = jsonVal(prop, 'rtcExt:value');
+        param.preSets.push(lib);
+      }
+    }
+
+  } else {
+    env.langVersion = jsonVal(sourceObj, 'rtcExt:langVersion');
+    env.os = jsonVal(sourceObj, 'rtcExt:os');
+    env.OSversions = jsonVal(sourceObj, 'rtcExt:osVersions');
+    env.other = jsonVal(sourceObj, 'rtcExt:other');
+    env.cpuOther = jsonVal(sourceObj, 'rtcExt:cpuOther');
+
+    const cpusObj = sourceObj['rtcExt:cpus'];
+    env.CPUs.push(cpusObj);
+
+    const libObj = sourceObj['rtcExt:libraries'];
+    for(const each of libObj) {
+      let lib = new EnvLibraryParam();
+      lib.name = jsonVal(each, 'rtcExt:name');
+      lib.version = jsonVal(each, 'rtcExt:version');
+      env.libraries.push(lib);
+    }
+>>>>>>> origin/iso22166-202-profile
   }
 }
 

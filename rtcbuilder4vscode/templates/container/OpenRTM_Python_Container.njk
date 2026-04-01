@@ -1,0 +1,52 @@
+# {{ rtcParam.description }}
+# Base image
+FROM ubuntu:{{ convOSVersion(containerParam.osVersion) }}
+
+ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /root/{{ containerParam.workspace }}
+
+{%- if convOSVersionNum(containerParam.osVersion) >= 22.04 %}
+# OpenRTM official repository skipped for newer Ubuntu (Using OS standard packages)
+{%- else %}
+# OpenRTM Repo & APT
+RUN rm -f /etc/apt/sources.list.d/openrtm.list \
+    && echo "deb [trusted=yes] http://openrtm.org/pub/Linux/{{ convOSName(containerParam.osVersion) }} main" > /etc/apt/sources.list.d/openrtm.list
+{% endif %}
+
+# Install packages
+{%- if convOSVersionNum(containerParam.osVersion) <= 18.04 %}
+# Added --allow-unauthenticated for safety on older repos
+{%- endif %}
+RUN apt-get update \
+{%- if convOSVersionNum(containerParam.osVersion) <= 18.04 %}
+    && apt-get install -y --allow-unauthenticated \
+{%- else %}
+    && apt-get install -y \
+{%- endif %}
+{%- for libParam in containerParam.libraries %}
+    {{ getContainerLibName(rtcParam.containerConfig, containerParam, libParam) }} \
+{%- endfor %}
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+
+{%- if 22.04 <= convOSVersionNum(containerParam.osVersion) %}
+# Upgrade pip
+RUN pip3 install --upgrade pip setuptools wheel
+{%- else %}
+# Upgrade pip and Fix setuptools version for older Python compatibility
+RUN pip3 install --upgrade pip && pip3 install "setuptools<60.0.0" wheel
+{%- endif %}
+
+
+
+# Clone and Install Python Component: pymycobot
+RUN git clone -b {{ getBranchName(containerParam.osVersion) }} https://github.com/elephantrobotics/pymycobot.git \
+    && cd {{ rtcParam.name }} \
+    && if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi \
+    && if [ -f setup.py ]; then python3 setup.py install; fi
+
+
+CMD ["bash", "-l"]

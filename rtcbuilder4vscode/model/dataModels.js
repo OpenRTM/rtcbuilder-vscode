@@ -279,6 +279,30 @@ class LanguageParam {
     }
 }
 
+<<<<<<< HEAD
+=======
+class RepositoryParam {
+    constructor() {
+        this.URL = '';
+        this.Branch = '';
+    }
+}
+
+class ContainerParam {
+    constructor() {
+        this.middleware = '';
+        this.mdlVersion = '';
+        this.osVersion = '';
+        this.workspace = '';
+        this.language = '';
+        this.configuration = '';
+        this.libraries = [];
+        this.preSets = [];
+        this.repositories = [];
+    }
+}
+
+>>>>>>> origin/iso22166-202-profile
 class RtcParam {
     constructor() {
         this.name = '';
@@ -337,6 +361,9 @@ class RtcParam {
         this.includedIdls = [];
         this.idlPathes = [];
         this.serviceClassParams = [];
+        // 
+        this.containerSettings = [];
+        this.containerConfig = null;
         //
         this.commonPrefix = '';
 	    this.commonSuffix = '';
@@ -547,6 +574,44 @@ class RtcParam {
                 return { ret: false, msg: translations["script.config.VALIDATE_VAR_DUPLICATE"] + ' ' + config.name};
             }
             existedVarName.add(config.varname);
+        }
+        return { ret: true, msg: '' };
+    }
+
+    validateContainerInfo() {
+        for(const container of this.containerSettings) {
+            if( container.middleware.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_MIDDLEWARE"] };
+            }
+
+            if( container.mdlVersion.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_MIDDLEWARE_VERSION"] };
+            }
+            
+            if( container.osVersion.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_OS_VERSION"] };
+            }
+            
+            if( container.workspace.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_WORKSPACE"] };
+            }
+            
+            if( container.language.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_LANGUAGE"] };
+            }
+
+            if( container.configuration.length==0 ) {
+                return { ret: false, msg: translations["script.container.VALIDATE_CONFIGURATION"] };
+            }
+            
+            for(let each of container.repositories) {
+                if(each.URL.length ==0) {
+                    return { ret: false, msg: translations["script.container.VALIDATE_REPOSITORY_URL"] };
+                }
+                if(each.Branch.length ==0) {
+                    return { ret: false, msg: translations["script.container.VALIDATE_REPOSITORY_BRAMCH"] };
+                }
+            }
         }
         return { ret: true, msg: '' };
     }
@@ -815,5 +880,10 @@ module.exports = {
   ConfigSetParam,
   TargetEnvironmentParam,
   EnvLibraryParam,
+<<<<<<< HEAD
+=======
+  ContainerParam,
+  RepositoryParam,
+>>>>>>> origin/iso22166-202-profile
   GeneratedResult
 };

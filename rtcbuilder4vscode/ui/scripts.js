@@ -15,17 +15,96 @@ function setProjectLocation(project) {
 
 function importProfile() {
   const project_dir = document.getElementById('project-name').textContent;
+  const textarea = document.getElementById("import_file");
+  const file_name = textarea.value;
+  let type = '';
+  if(document.getElementById('import_rtc').checked) {
+    type = 'RTC'
+  } else if(document.getElementById('import_iso').checked) {
+    type = 'ISO'
+  }
+
+  if(type.length == 0) {
+    vscode.postMessage({command: 'showMessage',
+                        param: translations["script.import.TARGET_NOT_SELECTED"],
+                        type: 'warning'});
+    return;
+  }
+  if(file_name.length == 0) {
+    vscode.postMessage({command: 'showMessage',
+                        param: translations["script.import.FILE_NOT_SELECTED"],
+                        type: 'warning'});
+    return;
+  }
+
   vscode.postMessage({
     command: 'importProfile',
-    project_dir: project_dir
+    project_dir: project_dir,
+    type: type,
+    file_name: file_name,
   });
 }
 
 function exportProfile() {
+  const selected_rtc = document.getElementById('export_rtc').checked;
+  const text_rtc = document.getElementById("export_file_rtc");
+  const file_name_rtc = text_rtc.value;
+
+  const selected_iso = document.getElementById('export_iso').checked;
+  const text_iso = document.getElementById("export_file_iso");
+  const file_name_iso = text_iso.value;
+
+  if(!selected_rtc && !selected_iso) {
+    vscode.postMessage({command: 'showMessage',
+                        param: translations["script.export.TARGET_NOT_SELECTED"],
+                        type: 'warning'});
+    return;
+  }
+
+  if(selected_rtc) {
+    if(file_name_rtc.length == 0) {
+      vscode.postMessage({command: 'showMessage',
+                          param: translations["script.export.RTC_FILE_NOT_SELECTED"],
+                          type: 'warning'});
+      return;
+    }
+  }
+
+  if(selected_iso) {
+    if(file_name_iso.length == 0) {
+      vscode.postMessage({command: 'showMessage',
+                          param: translations["script.export.ISO_FILE_NOT_SELECTED"],
+                          type: 'warning'});
+      return;
+    }
+  }
+
   store_profile(prev_tab);
   vscode.postMessage({
     command: 'exportProfile',
-    param: rtc_param_
+    param: rtc_param_,
+    selected_rtc: selected_rtc,
+    file_name_rtc: file_name_rtc,
+    selected_iso: selected_iso,
+    file_name_iso: file_name_iso
+  });
+}
+
+function exportISOProfile() {
+  const project_dir = document.getElementById('project-name').textContent;
+  store_profile(prev_tab);
+  vscode.postMessage({
+    command: 'exportISOProfile',
+    param: rtc_param_,
+    project_dir: project_dir
+  });
+}
+
+function testProfile() {
+  const project_dir = document.getElementById('project-name').textContent;
+  vscode.postMessage({
+    command: 'testProfile',
+    project_dir: project_dir
   });
 }
 
@@ -82,6 +161,20 @@ function generateCode() {
       return;
     }
   }
+  {
+    const { ret, msg } = rtc_param_.validateContainerInfo();
+    if(!ret) {
+      vscode.postMessage({command: 'showMessage', param: msg, type: 'warning'});
+      loadTab('container.html');
+      tabs.forEach(t => t.classList.remove('active'));
+      tabs[4].classList.add('active');
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      return;
+    }
+  }
 
   const project = document.getElementById('project-name').textContent;
   vscode.postMessage({
@@ -127,6 +220,9 @@ function store_profile(target) {
     case 'document.html':
       store_doc_info();
       break;
+    case 'container.html':
+      store_container_info();
+      break;
   }
 }
 
@@ -156,6 +252,10 @@ function load_profile(target_tab) {
     case 'document.html':
       conv_lang_doc(window.translations)
       load_doc_info();
+      break;
+    case 'container.html':
+      conv_lang_container(window.translations)
+      load_container_info(settings_);
       break;
     case 'rtc_xml.html':
       conv_lang_rtcxml(window.translations)
@@ -198,6 +298,19 @@ function updateXMLProfile(result) {
   const textarea = document.getElementById("rtc_text_area");
   textarea.textContent = result + '\n';
   updateLineNumbers();
+}
+
+function updateRefResult(source, file_name) {
+  if(source === "import") {
+    const textarea = document.getElementById("import_file");
+    textarea.value = file_name;
+  } else if(source === "export_rtc") {
+    const textarea = document.getElementById("export_file_rtc");
+    textarea.value = file_name;
+  } else if(source === "export_iso") {
+    const textarea = document.getElementById("export_file_iso");
+    textarea.value = file_name;
+  }
 }
 
 function update_rtc_xml() {

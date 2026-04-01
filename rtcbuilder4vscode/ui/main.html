@@ -14,7 +14,7 @@
       <font size="5">RTC Builder</font>
       <div class="project-container">
         <span data-i18n="main.project" style="margin-right: 8px;"></span>
-        <span class="border-label" id="project-name"></span>
+        <span class="border-label-project" id="project-name"></span>
         <button onclick="selectProject()" style="margin : 2px;" class="basicBtn" data-i18n="main.select">選択</button>
       </div>
       <div style="text-align: right;">
@@ -29,6 +29,7 @@
     <div class="tab" data-file="serviceport.html" data-i18n="main.servicePort">サービスポート</div>
     <div class="tab" data-file="configuration.html" data-i18n="main.configuration">コンフィギュレーション</div>
     <div class="tab" data-file="document.html" data-i18n="main.document">ドキュメント生成</div>
+    <div class="tab" data-file="container.html" data-i18n="main.container">コンテナ生成</div>
     <div class="tab" data-file="rtc_xml.html">RTC.xml</div>
   </div>
 
@@ -85,7 +86,11 @@
         });
       }
      };
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> origin/iso22166-202-profile
     window.addEventListener('message', event => {
       const msg = event.data;
       console.log(msg);
@@ -121,6 +126,8 @@
         updateServiceDef(msg.pathes, msg.services);
       } else if (msg.command === 'sendXML') {
         updateXMLProfile(msg.xml);
+      } else if (msg.command === 'sendRefResult') {
+        updateRefResult(msg.source, msg.file_name);
       } else if (msg.command === 'sendProfile') {
         rtc_param_ = msg.profile;
         // console.log(rtc_param_);

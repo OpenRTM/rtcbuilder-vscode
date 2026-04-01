@@ -162,3 +162,43 @@ function conv_lang_basic(translations) {
     targetTag.innerHTML = translations[key];
   }
 }
+
+function ref_import() {
+  const file_name = document.getElementById('import_file').value;
+  vscode.postMessage({
+    command: 'refProfile',
+    source: 'import',
+    file_name: file_name
+  });
+}
+
+function check_export_rtc() {
+  const selected = document.getElementById('export_rtc').checked;
+  document.getElementById('export_file_rtc').disabled = !selected;
+  document.getElementById('basic.BTN_REF_RTC').disabled = !selected;
+}
+
+function check_export_iso() {
+  const selected = document.getElementById('export_iso').checked;
+  document.getElementById('export_file_iso').disabled = !selected;
+  document.getElementById('basic.BTN_REF_ISO').disabled = !selected;
+}
+
+function ref_export_rtc() {
+  const file_name = document.getElementById('export_file_rtc').value;
+  vscode.postMessage({
+    command: 'refProfile',
+    source: 'export_rtc',
+    file_name: file_name
+  });
+}
+
+function ref_export_iso() {
+  const file_name = document.getElementById('export_file_iso').value;
+  vscode.postMessage({
+    command: 'refProfile',
+    source: 'export_iso',
+    file_name: file_name
+  });
+}
+

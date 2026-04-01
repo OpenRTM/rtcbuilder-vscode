@@ -28,11 +28,19 @@ const { checkNotWidget,
         getTmplVarNameSI,
         convCpp2CORBA,
         convCpp2CORBAforArg,
-        checkMethodRet } = require("./templateHelper");
+        checkMethodRet,
+        convConfiguration,
+        getContainerLibName,
+        convMiddleware,
+        convOSVersion,
+        convOSVersionNum,
+        convOSName,
+        getBranchName } = require("./templateHelper");
 
 const { generateCommon } = require("./commonGenerateManager");
 const { generateCxx } = require("./cxxGenerateManager");
 const { generateCMake } = require("./cmakeGenerateManager");
+const { generateContainer } = require("./containerGenerateManager");
 
 async function generateCode(project_dir, param, context, extensions) {
   const templateDir = path.join(__dirname, '');
@@ -104,6 +112,10 @@ async function generateCode(project_dir, param, context, extensions) {
     const resultEach = await targetExt[0].generateTemplateCode(rtcParam, RtcParam.prototype);
     result.push(...resultEach);
   }
+
+  if(rtcParam.language === 'C++' || rtcParam.language === 'Python') {
+    result.push(...generateContainer(env, { rtcParam: rtcParam }));
+  }
   return result;
 }
 
@@ -145,6 +157,14 @@ function setHelperFunction(env) {
   env.addGlobal('convCpp2CORBA', convCpp2CORBA);
   env.addGlobal('convCpp2CORBAforArg', convCpp2CORBAforArg);
   env.addGlobal('checkMethodRet', checkMethodRet);
+
+  env.addGlobal('convConfiguration', convConfiguration);
+  env.addGlobal('getContainerLibName', getContainerLibName);
+  env.addGlobal('convMiddleware', convMiddleware);
+  env.addGlobal('convOSVersion', convOSVersion);
+  env.addGlobal('convOSVersionNum', convOSVersionNum);
+  env.addGlobal('convOSName', convOSName);
+  env.addGlobal('getBranchName', getBranchName);
 }
 
 function setPrefixSuffix(rtcParam) {
