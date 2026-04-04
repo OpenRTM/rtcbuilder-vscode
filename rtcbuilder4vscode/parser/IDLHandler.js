@@ -7,14 +7,15 @@ const IDLLexer = require('./IDLLexer').IDLLexer;
 const IDLParser = require('./IDLParser').IDLParser;
 const IDLListener = require('./IDLListener').IDLListener;
 
-const { IdlPathParam, DataTypeParam, ServiceClassParam } = require('../model/dataModels');
+const { IdlPathParam, DataTypeParam, ServiceClassParam} = require('../model/dataModels');
+const { getRtmRoot } = require('../rtcUtil');
 
-function parseServices(param) {
+async function parseServices(param) {
   let idlSearchPathList = [];
   let serviceList = [];
   let includeList = [];
 
-  const defaultPath = process.env.RTM_ROOT;
+  const defaultPath = await getRtmRoot();
   if(defaultPath != undefined) {
     const dispPath = path.join('<RTM_ROOT>', 'rtm', 'idl');
     const fullPath = path.join(defaultPath, 'rtm', 'idl');
@@ -101,11 +102,11 @@ function extractServiceNames(source, parentName = '') {
   return result;
 }
 
-function getDataTypesDef(param) {
+async function getDataTypesDef(param) {
   let idlSearchPathList = [];
   let dateTypeList = [];
 
-  const defaultPath = process.env.RTM_ROOT;
+  const defaultPath = await getRtmRoot();
   if(defaultPath != undefined) {
     const dispPath = path.join('<RTM_ROOT>', 'rtm', 'idl');
     const fullPath = path.join(defaultPath, 'rtm', 'idl');
@@ -190,11 +191,11 @@ function extractStructTypes(source, parentName = '') {
   return result;
 }
 
-function parseDataTypes(param) {
+async function parseDataTypes(param) {
   let idlSearchPathList = [];
   let dateTypeList = [];
 
-  const defaultPath = process.env.RTM_ROOT;
+  const defaultPath = await getRtmRoot();
   if(defaultPath != undefined) {
     const dispPath = path.join('<RTM_ROOT>', 'rtm', 'idl');
     const fullPath = path.join(defaultPath, 'rtm', 'idl');

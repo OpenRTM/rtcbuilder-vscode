@@ -34,6 +34,7 @@ const { getWidget,
 
 const { generateJava } = require("./templates/javaGenerateManager");
 const { generateCMake } = require("./templates/javaCmakeGenerateManager");
+const { getRtmRoot } = require("./dataModels")
 
 async function generateCode(param) {
   const templateDir = path.join(__dirname, '');
@@ -79,7 +80,7 @@ async function generateCode(param) {
   const genParam = { rtcParam: param,
                    };
 
-  let defaultPath = process.env.RTM_ROOT;
+  let defaultPath = await getRtmRoot();
   if(defaultPath !== undefined) {
     defaultPath = defaultPath.replaceAll("\\", "/");
     genParam['javaRoot'] = defaultPath;

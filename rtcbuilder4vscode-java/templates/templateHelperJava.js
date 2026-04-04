@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { IdlFileParam } = require("../dataModels");
+const { IdlFileParam, getRtmRoot } = require("../dataModels");
 
 function getWidget(config) {
   const result = config.properties.find(c => c.name === '__widget__');
@@ -155,8 +155,8 @@ function useReturnCode(rtcParam) {
   return false;
 }
 
-function notNullRTMRoot() {
-  const defaultPath = process.env.RTM_ROOT;
+async function notNullRTMRoot() {
+  const defaultPath = await getRtmRoot();
   return defaultPath !== undefined && defaultPath !== null;
 }
 

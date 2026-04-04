@@ -26,8 +26,9 @@ class IdlFileParam {
         return parts[parts.length - 1];
     }
 
-    checkDefault() {
-        const defaultPath = process.env.RTM_ROOT;
+    async checkDefault() {
+        const { getRtmRoot } = require("../rtcUtil");
+        const defaultPath = await getRtmRoot();
         return this.idlPath.startsWith(defaultPath);
     }
 
@@ -43,9 +44,10 @@ class IdlFileParam {
         return "";
     }
 
-    getIncludeIdlParamsWithoutDefault() {
+    async getIncludeIdlParamsWithoutDefault() {
+        const { getRtmRoot } = require("../rtcUtil");
         const result = [];
-        const defaultPath = process.env.RTM_ROOT;
+        const defaultPath = await getRtmRoot();
 
         for (const s of this.includeIdlPathes) {
             if (s.startsWith(defaultPath)) continue;
@@ -54,7 +56,6 @@ class IdlFileParam {
 
           return result;
     }
-
 }
 
 class DataTypeParam {
@@ -862,6 +863,7 @@ function isDoubleString(str) {
   const num = Number(str);
   return Number.isFinite(num);
 }
+
 
 module.exports = {
   IdlPathParam,

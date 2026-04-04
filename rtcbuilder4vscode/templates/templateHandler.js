@@ -52,11 +52,11 @@ async function generateCode(project_dir, param, context, extensions) {
 
   let rtcParam = param;
   Object.setPrototypeOf(rtcParam, RtcParam.prototype);
-  const dataTypes = parseDataTypes(project_dir);
+  const dataTypes = await parseDataTypes(project_dir);
   rtcParam.dataTypeParams = dataTypes.dateTypeList;
   rtcParam.idlSearchPathList = dataTypes.idlSearchPathList;
 
-  const serviceList = parseServices(project_dir);
+  const serviceList = await parseServices(project_dir);
   rtcParam.serviceClassParams = serviceList.serviceList;
 
   const dataDefList = getDataTypesDef(project_dir);

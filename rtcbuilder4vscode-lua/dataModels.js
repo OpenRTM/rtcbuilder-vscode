@@ -31,7 +31,7 @@ class IdlFileParam {
     }
 
     checkDefault() {
-        const defaultPath = process.env.RTM_ROOT;
+        const defaultPath = getRtmRoot();
         return this.idlPath.startsWith(defaultPath);
     }
 
@@ -46,6 +46,10 @@ class IdlFileParam {
 
         return "";
     }
+}
+
+function getRtmRoot() {
+    return process.env.RTM_ROOT;
 }
 
 module.exports = {

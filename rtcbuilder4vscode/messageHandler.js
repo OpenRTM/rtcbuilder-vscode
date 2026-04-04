@@ -23,6 +23,7 @@ let comparePanel_;
 async function handleMessage(param, mainPanel, context, extensions, message, translations) {
   console.log(message);
   rtc_param_ = param;
+
   if (message.command === 'getRtcParam') {
       mainPanel.webview.postMessage({
         command: 'sendRtcParam',
@@ -53,12 +54,22 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
     if (folderUri && folderUri.length > 0) {
       const selected_project_dir = folderUri[0].fsPath
 
-      const typeResult = parseDataTypes(selected_project_dir);
+      try {
+        const idlPath = path.join(selected_project_dir, 'idl');
+        if (!fs.existsSync(idlPath)) {
+          fs.mkdirSync(idlPath);
+        }
+      } catch (e) {
+        vscode.window.showErrorMessage(vscode.l10n.t('Initialization failed.') + `\n\n` + e.message,{ modal: true });
+        return;
+      }
+
+      const typeResult = await parseDataTypes(selected_project_dir);
       let typeList;
       if(typeResult != undefined) {
         typeList = typeResult.dateTypeList;
       }
-      const serviceResult = parseServices(selected_project_dir);
+      const serviceResult = await parseServices(selected_project_dir);
       const serviceList = serviceResult.serviceList;
 
       const profilePath = path.join(selected_project_dir, 'RTC.xml');
@@ -241,7 +252,7 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
 
   } else if (message.command === 'getCORBADataType') {
     const param = message.param;
-    const result = parseDataTypes(param);
+    const result = await parseDataTypes(param);
 
     mainPanel.webview.postMessage({
       command: 'sendDataTypes',
@@ -251,7 +262,7 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
 
   } else if (message.command === 'getCORBAService') {
     const param = message.param;
-    const result = parseServices(param);
+    const result = await parseServices(param);
 
     mainPanel.webview.postMessage({
       command: 'sendServices',
@@ -273,9 +284,9 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
           return;
         }
 
-        const typeResult = parseDataTypes(project_dir);
+        const typeResult = await parseDataTypes(project_dir);
         const typeList = typeResult.dateTypeList;
-        const serviceResult = parseServices(project_dir);
+        const serviceResult = await parseServices(project_dir);
         const serviceList = serviceResult.serviceList;
 
         rtc_param_ = parseXML(xmlData, typeList, serviceList);
@@ -418,7 +429,7 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
     {
       const sourcePath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\RTC_Docker_Base.xml';
       const targetPath = 'D:\\GlobalAssist\\Robot\\2025AIST_RTM\\Source\\Resource\\ISO_Docker.xml';
-      convertRtc2IsoProfile(sourcePath, project_dir, targetPath);
+      await convertRtc2IsoProfile(sourcePath, project_dir, targetPath);
     }
     /////////
     {
@@ -456,9 +467,9 @@ async function handleMessage(param, mainPanel, context, extensions, message, tra
           return;
         }
 
-        const typeResult = parseDataTypes(project_dir);
+        const typeResult = await parseDataTypes(project_dir);
         const typeList = typeResult.dateTypeList;
-        const serviceResult = parseServices(project_dir);
+        const serviceResult = await parseServices(project_dir);
         const serviceList = serviceResult.serviceList;
 
         rtc_param_ = parseXML(xmlData, typeList, serviceList);
@@ -578,7 +589,7 @@ async function selectProject(mainPanel) {
       project: project_dir
     });
     try {
-      const idlPath = path.join(project_dir, 'IDL');
+      const idlPath = path.join(project_dir, 'idl');
       if (!fs.existsSync(idlPath)) {
         fs.mkdirSync(idlPath);
       }
@@ -882,12 +893,12 @@ function convertIso2RtcProfile(sourcePath, targetPath) {
   fs.writeFileSync(targetPath, result, 'utf-8');
 }
 
-function convertRtc2IsoProfile(sourcePath, project_dir, targetPath) {
+async function convertRtc2IsoProfile(sourcePath, project_dir, targetPath) {
   const xmlData = fs.readFileSync(sourcePath, 'utf-8');
 
-  const typeResult = parseDataTypes(project_dir);
+  const typeResult = await parseDataTypes(project_dir);
   const typeList = typeResult.dateTypeList;
-  const serviceResult = parseServices(project_dir);
+  const serviceResult = await parseServices(project_dir);
   const serviceList = serviceResult.serviceList;
 
   const rtc_param_temp = parseXML(xmlData, typeList, serviceList);

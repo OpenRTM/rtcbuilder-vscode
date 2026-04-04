@@ -164,7 +164,7 @@ function generateTestRTCSource(env, param) {
 function generateTestRTCImplSource(env, param) {
   const rtcParam = param['rtcParam'];
 
-  let infile = path.join('templates', 'processing', 'test', 'processing_Test_RTC_Impl.pde.njk');
+  let infile = path.join('templates', 'processing', 'test', 'Processing_Test_RTC_Impl.pde.njk');
   let outfile = path.join('test', 'src', rtcParam.name + 'TestMain', rtcParam.name + 'TestImpl.pde');
   const result = generateCode(env, param, infile, outfile);
   result.canMerge = true;

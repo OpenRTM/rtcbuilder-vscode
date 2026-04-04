@@ -1,4 +1,8 @@
-﻿class GeneratedResult {
+﻿const os = require('os');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+
+class GeneratedResult {
     constructor() {
         this.name = '';
         this.mode = '';
@@ -30,8 +34,8 @@ class IdlFileParam {
         return parts[parts.length - 1];
     }
 
-    checkDefault() {
-        const defaultPath = process.env.RTM_ROOT;
+    async checkDefault() {
+        const defaultPath = await getRtmRoot();
         return this.idlPath.startsWith(defaultPath);
     }
 
@@ -48,7 +52,24 @@ class IdlFileParam {
     }
 }
 
+async function getRtmRoot() {
+    const isWindows = process.platform === 'win32';
+    let rtm_dir;
+    if(isWindows) {
+        rtm_dir = process.env.RTM_ROOT;
+    } else {
+        try {
+            const { stdout, stderr } = await exec('rtm2-config --rtm-includedir');
+            rtm_dir = stdout.trim();
+        } catch {
+            rtm_dir = "";
+        }
+    }
+    return rtm_dir;
+}
+
 module.exports = {
   GeneratedResult,
-  IdlFileParam
+  IdlFileParam,
+  getRtmRoot
 };
